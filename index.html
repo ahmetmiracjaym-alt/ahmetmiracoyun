@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIZ YAYINLARI - Savunma Oyunu</title>
+    <style>
+        /* --- CSS TASARIMI --- */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            background-color: #2c3e50;
+            user-select: none; 
+            cursor: crosshair;
+        }
+
+        #gameContainer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- GİRİŞ EKRANI --- */
+        #startScreen {
+            position: absolute;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border-top: 8px solid #FF8C00; 
+            border-bottom: 8px solid #007BFF;
+            max-width: 450px;
+            animation: fadeIn 0.5s ease-out;
+            cursor: default;
+            display: block; /* Varsayılan olarak blok */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #startScreen h1 {
+            color: #FF8C00;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        #startScreen p { color: #555; margin-bottom: 20px; line-height: 1.5; }
+
+        /* Giriş Ekranı Tuş Rehberi */
+        .controls-preview {
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #333;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .controls-preview p { margin: 8px 0; display: flex; align-items: center; }
+        
+        .key-icon {
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-bottom: 3px solid #bbb;
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin-right: 5px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #555;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-weight: bold; color: #333; margin-bottom: 5px; }
+
+        #playerNameInput {
+            width: 100%; padding: 12px; font-size: 1.1rem;
+            border: 2px solid #ddd; border-radius: 8px;
+            box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        #playerNameInput:focus { border-color: #007BFF; }
+
+        #startButton {
+            background: linear-gradient(135deg, #FF8C00, #FF4500);
+            color: white; border: none; padding: 15px 40px;
+            font-size: 1.1rem; font-weight: bold; border-radius: 50px;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
+            width: 100%;
+        }
+        #startButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 69, 0, 0.4); }
+
+        /* --- OYUN ARAYÜZÜ (HUD) --- */
+        #gameUI {
+            width: 100%; height: 100%; display: none; flex-direction: column;
+        }
+
+        #header {
+            position: absolute; top: 0; left: 0; width: 100%;
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            box-sizing: border-box; pointer-events: none; z-index: 10;
+        }
+
+        .hud-box {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; gap: 5px;
+            border-left: 4px solid #007BFF;
+        }
+
+        #scoreBox {
+            align-items: flex-end;
+            border-left: none; border-right: 4px solid #FF8C00;
+        }
+
+        .hud-label { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .hud-value { font-size: 1.2rem; font-weight: bold; font-family: 'Roboto', monospace; }
+        
+        #scoreDisplay { font-family: 'Black Ops One', cursive; font-size: 2rem; color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        
+        .danger-text { color: #ff4444; animation: pulse 1s infinite; }
+        .ready-text { color: #00ff00; font-weight: 900; text-shadow: 0 0 5px #00ff00; }
+        
+        /* Dash Göstergesi */
+        #dashBarContainer {
+            width: 100px; height: 6px; background: #333; border-radius: 3px; margin-top: 5px; overflow: hidden;
+        }
+        #dashBar {
+            width: 100%; height: 100%; background: #00ff00; transition: width 0.1s;
+        }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        #gameCanvas { display: block; width: 100%; height: 100%; background-color: #fbfbf2; }
+
+        /* --- OYUN İÇİ REHBER --- */
+        #gameGuide {
+            position: absolute; bottom: 20px; left: 20px; width: 240px;
+            background: rgba(0, 0, 0, 0.8); padding: 15px;
+            border-radius: 10px; border-left: 4px solid #007BFF;
+            z-index: 20; color: white; font-size: 0.85rem;
+            pointer-events: none; backdrop-filter: blur(3px);
+        }
+        #gameGuide h2 { margin-top: 0; color: #00BFFF; font-size: 1rem; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .control-pair { display: flex; justify-content: space-between; margin: 6px 0; align-items: center; }
+        
+        /* Oyun içi stilize tuşlar */
+        .keys { 
+            background: linear-gradient(to bottom, #eee, #ccc);
+            color: #333;
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            font-family: monospace; 
+            font-weight: bold; 
+            border-bottom: 2px solid #999;
+            font-size: 0.75rem;
+        }
+        
+        /* --- DURAKLATMA EKRANI --- */
+        #pauseScreen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none; justify-content: center; align-items: center; flex-direction: column;
+            z-index: 200; backdrop-filter: blur(5px);
+        }
+        #pauseScreen h1 { color: white; font-family: 'Black Ops One', cursive; font-size: 4rem; margin: 0; letter-spacing: 5px; }
+        #pauseScreen p { color: #ccc; font-size: 1.2rem; }
+        
+        @media (max-width: 768px) {
+            #gameGuide { display: none !important; }
+            #header { padding: 10px; flex-direction: column; gap: 10px; align-items: stretch; }
+            #scoreBox { align-items: flex-start; border-right: none; border-left: 4px solid #FF8C00; }
+            .hud-box { flex-direction: row; justify-content: space-between; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="gameContainer">
+        
+        <!-- GİRİŞ EKRANI -->
+        <div id="startScreen">
+            <h1>HIZ YAYINLARI<br><span style="font-size: 0.6em; color: #007BFF;">SAVUNMA OYUNU</span></h1>
+            
+            <div class="controls-preview">
+                <p style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #007BFF; font-weight: bold;">NASIL OYNANIR?</p>
+                <p><span class="key-icon">W</span><span class="key-icon">A</span><span class="key-icon">S</span><span class="key-icon">D</span> Hareket Et</p>
+                <p><span class="key-icon">SOL TIK</span> Ateş Et</p>
+                <p><span class="key-icon">SAĞ TIK</span> Seri Atış Modu</p>
+                <p><span class="key-icon">SPACE</span> Hızlı Atıl (Dash) ⚡</p>
+                <p><span class="key-icon">ORTA TIK</span> Bomba Bırak 💣</p>
+            </div>
+
+            <div class="input-group">
+                <label for="playerNameInput">Öğrenci Adı:</label>
+                <input type="text" id="playerNameInput" placeholder="Adınızı girin..." maxlength="15" autocomplete="off">
+            </div>
+            <button id="startButton">OYUNA BAŞLA</button>
+        </div>
+
+        <!-- DURAKLATMA EKRANI -->
+        <div id="pauseScreen">
+            <h1>DURAKLATILDI</h1>
+            <p>Devam etmek için <b>'P'</b> veya <b>'ESC'</b> tuşuna basın</p>
+        </div>
+
+        <!-- OYUN ARAYÜZÜ -->
+        <div id="gameUI">
+            <div id="header">
+                <!-- Sol Panel -->
+                <div class="hud-box" id="infoBox">
+                    <div id="healthLine"><span class="hud-label">CAN</span> <span id="healthVal">❤️❤️❤️</span></div>
+                    <div id="bombLine"><span class="hud-label">BOMBA</span> <span id="bombVal">💣 HAZIR</span></div>
+                    <div style="margin-top: 5px;">
+                        <span class="hud-label">ENERJİ (DASH)</span>
+                        <div id="dashBarContainer"><div id="dashBar"></div></div>
+                    </div>
+                </div>
+                
+                <!-- Sağ Panel -->
+                <div class="hud-box" id="scoreBox">
+                    <div><span class="hud-label">SEVİYE</span> <span id="levelVal">1</span></div>
+                    <div id="scoreDisplay">0</div>
+                </div>
+            </div>
+
+            <!-- OYUN REHBERİ (SOL ALT) -->
+            <div id="gameGuide">
+                <h2>🎮 Kontroller</h2>
+                <div class="control-pair"><span>Hareket</span><div><span class="keys">W</span><span class="keys">A</span><span class="keys">S</span><span class="keys">D</span></div></div>
+                <div class="control-pair"><span>Ateş</span><span class="keys">SOL TIK</span></div>
+                <div class="control-pair"><span>Atılma (Dash)</span><span class="keys">SPACE</span></div>
+                <div class="control-pair"><span>Bomba</span><span class="keys">ORTA / B</span></div>
+                <div class="control-pair"><span>Duraklat</span><span class="keys">P</span></div>
+            </div>
+            
+            <canvas id="gameCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // --- SES YÖNETİCİSİ ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const Sound = {
+            playTone: (freq, type, duration, vol = 0.1, slideTo = null) => {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type; 
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + duration);
+            },
+            shoot: () => Sound.playTone(600, 'square', 0.1, 0.05, 100), 
+            hit: () => Sound.playTone(150, 'triangle', 0.1, 0.1, 50), 
+            explosion: () => { 
+                Sound.playTone(100, 'sawtooth', 0.3, 0.2, 10); 
+                Sound.playTone(50, 'square', 0.4, 0.2, 10); 
+            }, 
+            powerup: () => Sound.playTone(400, 'sine', 0.4, 0.1, 1200),
+            dash: () => Sound.playTone(300, 'sawtooth', 0.2, 0.1, 50) // Dash sesi
+        };
+
+        // --- HTML Elementleri ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const healthVal = document.getElementById('healthVal');
+        const levelVal = document.getElementById('levelVal');
+        const bombVal = document.getElementById('bombVal');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const dashBar = document.getElementById('dashBar');
+        const pauseScreen = document.getElementById('pauseScreen');
+
+        const startScreen = document.getElementById('startScreen');
+        const gameUI = document.getElementById('gameUI');
+        const startButton = document.getElementById('startButton');
+        const playerNameInput = document.getElementById('playerNameInput');
+        const gameGuide = document.getElementById('gameGuide');
+
+        // --- OYUN DEĞİŞKENLERİ ---
+        var W = window.innerWidth;
+        var H = window.innerHeight;
+
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight; 
+            W = canvas.width; H = canvas.height;
+        }
+        window.addEventListener('resize', setCanvasSize); 
+        setCanvasSize();
+
+        var score = 0;
+        var projectiles = []; 
+        var enemies = [];     
+        var particles = [];   
+        var powerUps = [];    
+        var enemyProjectiles = []; 
+        var floatingTexts = []; 
+
+        var lives = 3; 
+        var isGameOver = false;
+        var isPaused = false; // Duraklatma durumu
+        var level = 1; 
+        var playerHitFlash = 0; 
+        var playerName = 'ÖĞRENCİ'; 
+        var levelUpFlash = 0; 
+        var screenShake = 0; 
+
+        var shotsFired = 0; 
+        var shotsHit = 0;   
+        const projectileSpeed = 14; 
+        var enemySpeedMultiplier = 1; 
+        var fireRateMultiplier = 1; 
+
+        var altFireInterval;
+        const altFireRate = 50; 
+        var bombCooldown = 10000; 
+        var lastBombTime = 0;
+
+        // Dash (Atılma) Değişkenleri
+        var canDash = true;
+        var dashCooldown = 2000; // 2 saniye
+        var lastDashTime = 0;
+        var isDashing = false;
+
+        var currentMouseX = W / 2;
+        var currentMouseY = H / 2;
+        var difficultyText = 'KOLAY';
+        var highestScore = localStorage.getItem('highestScore') || 0; 
+        
+        var recoilX = 0; var recoilY = 0;
+        var hitStopTimer = 0; 
+        var lowHealthPulse = 0;
+
+        const playerBookImage = new Image();
+        playerBookImage.src = 'hiz_yay_kitap.png'; 
+        let playerBookImageLoaded = false; 
+        playerBookImage.onload = () => { playerBookImageLoaded = true; };
+
+        const bombImage = new Image();
+        bombImage.src = 'bomb.png'; 
+        let bombImageLoaded = false;
+        bombImage.onload = () => { bombImageLoaded = true; };
+
+        // --- UI GÜNCELLEME ---
+        function updateInfoDisplay() {
+            // Can
+            let hearts = "";
+            for(let i=0; i<lives; i++) hearts += "❤️";
+            healthVal.innerHTML = hearts;
+            if(lives <= 1) healthVal.className = "hud-value danger-text";
+            else healthVal.className = "hud-value";
+
+            // Seviye
+            levelVal.innerText = `${level} (${difficultyText})`;
+
+            // Skor
+            scoreDisplay.innerText = score;
+
+            // Bomba
+            const remainingBombTime = Math.max(0, bombCooldown - (Date.now() - lastBombTime));
+            if (remainingBombTime > 0) {
+                bombVal.innerText = `⌛ ${(remainingBombTime / 1000).toFixed(1)}s`;
+                bombVal.className = "hud-value";
+                bombVal.style.color = "#aaa";
+            } else {
+                bombVal.innerText = "💣 HAZIR!";
+                bombVal.className = "hud-value ready-text";
+            }
+
+            // Dash Bar
+            const dashElapsed = Date.now() - lastDashTime;
+            const dashPercent = Math.min(100, (dashElapsed / dashCooldown) * 100);
+            dashBar.style.width = `${dashPercent}%`;
+            dashBar.style.backgroundColor = dashPercent >= 100 ? '#00ff00' : '#FFA500';
+        }
+
+        // --- OYUN BAŞLANGIÇ ---
+        function initGame() {
+            lives = 3; score = 0; isGameOver = false; isPaused = false;
+            shotsFired = 0; shotsHit = 0;
+            projectiles = []; enemies = []; particles = []; powerUps = []; enemyProjectiles = []; floatingTexts = [];
+            playerHitFlash = 0; levelUpFlash = 0; screenShake = 0; lastBombTime = 0; lastDashTime = 0;
+            
+            const nameLength = playerName.length;
+            if (nameLength <= 4) { enemySpeedMultiplier = 1.0; difficultyText = 'KOLAY'; }
+            else if (nameLength <= 7) { enemySpeedMultiplier = 1.5; difficultyText = 'ORTA'; }
+            else { enemySpeedMultiplier = 2.0; difficultyText = 'ZOR'; }
+
+            level = 1; 
+            centerX = W / 4; centerY = H / 2; 
+            
+            updateInfoDisplay();
+            
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+
+            animate();
+            spawnEnemies();
+        }
+
+        // --- DİĞER SINIFLAR (FloatingText, Projectile vb.) ---
+        class FloatingText {
+            constructor(text, x, y, color, size = 20) {
+                this.text = text; this.x = x; this.y = y;
+                this.color = color; this.size = size;
+                this.life = 1.0; this.velocityY = -2; 
+            }
+            update() { this.y += this.velocityY; this.life -= 0.02; }
+            draw() {
+                ctx.save(); ctx.globalAlpha = Math.max(0, this.life);
+                ctx.fillStyle = this.color; ctx.font = `bold ${this.size}px Arial`;
+                ctx.shadowColor = 'black'; ctx.shadowBlur = 4; ctx.textAlign = 'center';
+                ctx.fillText(this.text, this.x, this.y); ctx.restore();
+            }
+        }
+
+        class Projectile {
+            constructor(x, y, radius, color, velocity, isBomb = false) { 
+                this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity; 
+                this.isBomb = isBomb;
+                this.baseRadius = radius;
+                this.explosionRadius = 250; 
+                this.exploded = false;
+                this.explosionTimer = 0;
+                this.trail = []; 
+            }
+            draw() {
+                if (this.isBomb) {
+                    if (this.exploded) {
+                        ctx.save(); ctx.globalAlpha = 1 - (this.explosionTimer / 60); 
+                        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(255, 165, 0, 0.7)'; ctx.fill();
+                        ctx.strokeStyle = 'rgba(255, 255, 0, 0.9)'; ctx.lineWidth = 5; ctx.stroke();
+                        ctx.restore();
+                    } else {
+                        if (bombImageLoaded) {
+                            const size = this.radius * 2;
+                            ctx.drawImage(bombImage, this.x - this.radius, this.y - this.radius, size, size);
+                        } else {
+                            ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                            ctx.fillStyle = 'gray'; ctx.fill(); ctx.strokeStyle = 'black'; ctx.stroke();
+                            ctx.fillStyle = 'white'; ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.fillText('💣', this.x, this.y + 4);
+                        }
+                    }
+                } else {
+                    ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = this.radius;
+                    ctx.beginPath();
+                    if (this.trail.length > 0) {
+                        ctx.moveTo(this.trail[0].x, this.trail[0].y);
+                        for(let t of this.trail) { ctx.lineTo(t.x, t.y); }
+                    }
+                    ctx.strokeStyle = this.color; ctx.globalAlpha = 0.5; ctx.stroke(); ctx.restore();
+                    ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'white'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = this.color; ctx.stroke(); ctx.restore();
+                }
+            }
+            update() {
+                if (!this.isBomb) {
+                    this.trail.push({x: this.x, y: this.y});
+                    if (this.trail.length > 8) this.trail.shift(); 
+                }
+                this.draw();
+                if (this.isBomb && this.exploded) {
+                    this.explosionTimer++;
+                    this.radius += 5; 
+                } else {
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                }
+            }
+            explode() {
+                if (this.exploded) return;
+                this.exploded = true;
+                this.radius = this.baseRadius; 
+                this.explosionTimer = 0; 
+                Sound.explosion();
+                screenShake = 30;
+                hitStopTimer = 4; 
+                let enemiesHit = [];
+                enemies.forEach(enemy => {
+                    const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y);
+                    if (dist - enemy.radius < this.explosionRadius) enemiesHit.push(enemy);
+                });
+                enemiesHit.forEach(enemy => {
+                     for (let i = 0; i < 10; i++) particles.push(new Particle(enemy.x, enemy.y, Math.random() * 4, 'gold', { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 }));
+                     score += 100 * enemy.maxHp; 
+                     floatingTexts.push(new FloatingText("GÜM!", enemy.x, enemy.y, "#FF4500", 40));
+                });
+                enemies = enemies.filter(enemy => {
+                     const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y);
+                     return dist - enemy.radius >= this.explosionRadius;
+                });
+                updateInfoDisplay();
+            }
+        }
+
+        class EnemyProjectile {
+            constructor(x, y, radius, velocity) {
+                this.x = x; this.y = y; this.radius = radius;
+                this.color = '#FF4500'; this.velocity = velocity;
+            }
+            draw() {
+                ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = 'red';
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'white'; ctx.fill(); ctx.strokeStyle = 'red'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+            }
+            update() { this.draw(); this.x += this.velocity.x; this.y += this.velocity.y; }
+        }
+
+        class Enemy {
+            constructor(x, y, radius, color, velocity) {
+                this.x = x; this.y = y; this.radius = radius; 
+                this.baseColor = color; this.color = color; 
+                this.velocity = velocity;
+                this.hp = Math.floor(radius / 10); 
+                this.maxHp = this.hp;
+                this.isHit = false; 
+                this.lastShotTime = Date.now();
+                this.fireRate = 1500 + (this.radius * 30); 
+            }
+            takeHit() {
+                this.hp--; this.isHit = true; 
+                setTimeout(() => { this.isHit = false; }, 50); 
+                return this.hp <= 0; 
+            }
+            draw() {
+                const jiggle = Math.sin(Date.now() / 60) * 2;
+                ctx.save(); ctx.translate(this.x, this.y);
+                ctx.beginPath(); ctx.ellipse(0, 0, this.radius + jiggle, this.radius - jiggle, 0, 0, Math.PI * 2);
+                ctx.fillStyle = this.baseColor; ctx.fill(); ctx.strokeStyle = '#212121'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.font = `bold ${this.radius * 0.8}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(Math.random() > 0.5 ? '?' : 'X', 0, 0);
+                if (this.isHit) { ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; ctx.fill(); }
+                if (this.maxHp > 1) {
+                    const w = this.radius * 1.5;
+                    ctx.fillStyle = 'red'; ctx.fillRect(-w/2, -this.radius - 9, w * (this.hp / this.maxHp), 4);
+                }
+                ctx.restore(); 
+            }
+            fireAtPlayer(playerX, playerY) {
+                const now = Date.now();
+                if (now - this.lastShotTime < this.fireRate) return null;
+                this.lastShotTime = now;
+                const speed = 4.0; 
+                const angle = Math.atan2(playerY - this.y, playerX - this.x);
+                return new EnemyProjectile(this.x, this.y, 6, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed }); 
+            }
+            update() { this.draw(); this.x += this.velocity.x; this.y += this.velocity.y; }
+        }
+
+        class Particle { 
+            constructor(x, y, radius, color, velocity, type = 'circle') {
+                this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity;
+                this.alpha = 1; this.type = type; 
+            }
+            draw() {
+                ctx.save(); ctx.globalAlpha = this.alpha; 
+                if (this.type === 'spark') {
+                    ctx.beginPath(); ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + this.velocity.x * 4, this.y + this.velocity.y * 4);
+                    ctx.strokeStyle = this.color; ctx.lineWidth = 3; ctx.stroke();
+                } else {
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color; ctx.fill();
+                }
+                ctx.restore(); 
+            }
+            update() {
+                this.draw();
+                this.velocity.x *= 0.94; this.velocity.y *= 0.94;
+                this.x += this.velocity.x; this.y += this.velocity.y;
+                this.alpha -= 0.03; 
+            }
+        }
+        
+        class PowerUp { 
+            constructor(x, y, effect) {
+                this.x = x; this.y = y; this.radius = 15; this.color = 'yellow';
+                this.effect = effect; this.velocity = { x: -1.5, y: 0 }; this.angle = 0;
+            }
+            draw() {
+                this.angle += 0.1;
+                ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle);
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) { ctx.lineTo(this.radius * Math.cos(i * Math.PI / 3), this.radius * Math.sin(i * Math.PI / 3)); }
+                ctx.fillStyle = this.color; ctx.fill(); ctx.strokeStyle = 'orange'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.restore();
+                ctx.font = 'bold 10px Arial'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.fillText('HIZ', this.x, this.y + 3);
+            }
+            update() { this.draw(); this.x += this.velocity.x; }
+        }
+
+        // --- OYUN ÇALIŞMA MANTIĞI ---
+        function spawnEnemies() {
+            if (window.spawnInterval) clearInterval(window.spawnInterval);
+            window.spawnInterval = setInterval(() => {
+                if (isGameOver || isPaused) return;
+                const radius = Math.random() * (25 - 10) + 10; 
+                const color = `hsl(${Math.random() * 360}, 100%, 50%)`; 
+                const x = W + radius;
+                const y = Math.random() * (H - radius * 2) + radius; 
+                const baseSpeed = (Math.random() * (2 - 1) + 1); 
+                const speed = (baseSpeed / (radius / 10)) * enemySpeedMultiplier; 
+                const finalSpeed = Math.max(0.5, speed);
+                const velocity = { x: -finalSpeed, y: 0 }; 
+                enemies.push(new Enemy(x, y, radius, color, velocity));
+            }, 1500); 
+        }
+
+        function adjustDifficulty() {
+            let oldLevel = level;
+            const newLevel = Math.floor(score / 5000) + 1;
+            
+            if (newLevel > oldLevel) {
+                level = newLevel;
+                levelUpFlash = 2.0; 
+                enemySpeedMultiplier = 1.0 + (level * 0.3); 
+                screenShake = 15;
+                Sound.powerup(); 
+                floatingTexts.push(new FloatingText("SEVİYE ATLADIN!", centerX, centerY - 50, "gold", 30));
+            }
+            updateInfoDisplay();
+        }
+
+        // --- OYUNCU KONTROLLERİ ---
+        let centerX = W / 4; 
+        let centerY = H / 2;
+        const playerRadius = 30;
+        const playerSpeed = 5;
+        let keys = {};
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            // DURAKLATMA
+            if (e.key.toLowerCase() === 'p' || e.key === 'Escape') {
+                togglePause();
+            }
+            // DASH (SPACE)
+            if (e.key === ' ' && !isPaused && !isGameOver) {
+                performDash();
+            }
+        });
+        window.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+
+        function togglePause() {
+            if (isGameOver) return;
+            isPaused = !isPaused;
+            pauseScreen.style.display = isPaused ? 'flex' : 'none';
+            if (!isPaused) {
+                animate();
+            }
+        }
+
+        function performDash() {
+            const now = Date.now();
+            if (now - lastDashTime >= dashCooldown) {
+                isDashing = true;
+                lastDashTime = now;
+                Sound.dash();
+                
+                // Hangi yöne gidiyorsa o yöne dash at, yoksa mouse yönüne
+                let dashDirX = 0; let dashDirY = 0;
+                if (keys['w']) dashDirY = -1;
+                if (keys['s']) dashDirY = 1;
+                if (keys['a']) dashDirX = -1;
+                if (keys['d']) dashDirX = 1;
+                
+                // Eğer tuşa basılmıyorsa mouse yönüne
+                if (dashDirX === 0 && dashDirY === 0) {
+                    const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
+                    dashDirX = Math.cos(angle);
+                    dashDirY = Math.sin(angle);
+                }
+
+                // Dash efekti (Hızlı hareket)
+                const dashStrength = 150; // Piksel cinsinden atlama
+                const targetX = centerX + (dashDirX * dashStrength);
+                const targetY = centerY + (dashDirY * dashStrength);
+
+                // Ghost efekti için parçacıklar
+                for(let i=0; i<5; i++) {
+                    particles.push(new Particle(centerX + (dashDirX*i*20), centerY + (dashDirY*i*20), playerRadius, 'rgba(0,191,255,0.5)', {x:0, y:0}));
+                }
+                
+                // Anlık konum güncellemesi (Basit dash)
+                centerX = Math.max(playerRadius, Math.min(W-playerRadius, targetX));
+                centerY = Math.max(playerRadius, Math.min(H-playerRadius, targetY));
+                
+                screenShake = 5;
+                floatingTexts.push(new FloatingText("WOOSH!", centerX, centerY - 40, "#00FFFF", 20));
+
+                setTimeout(() => { isDashing = false; }, 200);
+            }
+        }
+
+        function updatePlayerPosition() {
+            let velX = 0, velY = 0;
+            const currentSpeed = playerSpeed * fireRateMultiplier; 
+
+            if (keys['w'] || keys['arrowup']) velY = -currentSpeed;
+            if (keys['s'] || keys['arrowdown']) velY = currentSpeed;
+            if (keys['a'] || keys['arrowleft']) velX = -currentSpeed;
+            if (keys['d'] || keys['arrowright']) velX = currentSpeed;
+
+            if (velX !== 0 && velY !== 0) {
+                velX *= 0.7; velY *= 0.7;
+            }
+
+            centerX += velX; centerY += velY;
+            if (centerX - playerRadius < 0) centerX = playerRadius;
+            if (centerX + playerRadius > W) centerX = W - playerRadius;
+            if (centerY - playerRadius < 0) centerY = playerRadius;
+            if (centerY + playerRadius > H) centerY = H - playerRadius;
+            
+            recoilX *= 0.8;
+            recoilY *= 0.8;
+        }
+
+        function drawPlayer() {
+            updatePlayerPosition();
+            ctx.save();
+            
+            const drawX = centerX - recoilX;
+            const drawY = centerY - recoilY;
+
+            // Dash Efekti (Mavi iz)
+            if (isDashing) {
+                ctx.globalAlpha = 0.5;
+                ctx.fillStyle = '#00FFFF';
+                ctx.beginPath(); ctx.arc(drawX, drawY, playerRadius + 15, 0, Math.PI * 2); ctx.fill();
+            }
+
+            if (levelUpFlash > 0) {
+                ctx.globalAlpha = levelUpFlash;
+                ctx.fillStyle = 'gold';
+                ctx.beginPath(); ctx.arc(drawX, drawY, playerRadius + 10, 0, Math.PI * 2); ctx.fill();
+                levelUpFlash -= 0.01; 
+            }
+
+            ctx.globalAlpha = 1.0; 
+            ctx.translate(drawX, drawY);
+            const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
+            ctx.rotate(angle + Math.PI / 2);
+
+            if (playerBookImageLoaded) {
+                const size = playerRadius * 2.5; 
+                ctx.drawImage(playerBookImage, -size / 2, -size / 2, size, size);
+            } else {
+                ctx.fillStyle = '#007BFF';
+                ctx.fillRect(-20, -30, 40, 60);
+                ctx.fillStyle = 'white';
+                ctx.fillRect(-15, -25, 30, 50);
+                ctx.fillStyle = '#333';
+                ctx.fillRect(-5, -40, 10, 20);
+                ctx.fillStyle = 'white';
+                ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.fillText('KİTAP', 0, 0);
+            }
+            
+            if(recoilX > 1 || recoilY > 1) {
+                ctx.fillStyle = `rgba(255, 255, 0, ${Math.random()})`;
+                ctx.beginPath(); ctx.arc(0, -45, Math.random()*10 + 5, 0, Math.PI*2); ctx.fill();
+            }
+
+            ctx.restore(); 
+        }
+
+        canvas.addEventListener('mousemove', (e) => { currentMouseX = e.clientX; currentMouseY = e.clientY; });
+
+        // --- ATEŞ ETME ---
+        canvas.addEventListener('click', (e) => {
+            if (isGameOver || isPaused) return;
+            
+            Sound.shoot();
+            
+            const radius = 6; 
+            const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+            const speed = projectileSpeed * fireRateMultiplier; 
+            
+            recoilX = Math.cos(angle) * 5;
+            recoilY = Math.sin(angle) * 5;
+            screenShake = 2; 
+
+            const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+            projectiles.push(new Projectile(centerX, centerY, radius, '#00BFFF', velocity)); 
+            shotsFired++; updateInfoDisplay();
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 2 && !isGameOver && !isPaused) { 
+                e.preventDefault();
+                if(altFireInterval) clearInterval(altFireInterval); 
+                altFireInterval = setInterval(() => {
+                    Sound.shoot();
+                    const radius = 4; 
+                    const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
+                    const speed = projectileSpeed * fireRateMultiplier * 1.5; 
+                    const spread = (Math.random() - 0.5) * 0.15;
+                    
+                    recoilX = Math.cos(angle) * 3;
+                    recoilY = Math.sin(angle) * 3;
+                    screenShake = 1;
+
+                    const velocity = { x: Math.cos(angle + spread) * speed, y: Math.sin(angle + spread) * speed };
+                    projectiles.push(new Projectile(centerX, centerY, radius, '#FFC107', velocity)); 
+                    shotsFired++; updateInfoDisplay();
+                }, altFireRate); 
+            }
+            // Orta Tık (Tekerlek) VEYA 'B' tuşuyla bomba atılabilir (Tuş kontrolü yukarıda eklendi)
+            if (e.button === 1 && !isGameOver && !isPaused) { 
+                e.preventDefault();
+                triggerBomb(e.clientX, e.clientY);
+            }
+        });
+
+        function triggerBomb(targetX, targetY) {
+            const currentTime = Date.now();
+            if (currentTime - lastBombTime >= bombCooldown) {
+                const radius = 10;
+                const angle = Math.atan2(targetY - centerY, targetX - centerX);
+                const speed = projectileSpeed / 2; 
+                const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+                projectiles.push(new Projectile(centerX, centerY, radius, 'gray', velocity, true));
+                lastBombTime = currentTime; updateInfoDisplay();
+            }
+        }
+
+        canvas.addEventListener('mouseup', (e) => { if (e.button === 2) clearInterval(altFireInterval); });
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // --- OYUN DÖNGÜSÜ ---
+        let animationId;
+        function animate() {
+            if (isGameOver) {
+                cancelAnimationFrame(animationId);
+                showGameOverScreen();
+                return;
+            }
+            if (isPaused) return; // Duraklatıldıysa çizme
+
+            if(hitStopTimer > 0) {
+                hitStopTimer--;
+                requestAnimationFrame(animate);
+                return;
+            }
+            
+            animationId = requestAnimationFrame(animate);
+            
+            ctx.save();
+            if (screenShake > 0) {
+                const dx = (Math.random() - 0.5) * screenShake;
+                const dy = (Math.random() - 0.5) * screenShake;
+                ctx.translate(dx, dy);
+                screenShake *= 0.9; 
+                if(screenShake < 0.5) screenShake = 0;
+            }
+
+            ctx.fillStyle = 'rgba(44, 62, 80, 1)'; 
+            ctx.fillRect(0, 0, W, H);
+            
+            ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+            for(let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+            for(let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+
+            ctx.save(); ctx.globalAlpha = 0.1; ctx.font = 'bold 100px sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#FF8C00'; 
+            ctx.fillText('HIZ YAYINLARI', W / 2, H / 2); ctx.restore();
+
+            if (playerHitFlash > 0) {
+                ctx.fillStyle = `rgba(255, 0, 0, ${playerHitFlash * 0.5})`; 
+                ctx.fillRect(0, 0, W, H);
+                playerHitFlash -= 0.03;
+            }
+
+            if (lives === 1) {
+                lowHealthPulse += 0.1;
+                const alpha = (Math.sin(lowHealthPulse) + 1) / 2 * 0.2;
+                ctx.strokeStyle = `rgba(255, 0, 0, ${alpha + 0.2})`;
+                ctx.lineWidth = 50;
+                ctx.strokeRect(0, 0, W, H);
+            }
+
+            drawPlayer();
+            adjustDifficulty();
+            
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const particle = particles[i];
+                if (particle.alpha <= 0) particles.splice(i, 1);
+                else particle.update();
+            }
+
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.update(); ft.draw();
+                if (ft.life <= 0) floatingTexts.splice(i, 1);
+            }
+            
+            for (let i = powerUps.length - 1; i >= 0; i--) {
+                const powerUp = powerUps[i];
+                powerUp.update();
+                if (Math.hypot(centerX - powerUp.x, centerY - powerUp.y) < powerUp.radius + playerRadius) {
+                    Sound.powerup(); 
+                    fireRateMultiplier = 2.0; 
+                    setTimeout(() => { fireRateMultiplier = 1.0; }, 5000); 
+                    floatingTexts.push(new FloatingText("HIZLANDIN!", centerX, centerY - 30, "#00BFFF", 30));
+                    powerUps.splice(i, 1);
+                }
+            }
+            
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const projectile = projectiles[i];
+                projectile.update();
+
+                if (projectile.isBomb && projectile.exploded && projectile.explosionTimer > 60) {
+                    projectiles.splice(i, 1); continue;
+                }
+                if (projectile.isBomb && !projectile.exploded && (projectile.x < 0 || projectile.x > W || projectile.y < 0 || projectile.y > H)) {
+                    projectile.explode(); continue; 
+                }
+                if (!projectile.isBomb && (projectile.x > W || projectile.x < 0 || projectile.y > H || projectile.y < 0)) {
+                    projectiles.splice(i, 1); continue;
+                }
+
+                enemies.forEach((enemy, enemyIndex) => {
+                    const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
+                    if (dist - enemy.radius - projectile.radius < 1) {
+                        if (projectile.isBomb && !projectile.exploded) { projectile.explode(); return; }
+                        else if (projectile.isBomb && projectile.exploded) { return; }
+                        
+                        shotsHit++; updateInfoDisplay();
+                        Sound.hit();
+
+                        for (let k = 0; k < 4; k++) {
+                            particles.push(new Particle(projectile.x, projectile.y, Math.random() * 2, 'cyan', 
+                                { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 10 }, 'spark'));
+                        }
+                        
+                        enemy.x += 3; 
+
+                        const isDead = enemy.takeHit();
+                        if (isDead) {
+                            Sound.explosion();
+                            screenShake = 5; 
+
+                            let pts = 100 * enemy.maxHp; score += pts; 
+                            floatingTexts.push(new FloatingText(`+${pts}`, enemy.x, enemy.y, "#32CD32", 20));
+                            
+                            for(let k=0; k<15; k++) {
+                                particles.push(new Particle(enemy.x, enemy.y, Math.random()*5, enemy.baseColor, {x:(Math.random()-0.5)*8, y:(Math.random()-0.5)*8}));
+                            }
+
+                            if (Math.random() < 0.1) powerUps.push(new PowerUp(enemy.x, enemy.y, 'firerate'));
+                            enemies.splice(enemyIndex, 1);
+                        }
+                        projectiles.splice(i, 1);
+                    }
+                });
+            }
+
+            for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
+                const enemyProj = enemyProjectiles[i];
+                enemyProj.update();
+                if (Math.hypot(centerX - enemyProj.x, centerY - enemyProj.y) < playerRadius + enemyProj.radius) {
+                    if (!isDashing) { // Dash atarken hasar alma
+                        lives--; 
+                        playerHitFlash = 1.0; screenShake = 25; Sound.hit();
+                        updateInfoDisplay();
+                        if (lives <= 0) endGame();
+                    }
+                    enemyProjectiles.splice(i, 1);
+                }
+                if (enemyProj.x > W || enemyProj.x < 0 || enemyProj.y > H || enemyProj.y < 0) enemyProjectiles.splice(i, 1);
+            }
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const enemy = enemies[i];
+                enemy.update();
+                const newProj = enemy.fireAtPlayer(centerX, centerY);
+                if (newProj) enemyProjectiles.push(newProj);
+
+                if (enemy.x < 0) { 
+                    lives--; 
+                    playerHitFlash = 1.0; screenShake = 25; Sound.hit();
+                    updateInfoDisplay();
+                    enemies.splice(i, 1);
+                    if (lives <= 0) endGame();
+                }
+            }
+            
+            ctx.restore(); 
+        }
+        
+        function endGame() {
+            isGameOver = true;
+            if (score > highestScore) {
+                localStorage.setItem('highestScore', score);
+                highestScore = score;
+            }
+        }
+
+        function showGameOverScreen() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = 'white'; ctx.textAlign = 'center';
+            ctx.font = 'bold 60px Arial'; ctx.fillText('OYUN BİTTİ!', W / 2, H / 2 - 80);
+            ctx.font = '30px Arial'; ctx.fillText(`${playerName}, Puanın: ${score}`, W / 2, H / 2 - 20);
+            
+            if (score == highestScore) {
+                ctx.fillStyle = '#ffd700'; ctx.font = 'bold 36px Arial'; ctx.fillText('YENİ REKOR! 🏆', W / 2, H / 2 + 40);
+            } else {
+                ctx.fillStyle = '#aaa'; ctx.font = '24px Arial'; ctx.fillText(`Rekor: ${highestScore}`, W / 2, H / 2 + 40);
+            }
+            
+            const buttonX = W / 2 - 100; const buttonY = H / 2 + 100;
+            ctx.fillStyle = '#007BFF'; ctx.beginPath(); ctx.roundRect(buttonX, buttonY, 200, 50, 10); ctx.fill();
+            ctx.fillStyle = 'white'; ctx.font = 'bold 24px Arial'; ctx.fillText('TEKRAR OYNA', W / 2, buttonY + 33);
+            
+            canvas.addEventListener('click', function restartHandler(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clickX = e.clientX - rect.left; const clickY = e.clientY - rect.top;
+                if (clickX > buttonX && clickX < buttonX + 200 && clickY > buttonY && clickY < buttonY + 50) {
+                    canvas.removeEventListener('click', restartHandler);
+                    gameGuide.style.display = 'block';
+                    
+                    // DÜZELTME: display: block yaparak layout'un bozulmasını önlüyoruz
+                    startScreen.style.display = 'block'; 
+                    
+                    gameUI.style.display = 'none';
+                }
+            });
+        }
+
+        startButton.addEventListener('click', () => {
+            let inputName = playerNameInput.value.trim();
+            if (inputName === '') inputName = 'Anonim Öğrenci';
+            playerName = inputName.charAt(0).toUpperCase() + inputName.slice(1).toLowerCase();
+            gameGuide.style.display = 'none'; startScreen.style.display = 'none'; gameUI.style.display = 'block';
+            initGame();
+        });
+
+    </script>
+</body>
+</html>

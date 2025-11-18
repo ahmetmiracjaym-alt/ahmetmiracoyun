@@ -1,0 +1,110 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    /* Sayfayı tamamen kaplaması için */
+    width: 100%;
+    height: 100%;
+    /* Kaydırma çubuklarını önlemek için */
+    overflow: hidden; 
+    font-family: sans-serif;
+    background-color: #333; /* Arka planı koyu yaparak kenarları gizler */
+}
+
+#gameContainer {
+    /* Ana kapsayıcının da sayfayı tamamen kaplaması gerekir */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+        justify-content: center;
+    
+}
+
+#gameUI {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Başlık ve Canvas arasındaki boşluğu kaldırmak için */
+    justify-content: flex-start;
+}
+
+#gameCanvas {
+    /* Canvas'ı esnek yaparak tüm kalan alanı kaplamasını sağlar */
+    display: block;
+    /* Canvas'ı %100 genişlik ve %100 yükseklikle doldurmaya zorla */
+    width: 100%;
+    height: 100%;
+    /* Canvas'ın kendi sınırları yok, kapsayıcıya yayılmalı */
+    border: none; 
+}
+
+#header {
+    width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1em;
+    z-index: 10; /* Canvas'ın üzerine çıkmasını sağlar */
+}
+
+/* --- GİRİŞ EKRANI (Aynı kalır, sadece pozisyonu tam ekran merkezine ayarlanır) --- */
+#startScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f7f7f7;
+    border: 3px solid #FF8C00; 
+    padding: 30px 50px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+#startScreen h1 {
+    color: #FF8C00;
+    margin-bottom: 10px;
+}
+
+#playerNameInput {
+    padding: 10px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#startButton {
+    background-color: #007BFF; 
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+#startButton:hover {
+    background-color: #0056b3;
+}
+#gameGuide {
+    /* Konumu: header'ın altına ve sola sabitlendi. */
+    position: absolute;
+    top: 60px; /* header'ın yüksekliğinden biraz fazla */
+    left: 10px;
+    /* ... diğer stil ayarları ... */
+    z-index: 90; /* Canvas'ın üzerinde, header'ın altında */
+}
