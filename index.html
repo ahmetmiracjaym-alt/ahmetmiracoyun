@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HIZ YAYINLARI - Savunma Oyunu</title>
+    <title>ASLAN OYUN - Savunma Modu</title>
     <style>
         /* --- CSS TASARIMI --- */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
@@ -39,12 +39,13 @@
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            border-top: 8px solid #FF8C00; 
-            border-bottom: 8px solid #007BFF;
+            /* Marka Renkleri: Kırmızı (Aslan/Ateş) ve Altın */
+            border-top: 8px solid #FF4500; 
+            border-bottom: 8px solid #FFD700;
             max-width: 450px;
             animation: fadeIn 0.5s ease-out;
             cursor: default;
-            display: block; /* Varsayılan olarak blok */
+            display: block; 
         }
 
         @keyframes fadeIn {
@@ -53,7 +54,7 @@
         }
 
         #startScreen h1 {
-            color: #FF8C00;
+            color: #FF4500; /* Kırmızı */
             font-size: 2.2rem;
             margin-bottom: 10px;
             text-transform: uppercase;
@@ -100,17 +101,18 @@
             border: 2px solid #ddd; border-radius: 8px;
             box-sizing: border-box; outline: none; transition: 0.3s;
         }
-        #playerNameInput:focus { border-color: #007BFF; }
+        #playerNameInput:focus { border-color: #FF4500; }
 
         #startButton {
-            background: linear-gradient(135deg, #FF8C00, #FF4500);
-            color: white; border: none; padding: 15px 40px;
+            background: linear-gradient(135deg, #FFD700, #FF4500); /* Altın-Kırmızı */
+            color: #333; /* Koyu yazı */
+            border: none; padding: 15px 40px;
             font-size: 1.1rem; font-weight: bold; border-radius: 50px;
             cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.5);
             width: 100%;
         }
-        #startButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 69, 0, 0.4); }
+        #startButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 69, 0, 0.6); }
 
         /* --- OYUN ARAYÜZÜ (HUD) --- */
         #gameUI {
@@ -132,12 +134,12 @@
             color: white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             display: flex; flex-direction: column; gap: 5px;
-            border-left: 4px solid #007BFF;
+            border-left: 4px solid #FFD700; /* Altın */
         }
 
         #scoreBox {
             align-items: flex-end;
-            border-left: none; border-right: 4px solid #FF8C00;
+            border-left: none; border-right: 4px solid #FF4500; /* Kırmızı */
         }
 
         .hud-label { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
@@ -153,7 +155,7 @@
             width: 100px; height: 6px; background: #333; border-radius: 3px; margin-top: 5px; overflow: hidden;
         }
         #dashBar {
-            width: 100%; height: 100%; background: #00ff00; transition: width 0.1s;
+            width: 100%; height: 100%; background: #FFD700; transition: width 0.1s;
         }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
@@ -164,11 +166,11 @@
         #gameGuide {
             position: absolute; bottom: 20px; left: 20px; width: 240px;
             background: rgba(0, 0, 0, 0.8); padding: 15px;
-            border-radius: 10px; border-left: 4px solid #007BFF;
+            border-radius: 10px; border-left: 4px solid #FFD700;
             z-index: 20; color: white; font-size: 0.85rem;
             pointer-events: none; backdrop-filter: blur(3px);
         }
-        #gameGuide h2 { margin-top: 0; color: #00BFFF; font-size: 1rem; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        #gameGuide h2 { margin-top: 0; color: #FFD700; font-size: 1rem; border-bottom: 1px solid #444; padding-bottom: 5px; }
         .control-pair { display: flex; justify-content: space-between; margin: 6px 0; align-items: center; }
         
         /* Oyun içi stilize tuşlar */
@@ -196,7 +198,7 @@
         @media (max-width: 768px) {
             #gameGuide { display: none !important; }
             #header { padding: 10px; flex-direction: column; gap: 10px; align-items: stretch; }
-            #scoreBox { align-items: flex-start; border-right: none; border-left: 4px solid #FF8C00; }
+            #scoreBox { align-items: flex-start; border-right: none; border-left: 4px solid #FF4500; }
             .hud-box { flex-direction: row; justify-content: space-between; align-items: center; }
         }
     </style>
@@ -207,10 +209,10 @@
         
         <!-- GİRİŞ EKRANI -->
         <div id="startScreen">
-            <h1>HIZ YAYINLARI<br><span style="font-size: 0.6em; color: #007BFF;">SAVUNMA OYUNU</span></h1>
+            <h1>ASLAN OYUN<br><span style="font-size: 0.6em; color: #FFD700;">SAVUNMA MODU</span></h1>
             
             <div class="controls-preview">
-                <p style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #007BFF; font-weight: bold;">NASIL OYNANIR?</p>
+                <p style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #FF4500; font-weight: bold;">NASIL OYNANIR?</p>
                 <p><span class="key-icon">W</span><span class="key-icon">A</span><span class="key-icon">S</span><span class="key-icon">D</span> Hareket Et</p>
                 <p><span class="key-icon">SOL TIK</span> Ateş Et</p>
                 <p><span class="key-icon">SAĞ TIK</span> Seri Atış Modu</p>
@@ -219,10 +221,10 @@
             </div>
 
             <div class="input-group">
-                <label for="playerNameInput">Öğrenci Adı:</label>
+                <label for="playerNameInput">Savaşçı Adı:</label>
                 <input type="text" id="playerNameInput" placeholder="Adınızı girin..." maxlength="15" autocomplete="off">
             </div>
-            <button id="startButton">OYUNA BAŞLA</button>
+            <button id="startButton">SAVAŞA BAŞLA</button>
         </div>
 
         <!-- DURAKLATMA EKRANI -->
@@ -333,8 +335,7 @@
         var isGameOver = false;
         var isPaused = false; // Duraklatma durumu
         var level = 1; 
-        var playerHitFlash = 0; 
-        var playerName = 'ÖĞRENCİ'; 
+        var playerName = 'ASLAN'; // Varsayılan isim
         var levelUpFlash = 0; 
         var screenShake = 0; 
 
@@ -358,16 +359,18 @@
         var currentMouseX = W / 2;
         var currentMouseY = H / 2;
         var difficultyText = 'KOLAY';
+        // Rekor kaydı localStorage'da tutulur.
         var highestScore = localStorage.getItem('highestScore') || 0; 
         
         var recoilX = 0; var recoilY = 0;
         var hitStopTimer = 0; 
         var lowHealthPulse = 0;
 
-        const playerBookImage = new Image();
-        playerBookImage.src = 'hiz_yay_kitap.png'; 
-        let playerBookImageLoaded = false; 
-        playerBookImage.onload = () => { playerBookImageLoaded = true; };
+        // YENİ KARAKTER GÖRSELİ (Jon Snow)
+        const playerCharacterImage = new Image();
+        playerCharacterImage.src = 'jon_snow.png'; // Lütfen bu dosyayı HTML ile aynı klasöre koyun.
+        let playerCharacterImageLoaded = false; 
+        playerCharacterImage.onload = () => { playerCharacterImageLoaded = true; };
 
         const bombImage = new Image();
         bombImage.src = 'bomb.png'; 
@@ -404,7 +407,7 @@
             const dashElapsed = Date.now() - lastDashTime;
             const dashPercent = Math.min(100, (dashElapsed / dashCooldown) * 100);
             dashBar.style.width = `${dashPercent}%`;
-            dashBar.style.backgroundColor = dashPercent >= 100 ? '#00ff00' : '#FFA500';
+            dashBar.style.backgroundColor = dashPercent >= 100 ? '#FFD700' : '#FF4500'; /* Altın/Kırmızı */
         }
 
         // --- OYUN BAŞLANGIÇ ---
@@ -773,25 +776,35 @@
             ctx.globalAlpha = 1.0; 
             ctx.translate(drawX, drawY);
             const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
-            ctx.rotate(angle + Math.PI / 2);
+            ctx.rotate(angle); // Yan duran görsel için
 
-            if (playerBookImageLoaded) {
-                const size = playerRadius * 2.5; 
-                ctx.drawImage(playerBookImage, -size / 2, -size / 2, size, size);
+            if (playerCharacterImageLoaded) {
+                // Görsel yüklendiyse kullan
+                const size = playerRadius * 3.5; 
+                ctx.drawImage(playerCharacterImage, -size / 2, -size / 2, size, size);
             } else {
-                ctx.fillStyle = '#007BFF';
-                ctx.fillRect(-20, -30, 40, 60);
+                // Fallback Karakter (Basit Jon Snow Figürü)
+                ctx.fillStyle = '#495057'; // Koyu Gri Zırh
+                ctx.fillRect(-15, -30, 30, 60);
+                
+                ctx.fillStyle = '#343a40'; // Siyah Kürk Yaka
+                ctx.beginPath();
+                ctx.moveTo(-20, -30); ctx.lineTo(20, -30);
+                ctx.lineTo(20, -10); ctx.lineTo(0, -5); ctx.lineTo(-20, -10);
+                ctx.fill();
+
+                ctx.fillStyle = '#999'; // Kılıç (Namluyu temsil ediyor)
+                ctx.fillRect(15, -5, 30, 10);
+                
                 ctx.fillStyle = 'white';
-                ctx.fillRect(-15, -25, 30, 50);
-                ctx.fillStyle = '#333';
-                ctx.fillRect(-5, -40, 10, 20);
-                ctx.fillStyle = 'white';
-                ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.fillText('KİTAP', 0, 0);
+                ctx.font = '12px Arial'; ctx.textAlign = 'center'; 
+                // Marka adı ASLAN OYUN'a göre güncellendi
+                ctx.fillText(playerName.substring(0, 5), 0, 5); // Kısıtlı alana sığması için ilk 5 harf
             }
             
             if(recoilX > 1 || recoilY > 1) {
                 ctx.fillStyle = `rgba(255, 255, 0, ${Math.random()})`;
-                ctx.beginPath(); ctx.arc(0, -45, Math.random()*10 + 5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(40, 0, Math.random()*10 + 5, 0, Math.PI*2); ctx.fill();
             }
 
             ctx.restore(); 
@@ -814,7 +827,8 @@
             screenShake = 2; 
 
             const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
-            projectiles.push(new Projectile(centerX, centerY, radius, '#00BFFF', velocity)); 
+            // Mermi Rengi ASLAN OYUN (Altın)
+            projectiles.push(new Projectile(centerX, centerY, radius, '#FFD700', velocity)); 
             shotsFired++; updateInfoDisplay();
         });
 
@@ -834,7 +848,8 @@
                     screenShake = 1;
 
                     const velocity = { x: Math.cos(angle + spread) * speed, y: Math.sin(angle + spread) * speed };
-                    projectiles.push(new Projectile(centerX, centerY, radius, '#FFC107', velocity)); 
+                    // Seri Atış Rengi ASLAN OYUN (Kırmızı)
+                    projectiles.push(new Projectile(centerX, centerY, radius, '#FF4500', velocity)); 
                     shotsFired++; updateInfoDisplay();
                 }, altFireRate); 
             }
@@ -894,8 +909,9 @@
             for(let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
             for(let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
 
+            // ASLAN OYUNU LOGOSU -> ASLAN OYUN olarak güncellendi
             ctx.save(); ctx.globalAlpha = 0.1; ctx.font = 'bold 100px sans-serif';
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#FF8C00'; 
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#FFD700'; 
             ctx.fillText('ASLAN OYUN', W / 2, H / 2); ctx.restore();
 
             if (playerHitFlash > 0) {
@@ -934,7 +950,7 @@
                     Sound.powerup(); 
                     fireRateMultiplier = 2.0; 
                     setTimeout(() => { fireRateMultiplier = 1.0; }, 5000); 
-                    floatingTexts.push(new FloatingText("HIZLANDIN!", centerX, centerY - 30, "#00BFFF", 30));
+                    floatingTexts.push(new FloatingText("HIZLANDIN!", centerX, centerY - 30, "#FFD700", 30));
                     powerUps.splice(i, 1);
                 }
             }
@@ -963,7 +979,7 @@
                         Sound.hit();
 
                         for (let k = 0; k < 4; k++) {
-                            particles.push(new Particle(projectile.x, projectile.y, Math.random() * 2, 'cyan', 
+                            particles.push(new Particle(projectile.x, projectile.y, Math.random() * 2, '#FFD700', 
                                 { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 10 }, 'spark'));
                         }
                         
@@ -975,7 +991,7 @@
                             screenShake = 5; 
 
                             let pts = 100 * enemy.maxHp; score += pts; 
-                            floatingTexts.push(new FloatingText(`+${pts}`, enemy.x, enemy.y, "#32CD32", 20));
+                            floatingTexts.push(new FloatingText(`+${pts}`, enemy.x, enemy.y, "#FFD700", 20));
                             
                             for(let k=0; k<15; k++) {
                                 particles.push(new Particle(enemy.x, enemy.y, Math.random()*5, enemy.baseColor, {x:(Math.random()-0.5)*8, y:(Math.random()-0.5)*8}));
@@ -1034,18 +1050,18 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
             ctx.fillRect(0, 0, W, H);
             ctx.fillStyle = 'white'; ctx.textAlign = 'center';
-            ctx.font = 'bold 60px Arial'; ctx.fillText('OYUN BİTTİ!', W / 2, H / 2 - 80);
+            ctx.font = 'bold 60px Arial'; ctx.fillText('SAVAŞ SONA ERDİ!', W / 2, H / 2 - 80);
             ctx.font = '30px Arial'; ctx.fillText(`${playerName}, Puanın: ${score}`, W / 2, H / 2 - 20);
             
             if (score == highestScore) {
-                ctx.fillStyle = '#ffd700'; ctx.font = 'bold 36px Arial'; ctx.fillText('YENİ REKOR! 🏆', W / 2, H / 2 + 40);
+                ctx.fillStyle = '#FFD700'; ctx.font = 'bold 36px Arial'; ctx.fillText('YENİ REKOR! 🏆', W / 2, H / 2 + 40);
             } else {
                 ctx.fillStyle = '#aaa'; ctx.font = '24px Arial'; ctx.fillText(`Rekor: ${highestScore}`, W / 2, H / 2 + 40);
             }
             
             const buttonX = W / 2 - 100; const buttonY = H / 2 + 100;
-            ctx.fillStyle = '#007BFF'; ctx.beginPath(); ctx.roundRect(buttonX, buttonY, 200, 50, 10); ctx.fill();
-            ctx.fillStyle = 'white'; ctx.font = 'bold 24px Arial'; ctx.fillText('TEKRAR OYNA', W / 2, buttonY + 33);
+            ctx.fillStyle = '#FF4500'; ctx.beginPath(); ctx.roundRect(buttonX, buttonY, 200, 50, 10); ctx.fill();
+            ctx.fillStyle = 'white'; ctx.font = 'bold 24px Arial'; ctx.fillText('TEKRAR DENE', W / 2, buttonY + 33);
             
             canvas.addEventListener('click', function restartHandler(e) {
                 const rect = canvas.getBoundingClientRect();
@@ -1064,7 +1080,7 @@
 
         startButton.addEventListener('click', () => {
             let inputName = playerNameInput.value.trim();
-            if (inputName === '') inputName = 'Anonim Öğrenci';
+            if (inputName === '') inputName = 'Anonim Aslan';
             playerName = inputName.charAt(0).toUpperCase() + inputName.slice(1).toLowerCase();
             gameGuide.style.display = 'none'; startScreen.style.display = 'none'; gameUI.style.display = 'block';
             initGame();
