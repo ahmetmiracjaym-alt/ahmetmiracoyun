@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASLAN OYUN - Mobil Dokunmatik Kontroller</title>
+    <title>ASLAN OYUN</title>
     <style>
         /* --- CSS TASARIMI --- */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
@@ -19,30 +19,133 @@
             justify-content: center; align-items: center;
         }
 
-        /* --- GİRİŞ EKRANI (Aynı Kaldı) --- */
+        /* --- GİRİŞ EKRANI --- */
         #startScreen {
             position: absolute; z-index: 100; background: rgba(255, 255, 255, 0.98);
-            padding: 40px; border-radius: 20px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); border-top: 8px solid #FF4500; 
-            border-bottom: 8px solid #FFD700; max-width: 450px; animation: fadeIn 0.5s ease-out;
+            padding: 15px; /* Padding çok daha agresif küçültüldü */
+            border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border-top: 5px solid #FF4500; /* Çerçeve kalınlığı azaltıldı */
+            border-bottom: 5px solid #FFD700; /* Çerçeve kalınlığı azaltıldı */
+            max-width: 95%; 
+            width: 450px; 
+            animation: fadeIn 0.5s ease-out;
             cursor: default; display: block; 
+            /* Mobil scroll'u etkinleştirildi, sadece bu ekranda */
+            max-height: 98vh;
+            overflow-y: auto;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        #startScreen h1 { color: #FF4500; font-size: 2.2rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
-        #startScreen p { color: #555; margin-bottom: 20px; line-height: 1.5; }
-        .controls-preview { background: #f0f4f8; padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: left; font-size: 0.9rem; color: #333; border: 1px solid #e1e8ed; }
-        .controls-preview p { margin: 8px 0; display: flex; align-items: center; }
-        .key-icon { display: inline-block; background: #fff; border: 1px solid #ccc; border-bottom: 3px solid #bbb; border-radius: 4px; padding: 2px 6px; margin-right: 5px; font-family: monospace; font-weight: bold; color: #555; font-size: 0.8rem; box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
-        .input-group { margin-bottom: 20px; text-align: left; }
+        #startScreen h1 { color: #FF4500; font-size: 1.8rem; /* Başlık küçültüldü */
+             margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
+        #startScreen p { color: #555; margin-bottom: 15px; line-height: 1.4; } /* Paragraf boşluğu azaltıldı */
+        
+        /* Kontroller Listesi için agresif optimizasyon */
+        .controls-preview { 
+            background: #f0f4ff; 
+            padding: 10px; /* Padding azaltıldı */
+            border-radius: 10px; 
+            margin-bottom: 15px; /* Boşluk azaltıldı */
+            text-align: left; 
+            font-size: 0.85rem; /* Font boyutu küçültüldü */
+            color: #333; 
+            border: 1px solid #e1e8ed; 
+        }
+        .controls-preview p { margin: 5px 0; display: flex; align-items: center; } /* Satır boşluğu azaltıldı */
+        .controls-preview p:last-child { margin-bottom: 0; }
+        .key-icon { display: inline-block; background: #fff; border: 1px solid #ccc; border-bottom: 3px solid #bbb; border-radius: 4px; padding: 2px 4px; margin-right: 4px; font-family: monospace; font-weight: bold; color: #555; font-size: 0.75rem; box-shadow: 0 1px 0 rgba(0,0,0,0.1); }
+        
+        .input-group { margin-bottom: 15px; text-align: left; } /* Boşluk azaltıldı */
         .input-group label { display: block; font-weight: bold; color: #333; margin-bottom: 5px; }
-        #playerNameInput { width: 100%; padding: 12px; font-size: 1.1rem; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        #playerNameInput { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
         #playerNameInput:focus { border-color: #FF4500; }
-        #startButton { background: linear-gradient(135deg, #FFD700, #FF4500); color: #333; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 5px 15px rgba(255, 69, 0, 0.5); width: 100%; }
+        #startButton { background: linear-gradient(135deg, #FFD700, #FF4500); color: #333; border: none; padding: 12px 30px; font-size: 1rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(255, 69, 0, 0.5); width: 100%; }
         #startButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 69, 0, 0.6); }
 
+        /* --- KARAKTER SEÇİM STİL DÜZELTMESİ (GRID YAPISI) --- */
+        .char-container { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; /* 2 eşit sütun */
+            gap: 10px; 
+            margin-top: 10px; /* Boşluk azaltıldı */
+            margin-bottom: 15px; /* Boşluk azaltıldı */
+        }
+        .char-option {
+            display: flex; flex-direction: column; align-items: center;
+            background: #f0f4f8; padding: 8px; /* Padding azaltıldı */
+            border: 3px solid transparent; cursor: pointer; 
+            transition: all 0.2s;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+        .char-option:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+        .char-option input[type="radio"] {
+            display: none;
+        }
+        .char-option input[type="radio"]:checked + .char-label {
+            border-color: #FF4500;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.5); 
+            transform: scale(1.02);
+            z-index: 1;
+        }
+        .char-label {
+            padding: 5px; /* Padding daha da azaltıldı */
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            font-weight: bold;
+            color: #333;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .char-name { 
+            font-size: 0.9rem; /* Daha küçük font */
+            font-weight: 900; 
+            margin-bottom: 2px; 
+            text-transform: uppercase;
+        }
+        .char-desc {
+            font-size: 0.65rem; /* En küçük font */
+            color: #777;
+            margin-top: 4px; /* Boşluk azaltıldı */
+            padding-top: 4px;
+            border-top: 1px dashed #eee;
+            min-height: 35px; /* Min yükseklik azaltıldı */
+            line-height: 1.2; 
+        }
+        
+        /* Mobil Cihazlar için Ekstra Kompaktlık */
+        @media (max-width: 550px) {
+            #startScreen {
+                padding: 15px;
+            }
+            .char-container {
+                grid-template-columns: 1fr; /* Mobil'de tek sütun daha iyi */
+                gap: 10px;
+            }
+            .char-option {
+                min-width: 100%;
+            }
+            .char-desc {
+                min-height: unset; /* Yükseklik kısıtlaması kaldırıldı */
+                min-height: 30px; /* Yeni minimum yükseklik */
+                font-size: 0.7rem;
+            }
+            .controls-preview {
+                font-size: 0.8rem;
+            }
+        }
         /* --- OYUN ARAYÜZÜ (HUD) --- */
         #gameUI { width: 100%; height: 100%; display: none; flex-direction: column; }
         #header {
@@ -80,10 +183,12 @@
             border: 2px solid #333; position: relative; overflow: hidden;
         }
 
+        /* Düzeltme: İkonları sadeleştir ve font boyutunu küçült */
         .ability-icon {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 1.5rem; color: #00bfff; 
+            font-size: 1.5rem; /* Boyut artırıldı (İçerik sadeleştiği için) */
+            font-weight: bold;
             font-family: 'Black Ops One', cursive;
         }
 
@@ -136,6 +241,9 @@
             z-index: 50;
             display: none; /* Masaüstünde gizli */
             align-items: flex-end; /* En alta hizala */
+            justify-content: space-between; /* İki tarafı ayır */
+            padding: 10px; /* Kenarlardan boşluk bırak */
+            box-sizing: border-box;
         }
 
         .touch-area { 
@@ -148,7 +256,7 @@
             width: 150px;
             height: 150px;
             position: relative;
-            left: 10px;
+            /* left: 10px; Bu artık gerekmiyor, touchControls flex kullanıyor */
         }
         #joystickBase {
             width: 120px;
@@ -179,23 +287,23 @@
             grid-template-areas: 
                 ". q e"
                 "bomb dash fire";
-            gap: 10px;
-            margin-right: 10px;
-            padding-bottom: 10px;
-            width: 250px; 
+            gap: 8px; /* Boşluk azaltıldı */
+            /* margin-right: 10px; Bu artık gerekmiyor */
+            padding-bottom: 5px; /* Alt boşluk azaltıldı */
+            width: 200px; /* Genişlik küçültüldü */
             max-width: 50%;
         }
 
         .ability-button {
             width: 100%;
             height: 100%;
-            min-width: 60px;
-            min-height: 60px;
+            min-width: 55px; /* Min boyut azaltıldı */
+            min-height: 55px; /* Min boyut azaltıldı */
             border-radius: 50%;
             border: 3px solid #FFD700;
             background: rgba(0, 0, 0, 0.7);
             color: white;
-            font-size: 1rem;
+            font-size: 0.9rem; /* Font küçültüldü */
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             transition: background 0.1s;
@@ -216,15 +324,15 @@
             grid-area: dash; 
             background: rgba(0, 191, 255, 0.4); 
             border-color: #00FFFF;
-            font-size: 0.9rem;
+            font-size: 0.8rem; /* Font daha da küçültüldü */
             line-height: 1.1;
         }
         .fire-button {
             grid-area: fire;
-            width: 80px; 
-            height: 80px;
+            width: 70px; /* Ateş butonu boyutu */
+            height: 70px;
             border-color: #FF4500;
-            font-size: 2rem;
+            font-size: 1.8rem;
             box-shadow: 0 0 20px rgba(255, 69, 0, 0.7);
         }
 
@@ -233,20 +341,35 @@
             #gameGuide { display: none !important; }
             #touchControls { 
                 display: flex; 
-                justify-content: space-between;
-                width: 100%;
-                height: 100%;
-                box-sizing: border-box;
-                padding: 10px; 
+                /* justify-content: space-between ve padding 10px zaten yukarıda tanımlı */
             }
         }
         
         @media (max-width: 480px) {
-            #leftPad { width: 120px; height: 120px; }
-            #joystickBase { width: 100px; height: 100px; }
-            #joystickHandle { width: 40px; height: 40px; }
-            .ability-button { min-width: 50px; min-height: 50px; font-size: 0.8rem; }
-            .fire-button { width: 70px; height: 70px; font-size: 1.5rem; }
+            #leftPad { width: 100px; height: 100px; } /* Joystick alanı küçüldü */
+            #joystickBase { width: 80px; height: 80px; } /* Base küçüldü */
+            #joystickHandle { width: 35px; height: 35px; } /* Handle küçüldü */
+
+            #rightButtons {
+                width: 170px; /* Buton alanı küçültüldü */
+                gap: 5px;
+            }
+            .ability-button { min-width: 45px; min-height: 45px; font-size: 0.7rem; }
+            .fire-button { width: 60px; height: 60px; font-size: 1.5rem; }
+            
+            #startScreen {
+                padding: 10px; /* Başlangıç ekranı padding'i çok dar ekranlar için küçültüldü */
+                max-height: 98vh; /* Yeni kısıtlama */
+            }
+            #startScreen h1 {
+                font-size: 1.6rem;
+            }
+            .controls-preview p {
+                font-size: 0.75rem; /* Kontrol fontu küçültüldü */
+            }
+            .key-icon {
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>
@@ -258,15 +381,38 @@
         <div id="startScreen">
             <h1>ASLAN OYUN<br><span style="font-size: 0.6em; color: #FFD700;">SAVUNMA MODU</span></h1>
             
+            <!-- YENİ KARAKTER SEÇİMİ -->
+            <div class="input-group" id="characterSelection">
+                <label style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #FF4500; font-weight: bold;">SAVAŞÇI SEÇİMİ</label>
+                <div class="char-container">
+                    <label for="charElectric" class="char-option">
+                        <input type="radio" id="charElectric" name="character" value="electric" checked>
+                        <span class="char-label" style="border-color: #00bfff; color: #00bfff;">
+                            <span class="char-name">DRONE <span style="font-size: 1.5rem;">⚡</span></span>
+                            <span style="color: #3498db; font-weight: normal; font-size: 0.8rem;">(Hassas Atış & Kontrol)</span>
+                            <span class="char-desc">Yüksek hareket kabiliyeti. Ultisi Yıldırım ile geniş alana hızlı hasar verir.</span>
+                        </span>
+                    </label>
+                    <label for="charFire" class="char-option">
+                        <input type="radio" id="charFire" name="character" value="fire">
+                        <span class="char-label" style="border-color: #FF4500; color: #FF4500;">
+                            <span class="char-name">SAVAŞÇI <span style="font-size: 1.5rem;">🔥</span></span>
+                            <span style="color: #e74c3c; font-weight: normal; font-size: 0.8rem;">(Yakın Savunma & Alan Etkisi)</span>
+                            <span class="char-desc">Daha yüksek hasar potansiyeli. Ultisi Meteor Yağmuru ile ekranı temizler.</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+
             <div class="controls-preview">
-                <p style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #FF4500; font-weight: bold;">NASIL OYNANIR?</p>
+                <p style="margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #FF4500; font-weight: bold;">NASIL OYNANIR?</p>
                 <p><span class="key-icon">W</span><span class="key-icon">A</span><span class="key-icon">S</span><span class="key-icon">D</span> Hareket Et / <span style="font-weight: bold; color: #3498db;">JOYSTICK</span></p>
                 <p><span class="key-icon">SOL TIK</span> Ateş Et / <span style="font-weight: bold; color: #FF4500;">ATEŞ BUTONU</span></p>
                 <p><span class="key-icon">SAĞ TIK</span> Seri Atış Modu</p>
                 <p><span class="key-icon">SPACE</span> Hızlı Atıl (Dash) ⚡</p>
+                <p><span class="key-icon">Q</span> <span id="qAbilityName">SPINJITZU</span></p>
+                <p><span class="key-icon">E</span> <span id="eAbilityName">ULTİ</span></p>
                 <p><span class="key-icon">ORTA TIK</span> Bomba Bırak 💣</p>
-                <p><span class="key-icon">Q</span> Spinjitzu 🌀 (Yenilmezlik ve Yakın Dövüş)</p>
-                <p><span class="key-icon">E</span> Yıldırım Ultisi 🌩️ (Ekran Temizleyici)</p>
             </div>
 
             <div class="input-group">
@@ -287,7 +433,7 @@
             <div id="header">
                 <!-- Sol Panel -->
                 <div class="hud-box" id="infoBox">
-                    <div id="healthLine"><span class="hud-label">CAN</span> <span id="healthVal">❤️❤️❤️</span></div>
+                    <div id="healthLine"><span class="hud-label">CAN</span> <span id="healthVal">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</span></div>
                     <div id="bombLine"><span class="hud-label">BOMBA</span> <span id="bombVal">💣 HAZIR</span></div>
                     <div style="margin-top: 5px;">
                         <span class="hud-label">ENERJİ (DASH)</span>
@@ -299,14 +445,16 @@
                 <div class="hud-box" id="centerHud">
                     <span class="hud-label">Yetenekler</span>
                     <div id="abilityContainer">
-                        <!-- Yetenek Q: Spinjitzu -->
+                        <!-- Yetenek Q -->
                         <div class="ability-hud" id="abilityQ">
-                            <div class="ability-icon" style="color: #00bfff;">🌀</div>
+                            <!-- İkon metni yerine sade emoji ve harf kullanıldı -->
+                            <div class="ability-icon" id="abilityQIcon" style="color: #00bfff;">🌀 Q</div>
                             <div class="ability-cooldown" id="cooldownQ"></div>
                         </div>
-                        <!-- Yetenek E: Yıldırım Ultisi -->
+                        <!-- Yetenek E -->
                         <div class="ability-hud" id="abilityE">
-                            <div class="ability-icon" style="color: #FFD700;">🌩️</div>
+                            <!-- İkon metni yerine sade emoji ve harf kullanıldı -->
+                            <div class="ability-icon" id="abilityEIcon" style="color: #FFD700;">☄️ E</div>
                             <div class="ability-cooldown" id="cooldownE"></div>
                         </div>
                     </div>
@@ -327,8 +475,8 @@
                 <div class="control-pair"><span>Ateş</span><span class="keys">SOL TIK</span></div>
                 <div class="control-pair"><span>Atılma (Dash)</span><span class="keys">SPACE</span></div>
                 <div class="control-pair"><span>Bomba</span><span class="keys">ORTA / B</span></div>
-                <div class="control-pair"><span>Spinjitzu</span><span class="keys">Q</span></div>
-                <div class="control-pair"><span>Ulti</span><span class="keys">E</span></div>
+                <div class="control-pair"><span id="guideQName">Spinjitzu</span><span class="keys">Q</span></div>
+                <div class="control-pair"><span id="guideEName">Ulti</span><span class="keys">E</span></div>
                 <div class="control-pair"><span>Duraklat</span><span class="keys">P</span></div>
             </div>
             
@@ -344,8 +492,8 @@
                 </div>
                 <!-- SAĞ BUTONLAR (AKSİYON) -->
                 <div id="rightButtons" class="touch-area">
-                    <button id="touchButtonQ" class="ability-button" ontouchend="this.blur()">🌀 Q</button>
-                    <button id="touchButtonE" class="ability-button" ontouchend="this.blur()">🌩️ E</button>
+                    <button id="touchButtonQ" class="ability-button" ontouchend="this.blur()"><span id="touchQIcon">🌀 Q</span></button>
+                    <button id="touchButtonE" class="ability-button" ontouchend="this.blur()"><span id="touchEIcon">☄️ E</span></button>
                     <button id="touchButtonBomb" class="ability-button" ontouchend="this.blur()">💣 B</button>
                     <button id="touchButtonDash" class="ability-button dash-button" ontouchend="this.blur()">⚡ DASH</button>
                     <button id="touchButtonFire" class="ability-button fire-button" ontouchend="this.blur()">🔥</button>
@@ -379,11 +527,39 @@
             bombBeep: () => Sound.playTone(440, 'sine', 0.2, 0.05, 300), 
             shieldHit: () => Sound.playTone(200, 'square', 0.05, 0.02),
             spinHit: () => Sound.playTone(1000, 'sawtooth', 0.05, 0.1, 500), 
-            ultimate: () => { 
-                Sound.playTone(1200, 'sine', 0.8, 0.3, 2400); 
-                Sound.playTone(600, 'square', 0.8, 0.2, 1200); 
+            ultimate: (type) => { 
+                if (type === 'fire') { // Ateş Ultisi Sesi (Meteor Yağmuru için güncellendi)
+                    Sound.playTone(200, 'sawtooth', 1.5, 0.4, 30); // Derin başlangıç
+                    Sound.playTone(80, 'square', 1.8, 0.3, 20); // Alçak titreşim
+                } else { // Elektrik Ultisi Sesi
+                    Sound.playTone(1200, 'sine', 0.8, 0.3, 2400); 
+                    Sound.playTone(600, 'square', 0.8, 0.2, 1200); 
+                }
+            },
+            meteorImpact: () => {
+                Sound.playTone(120, 'triangle', 0.2, 0.2, 50); // Çarpma sesi
+                Sound.playTone(60, 'square', 0.3, 0.1, 30); // Düşük frekanslı titreşim
             }
         };
+
+        // --- KARAKTER TANIMLARI ---
+        const Characters = {
+            ELECTRIC: {
+                name: 'Drone',
+                color: '#5dade2', // Mavi
+                projectileColor: '#00FFFF', // Turkuaz Mavi
+                abilityQName: 'SPINJITZU 🌀',
+                abilityEName: 'YILDIRIM ULTİSİ 🌩️',
+            },
+            FIRE: {
+                name: 'Savaşçı',
+                color: '#e74c3c', // Koyu Kırmızı (Gövde)
+                projectileColor: '#FFD700', // Altın-Sarı (Ateş)
+                abilityQName: 'ATEŞ GİRDABI 🔥',
+                abilityEName: 'METEOR YAĞMURU ☄️',
+            }
+        };
+        var selectedCharacter = Characters.ELECTRIC; // Başlangıçta Elektrik seçili
 
         // --- HTML Elementleri ---
         const canvas = document.getElementById('gameCanvas');
@@ -400,6 +576,14 @@
         const cooldownE = document.getElementById('cooldownE'); 
         const abilityQ = document.getElementById('abilityQ'); 
         const abilityE = document.getElementById('abilityE'); 
+
+        const abilityQIcon = document.getElementById('abilityQIcon'); 
+        const abilityEIcon = document.getElementById('abilityEIcon'); 
+        // KESİK KALAN DEĞİŞKEN TANIMLARI BURADA TAMAMLANDI
+        const guideQName = document.getElementById('guideQName');
+        const guideEName = document.getElementById('guideEName');
+        const touchQIcon = document.getElementById('touchQIcon');
+        const touchEIcon = document.getElementById('touchEIcon');
 
         const startScreen = document.getElementById('startScreen');
         const gameUI = document.getElementById('gameUI');
@@ -437,14 +621,15 @@
         var score = 0;
         var coins = 0; 
         var projectiles = []; 
-        var enemies = [];     
-        var particles = [];   
-        var powerUps = [];    
+        var enemies = []; 
+        var particles = []; 
+        var powerUps = []; 
         var enemyProjectiles = []; 
         var floatingTexts = []; 
         var lightningBolts = []; 
+        var meteors = []; // YENİ: Meteorları tutmak için dizi
 
-        var lives = 3; 
+        var lives = 10; // Can sayısı
         var isGameOver = false;
         var isPaused = false;
         var level = 1; 
@@ -477,8 +662,12 @@
         var lastUseTimeQ = 0;
         var lastUseTimeE = 0;
         var isSpinjitzuActive = false; 
-        var spinjitzuDuration = 1000; 
         var isInvincible = false; 
+        var spinjitzuDuration = 1000; 
+        
+        // Yenilmezlik (Invincibility) durumu ve süresi
+        var isInvincibleFromHit = false;
+        const invincibilityDuration = 1000; // 1 saniye yenilmezlik
 
         var currentMouseX = W / 2;
         var currentMouseY = H / 2;
@@ -495,12 +684,6 @@
         const basePlayerSpeed = 5;
         let keys = {};
         
-        // Karakter resmi kaldırıldı
-        // const playerCharacterImage = new Image();
-        // playerCharacterImage.src = 'jon_snow.png'; 
-        // let playerCharacterImageLoaded = false; 
-        // playerCharacterImage.onload = () => { playerCharacterImageLoaded = true; };
-
         const bombImage = new Image();
         bombImage.src = 'bomb.png'; 
         let bombImageLoaded = false;
@@ -522,7 +705,8 @@
             screenShake = 2; 
 
             const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
-            projectiles.push(new Projectile(centerX, centerY, radius, '#FFD700', velocity)); 
+            // Karakterin mermi rengini kullan
+            projectiles.push(new Projectile(centerX, centerY, radius, selectedCharacter.projectileColor, velocity)); 
             updateInfoDisplay();
         }
 
@@ -531,7 +715,7 @@
             let hearts = "";
             for(let i=0; i<lives; i++) hearts += "❤️";
             healthVal.innerHTML = hearts;
-            if(lives <= 1) healthVal.className = "hud-value danger-text";
+            if(lives <= 3) healthVal.className = "hud-value danger-text"; // Can azaldığında kırmızıya dönme eşiği 3'e çekildi
             else healthVal.className = "hud-value";
 
             levelVal.innerText = `${level} (${difficultyText})`;
@@ -566,12 +750,16 @@
 
         // --- OYUN BAŞLANGIÇ ---
         function initGame() {
-            lives = 3; score = 0; coins = 0; isGameOver = false; isPaused = false;
+            lives = 10; // Başlangıç canı 10 olarak ayarlandı
+            score = 0; coins = 0; isGameOver = false; isPaused = false;
             projectiles = []; enemies = []; particles = []; powerUps = []; enemyProjectiles = []; floatingTexts = [];
             lightningBolts = [];
+            meteors = []; // YENİ RESET
             playerHitFlash = 0; levelUpFlash = 0; screenShake = 0; ultimateFlash = 0; lastBombTime = 0; lastDashTime = 0;
             dashVelocityX = 0; dashVelocityY = 0;
-            isSpinjitzuActive = false; isInvincible = false; playerSpeedMultiplier = 1; fireRateMultiplier = 1;
+            isSpinjitzuActive = false; isInvincible = false; 
+            isInvincibleFromHit = false; // Yenilmezlik durumu resetlendi
+            playerSpeedMultiplier = 1; fireRateMultiplier = 1;
             lastUseTimeQ = 0; lastUseTimeE = 0;
             
             const nameLength = playerName.length;
@@ -582,6 +770,25 @@
             level = 1; 
             centerX = W / 4; centerY = H / 2; 
             
+            // KARAKTERE ÖZEL HUD GÜNCELLEMESİ
+            const qAbility = selectedCharacter.abilityQName;
+            const eAbility = selectedCharacter.abilityEName; // Hata düzeltildi: `characterEName` yerine `abilityEName`
+
+            // HUD ve Rehber metinlerini güncelle
+            // Sadece Emoji ve Q/E harfi kalacak şekilde basitleştirildi.
+            abilityQIcon.innerHTML = `🌀 Q`;
+            abilityQIcon.style.color = selectedCharacter.color;
+            abilityEIcon.innerHTML = `☄️ E`; // YENİ: Sadeleştirilmiş ikon
+            abilityEIcon.style.color = selectedCharacter.projectileColor;
+            
+            guideQName.innerText = qAbility.split(' ')[0];
+            guideEName.innerText = eAbility.split(' ')[0];
+            document.getElementById('qAbilityName').innerText = qAbility.split(' ')[0];
+            document.getElementById('eAbilityName').innerText = eAbility.split(' ')[0];
+            touchQIcon.innerHTML = `🌀 Q`; // Touch ikonları da sadeleştirildi
+            touchEIcon.innerHTML = `☄️ E`; // Touch ikonları da sadeleştirildi
+
+
             updateInfoDisplay();
             
             if(audioCtx.state === 'suspended') audioCtx.resume();
@@ -589,7 +796,54 @@
             animate();
             spawnEnemies();
         }
+        
+        // --- YENİ ARKA PLAN ÇİZİM FONKSİYONU ---
+        function drawBackground() {
+            let baseColor;
+            const initialHue = 210; // Başlangıç Mavi tonu
+            const hueShift = (level - 1) * 2; // Seviye başına 2 derece kayma (Daha yumuşak)
+            const currentHue = (initialHue + hueShift) % 360;
 
+            // Arkaplan rengi, seviye ilerledikçe yumuşakça kayan koyu bir renk tonu olacak.
+            // Sadece Canvas'ın arka planını çizmek için daha belirgin ve basit bir renk kullanalım.
+            baseColor = `hsl(${currentHue}, 40%, 15%)`; // Koyu, hafif doygunlukta
+
+            // 1. Temel Arkaplan Rengi (Göz yormayan, sabit renk)
+            ctx.fillStyle = baseColor; 
+            ctx.fillRect(0, 0, W, H);
+            
+            // 2. Izgara Çizimi (Sabit, Yumuşak Izgara)
+            ctx.strokeStyle = `hsl(${currentHue}, 25%, 35%)`; // Temel tona yakın, daha açık ve düşük opaklıkta çizgi
+            ctx.lineWidth = 1;
+            const gridSpacing = 40;
+            
+            // Yatay çizgiler (Hareketsiz)
+            for(let y = 0; y < H; y += gridSpacing) { 
+                ctx.beginPath(); 
+                ctx.moveTo(0, y); 
+                ctx.lineTo(W, y); 
+                ctx.stroke(); 
+            }
+            
+            // Dikey çizgiler (Hareketsiz)
+            for(let x = 0; x < W; x += gridSpacing) { 
+                ctx.beginPath(); 
+                ctx.moveTo(x,0); 
+                ctx.lineTo(x,H); 
+                ctx.stroke(); 
+            }
+            
+            // 3. Seviye Adı Gösterimi (Opaklık ayarlı)
+            ctx.save(); 
+            ctx.globalAlpha = 0.1; 
+            ctx.font = 'bold 100px sans-serif';
+            ctx.textAlign = 'center'; 
+            ctx.textBaseline = 'middle'; 
+            ctx.fillStyle = '#FFD700'; 
+            ctx.fillText('SEVİYE ' + level, W / 2, H / 2); 
+            ctx.restore();
+        }
+        
         // --- YENİ ŞİMŞEK ÇİZGİSİ SINIFI ---
         class LightningBolt {
             constructor(startX, startY, endX, endY, color, thickness) {
@@ -650,12 +904,93 @@
             }
         }
         
+        // --- YENİ METEOR SINIFI (SADECE ATEŞ ULTI İÇİN) ---
+        class Meteor {
+            constructor(x, targetX, targetY, damage) {
+                this.x = x;
+                this.y = -50; // Start off-screen top
+                this.radius = 30;
+                this.color = '#ff4500';
+                this.targetX = targetX;
+                this.targetY = targetY;
+                // Meteorun düşüş hızını ve açısını hesapla (50 frame'de hedefe ulaşması için)
+                const frames = 50; 
+                this.velocity = { x: (targetX - x) / frames, y: (this.targetY - this.y) / frames };
+                this.damage = damage;
+                this.hitGround = false;
+                this.life = 60; // Max 1 saniye yaşam süresi (vuruş sonrası)
+            }
+            draw() {
+                ctx.save();
+                
+                if (this.hitGround) {
+                    // Darbe sonrası sönme
+                    this.radius -= 0.5;
+                    ctx.globalAlpha = this.life / 60;
+                } else {
+                    ctx.globalAlpha = 1.0;
+                }
+                
+                ctx.translate(this.x, this.y);
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = this.color;
+                
+                // Ateş topunu çiz
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                
+                // Kuyruk efekti
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(-this.velocity.x * 5, -this.velocity.y * 5);
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = this.radius / 2;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+            update() {
+                this.draw();
+                if (!this.hitGround) {
+                    this.x += this.velocity.x;
+                    this.y += this.velocity.y;
+                    
+                    // Yere çarpma kontrolü
+                    if (this.y >= this.targetY) {
+                        this.explode();
+                    }
+                } else {
+                    this.life--;
+                }
+            }
+            
+            explode() {
+                if (this.hitGround) return;
+                
+                Sound.meteorImpact();
+                screenShake = 15;
+                this.hitGround = true;
+                
+                // Darbe parçacıkları oluştur
+                for(let k=0; k<50; k++) {
+                    particles.push(new Particle(this.x, this.y, Math.random()*10 + 2, '#FF4500', {x:(Math.random()-0.5)*15, y:(Math.random()-0.5)*15}));
+                }
+                
+                // Ulti artık tüm düşmanları yok ettiği için, buradaki düşman döngüsü kaldırıldı.
+                
+                floatingTexts.push(new FloatingText("ULTİ DARBESİ!", this.x, this.y, this.color, 40));
+                updateInfoDisplay();
+            }
+        }
+        
         // --- Diğer Sınıflar (Projectile, Enemy, Particle, PowerUp) ---
         
         class FloatingText { constructor(text, x, y, color, size = 20) { this.text = text; this.x = x; this.y = y; this.color = color; this.size = size; this.life = 1.0; this.velocityY = -2; } update() { this.y += this.velocityY; this.life -= 0.02; } draw() { ctx.save(); ctx.globalAlpha = Math.max(0, this.life); ctx.fillStyle = this.color; ctx.font = `bold ${this.size}px Arial`; ctx.shadowColor = 'black'; ctx.shadowBlur = 4; ctx.textAlign = 'center'; ctx.fillText(this.text, this.x, this.y); ctx.restore(); } }
         class Projectile { constructor(x, y, radius, color, velocity, isBomb = false) { this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity; this.isBomb = isBomb; this.baseRadius = radius; this.explosionRadius = 250; this.exploded = false; this.explosionTimer = 0; this.trail = []; } draw() { if (this.isBomb) { if (this.exploded) { ctx.save(); ctx.globalAlpha = 1 - (this.explosionTimer / 60); ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255, 165, 0, 0.7)'; ctx.fill(); ctx.strokeStyle = 'rgba(255, 255, 0, 0.9)'; ctx.lineWidth = 5; ctx.stroke(); ctx.restore(); } else { if (bombImageLoaded) { const size = this.radius * 2; ctx.drawImage(bombImage, this.x - this.radius, this.y - this.radius, size, size); } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'gray'; ctx.fill(); ctx.strokeStyle = 'black'; ctx.stroke(); ctx.fillStyle = 'white'; ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.fillText('💣', this.x, this.y + 4); } } } else { ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = this.radius; ctx.beginPath(); if (this.trail.length > 0) { ctx.moveTo(this.trail[0].x, this.trail[0].y); for(let t of this.trail) { ctx.lineTo(t.x, t.y); } } ctx.strokeStyle = this.color; ctx.globalAlpha = 0.5; ctx.stroke(); ctx.restore(); ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = this.color; ctx.stroke(); ctx.restore(); } } update() { if (!this.isBomb) { this.trail.push({x: this.x, y: this.y}); if (this.trail.length > 8) this.trail.shift(); } this.draw(); if (this.isBomb && this.exploded) { this.explosionTimer++; this.radius += 5; } else { this.x += this.velocity.x; this.y += this.velocity.y; } } explode() { if (this.exploded) return; this.exploded = true; this.radius = this.baseRadius; this.explosionTimer = 0; Sound.explosion(); screenShake = 30; hitStopTimer = 4; let enemiesHit = []; enemies.forEach(enemy => { const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y); if (dist - enemy.radius < this.explosionRadius) enemiesHit.push(enemy); }); enemiesHit.forEach(enemy => { for (let i = 0; i < 10; i++) particles.push(new Particle(enemy.x, enemy.y, Math.random() * 4, 'gold', { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 })); score += 100 * enemy.maxHp; coins += 5 * enemy.maxHp; floatingTexts.push(new FloatingText("GÜM!", enemy.x, enemy.y, "#FF4500", 40)); }); enemies = enemies.filter(enemy => { const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y); return dist - enemy.radius >= this.explosionRadius; }); updateInfoDisplay(); } }
         class EnemyProjectile { constructor(x, y, radius, velocity) { this.x = x; this.y = y; this.radius = radius; this.color = '#FF4500'; this.velocity = velocity; } draw() { ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = 'red'; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill(); ctx.strokeStyle = 'red'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); } update() { this.draw(); this.x += this.velocity.x; this.y += this.velocity.y; } }
-        class Enemy { constructor(x, y, radius, color, velocity, type = 'basic') { this.x = x; this.y = y; this.radius = radius; this.baseColor = color; this.color = color; this.velocity = velocity; this.type = type; let healthMultiplier = 1; if (type === 'shield') healthMultiplier = 2; if (type === 'bomber') healthMultiplier = 0.5; this.hp = Math.floor(radius / 10) * healthMultiplier + level; this.maxHp = this.hp; this.isHit = false; this.lastShotTime = Date.now(); this.fireRate = 1500 + (this.radius * 30); this.fuseTimer = 0; this.maxFuse = 90; } takeHit() { if (this.type === 'shield' && Math.random() < 0.5) { Sound.shieldHit(); floatingTexts.push(new FloatingText("BLOKE", this.x, this.y - this.radius, "#00bfff", 15)); return false; } this.hp--; this.isHit = true; setTimeout(() => { this.isHit = false; }, 50); return this.hp <= 0; } draw() { ctx.save(); ctx.translate(this.x, this.y); if (this.type === 'bomber') { const flash = Math.abs(Math.sin(this.fuseTimer * 0.5)) * 0.5 + 0.5; ctx.globalAlpha = flash; ctx.beginPath(); ctx.arc(0, 0, this.radius * 1.5, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 69, 0, 0.3)`; ctx.fill(); ctx.globalAlpha = 1.0; ctx.font = `bold ${this.radius}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💣', 0, 0); } else if (this.type === 'shield') { ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fillStyle = '#1e8449'; ctx.fill(); ctx.strokeStyle = '#0e6262'; ctx.lineWidth = 2; ctx.stroke(); ctx.strokeStyle = '#ccd1d1'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, 0, this.radius + 3, -Math.PI/2 - 0.5, -Math.PI/2 + 0.5); ctx.stroke(); ctx.font = `bold ${this.radius * 0.6}px sans-serif`; ctx.fillStyle = 'white'; ctx.fillText('S', 0, 0); } else { const jiggle = Math.sin(Date.now() / 60) * 2; ctx.beginPath(); ctx.ellipse(0, 0, this.radius + jiggle, this.radius - jiggle, 0, 0, Math.PI * 2); ctx.fillStyle = this.baseColor; ctx.fill(); ctx.strokeStyle = '#212121'; ctx.lineWidth = 2; ctx.stroke(); ctx.font = `bold ${this.radius * 0.8}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('X', 0, 0); } if (this.isHit) { ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; ctx.fill(); } if (this.maxHp > 1 && this.type !== 'bomber') { const w = this.radius * 1.5; ctx.fillStyle = 'red'; ctx.fillRect(-w/2, -this.radius - 9, w * (this.hp / this.maxHp), 4); } ctx.restore(); } fireAtPlayer(playerX, playerY) { if (this.type === 'bomber') return null; const now = Date.now(); if (now - this.lastShotTime < this.fireRate) return null; this.lastShotTime = now; const speed = 4.0; const angle = Math.atan2(playerY - this.y, playerX - this.x); return new EnemyProjectile(this.x, this.y, 6, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed }); } update(playerX, playerY) { this.draw(); if (this.type === 'bomber') { const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); if (distToPlayer < 100) { this.fuseTimer++; Sound.bombBeep(); this.velocity.x = 0; this.velocity.y = 0; if (this.fuseTimer >= this.maxFuse) { this.explodeBomber(playerX, playerY); return; } } const angle = Math.atan2(playerY - this.y, playerX - this.x); this.x += Math.cos(angle) * (1.5 * enemySpeedMultiplier); this.y += Math.sin(angle) * (1.5 * enemySpeedMultiplier); } else { this.x += this.velocity.x; this.y += this.velocity.y; } } explodeBomber(playerX, playerY) { const explosionRadius = 150; const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); Sound.explosion(); screenShake = 10; enemyProjectiles = enemyProjectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); projectiles = projectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); if (distToPlayer < playerRadius) { lives--; playerHitFlash = 1.0; screenShake = 30; Sound.hit(); updateInfoDisplay(); floatingTexts.push(new FloatingText("BOOM!", playerX, playerY, "red", 50)); } for(let k=0; k<20; k++) { particles.push(new Particle(this.x, this.y, Math.random()*7, 'orange', {x:(Math.random()-0.5)*12, y:(Math.random()-0.5)*12})); } this.hp = 0; } }
+        class Enemy { constructor(x, y, radius, color, velocity, type = 'basic') { this.x = x; this.y = y; this.radius = radius; this.baseColor = color; this.color = color; this.velocity = velocity; this.type = type; let healthMultiplier = 1; if (type === 'shield') healthMultiplier = 2; if (type === 'bomber') healthMultiplier = 0.5; this.hp = Math.floor(radius / 10) * healthMultiplier + level; this.maxHp = this.hp; this.isHit = false; this.lastShotTime = Date.now(); this.fireRate = 1500 + (this.radius * 30); this.fuseTimer = 0; this.maxFuse = 90; } takeHit() { if (this.type === 'shield' && Math.random() < 0.5) { Sound.shieldHit(); floatingTexts.push(new FloatingText("BLOKE", this.x, this.y - this.radius, "#00bfff", 15)); return false; } this.hp--; this.isHit = true; setTimeout(() => { this.isHit = false; }, 50); return this.hp <= 0; } draw() { ctx.save(); ctx.translate(this.x, this.y); if (this.type === 'bomber') { const flash = Math.abs(Math.sin(this.fuseTimer * 0.5)) * 0.5 + 0.5; ctx.globalAlpha = flash; ctx.beginPath(); ctx.arc(0, 0, this.radius * 1.5, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 69, 0, 0.3)`; ctx.fill(); ctx.globalAlpha = 1.0; ctx.font = `bold ${this.radius}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💣', 0, 0); } else if (this.type === 'shield') { ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fillStyle = '#1e8449'; ctx.fill(); ctx.strokeStyle = '#0e6262'; ctx.lineWidth = 2; ctx.stroke(); ctx.strokeStyle = '#ccd1d1'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, 0, this.radius + 3, -Math.PI/2 - 0.5, -Math.PI/2 + 0.5); ctx.stroke(); ctx.font = `bold ${this.radius * 0.6}px sans-serif`; ctx.fillStyle = 'white'; ctx.fillText('S', 0, 0); } else { const jiggle = Math.sin(Date.now() / 60) * 2; ctx.beginPath(); ctx.ellipse(0, 0, this.radius + jiggle, this.radius - jiggle, 0, 0, Math.PI * 2); ctx.fillStyle = this.baseColor; ctx.fill(); ctx.strokeStyle = '#212121'; ctx.lineWidth = 2; ctx.stroke(); ctx.font = `bold ${this.radius * 0.8}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('X', 0, 0); } if (this.isHit) { ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; ctx.fill(); } if (this.maxHp > 1 && this.type !== 'bomber') { const w = this.radius * 1.5; ctx.fillStyle = 'red'; ctx.fillRect(-w/2, -this.radius - 9, w * (this.hp / this.maxHp), 4); } ctx.restore(); } fireAtPlayer(playerX, playerY) { if (this.type === 'bomber') return null; const now = Date.now(); if (now - this.lastShotTime < this.fireRate) return null; this.lastShotTime = now; const speed = 4.0; const angle = Math.atan2(playerY - this.y, playerX - this.x); return new EnemyProjectile(this.x, this.y, 6, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed }); } update(playerX, playerY) { this.draw(); if (this.type === 'bomber') { const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); if (distToPlayer < 100) { this.fuseTimer++; Sound.bombBeep(); this.velocity.x = 0; this.velocity.y = 0; if (this.fuseTimer >= this.maxFuse) { this.explodeBomber(playerX, playerY); return; } } const angle = Math.atan2(playerY - this.y, playerX - this.x); this.x += Math.cos(angle) * (1.5 * enemySpeedMultiplier); this.y += Math.sin(angle) * (1.5 * enemySpeedMultiplier); } else { this.x += this.velocity.x; this.y += this.velocity.y; } } explodeBomber(playerX, playerY) { const explosionRadius = 150; const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); Sound.explosion(); screenShake = 10; enemyProjectiles = enemyProjectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); projectiles = projectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); if (distToPlayer < playerRadius) { lives--; playerHitFlash = 1.0; screenShake = 30; hitStopTimer = 15; Sound.hit(); updateInfoDisplay(); floatingTexts.push(new FloatingText("BOOM!", playerX, playerY, "red", 50)); } for(let k=0; k<20; k++) { particles.push(new Particle(this.x, this.y, Math.random()*7, 'orange', {x:(Math.random()-0.5)*12, y:(Math.random()-0.5)*12})); } this.hp = 0; } }
         class Particle { 
             constructor(x, y, radius, color, velocity, type = 'circle') {
                 this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity;
@@ -690,12 +1025,12 @@
         
         function useAbilityQ() {
             const now = Date.now();
-            if (now - lastUseTimeQ < cooldownTimeQ || isGameOver || isPaused || isSpinjitzuActive) return;
+            if (now - lastUseTimeQ < cooldownTimeQ || isGameOver || isSpinjitzuActive) return;
 
             lastUseTimeQ = now;
             isSpinjitzuActive = true;
             isInvincible = true;
-            floatingTexts.push(new FloatingText("SPINJITZU!", centerX, centerY - 60, "#00bfff", 40));
+            floatingTexts.push(new FloatingText(selectedCharacter.abilityQName + '!', centerX, centerY - 60, selectedCharacter.color, 40));
             Sound.spinHit(); 
             screenShake = 5;
 
@@ -709,39 +1044,79 @@
 
         function useAbilityE() {
             const now = Date.now();
-            if (now - lastUseTimeE < cooldownTimeE || isGameOver || isPaused) return;
+            if (now - lastUseTimeE < cooldownTimeE || isGameOver) return;
 
             lastUseTimeE = now;
-            Sound.ultimate();
             ultimateFlash = 1.0; 
             screenShake = 40;
-            floatingTexts.push(new FloatingText("YILDIRIM ULTIMATE!", W / 2, H / 2 - 100, "yellow", 60));
+            const ultColor = selectedCharacter.projectileColor;
+
+            floatingTexts.push(new FloatingText(selectedCharacter.abilityEName + '!', W / 2, H / 2 - 100, ultColor, 60));
 
             let enemiesKilled = 0;
             const ultimateDamage = 100 + (level * 50);
 
-            enemies = enemies.filter(enemy => {
-                // Şimşek görseli için bolt oluştur
-                lightningBolts.push(new LightningBolt(
-                    Math.random() * W, 
-                    0, 
-                    enemy.x, 
-                    enemy.y, 
-                    '#00FFFF', 
-                    5
-                ));
+            if (selectedCharacter === Characters.FIRE) {
+                // YENİ: METEOR YAĞMURU MANTIĞI (Tüm düşmanları anında yok et)
+                Sound.ultimate('fire');
+                const numMeteors = 10 + Math.floor(level / 2);
+                const meteorDamage = 50 + (level * 30);
                 
-                enemy.hp -= ultimateDamage; 
-
-                if (enemy.hp <= 0) {
-                    let pts = 100 * enemy.maxHp; score += pts; 
-                    coins += 10 * enemy.maxHp; 
-                    enemiesKilled++;
-                    return false; 
+                // Ulti patlamasını görsel olarak göstermek için meteorları oluştur
+                for (let i = 0; i < numMeteors; i++) {
+                    const targetX = Math.random() * W;
+                    const targetY = Math.random() * (H * 0.8) + H * 0.1;
+                    const startX = targetX + (Math.random() * 400 - 200); 
+                    
+                    // Meteorlar oluşturulurken, ulti sesi ve ekran sarsıntısı zaten tetiklenir.
+                    meteors.push(new Meteor(startX, targetX, targetY, meteorDamage));
                 }
-                floatingTexts.push(new FloatingText(`-${ultimateDamage.toFixed(0)}`, enemy.x, enemy.y, "orange", 25));
-                return true; 
-            });
+
+                // ANINDA TEMİZLEME MANTIĞI
+                if (enemies.length > 0) {
+                    enemiesKilled = enemies.length;
+                    
+                    // Puan ve Para kazanma
+                    enemies.forEach(enemy => {
+                         score += 100 * enemy.maxHp; 
+                         coins += 10 * enemy.maxHp;
+                    });
+                    
+                    // Parçacık efekti için merkezde büyük bir patlama oluştur.
+                    for(let k=0; k<200; k++) {
+                        particles.push(new Particle(W / 2, H / 2, Math.random()*15 + 5, '#FF4500', {x:(Math.random()-0.5)*30, y:(Math.random()-0.5)*30}));
+                    }
+
+                    enemies = []; // Tüm düşmanları temizle
+                }
+
+            } else {
+                // YILDIRIM ULTİSİ MANTIĞI (ELECTRIC)
+                Sound.ultimate('electric');
+                
+                enemies = enemies.filter(enemy => {
+                    // Şimşek görseli için bolt oluştur
+                    lightningBolts.push(new LightningBolt(
+                        Math.random() * W, 
+                        0, 
+                        enemy.x, 
+                        enemy.y, 
+                        ultColor, 
+                        5
+                    ));
+                    
+                    enemy.hp -= ultimateDamage; 
+
+                    if (enemy.hp <= 0) {
+                        let pts = 100 * enemy.maxHp; score += pts; 
+                        coins += 10 * enemy.maxHp; 
+                        enemiesKilled++;
+                        return false; 
+                    }
+                    floatingTexts.push(new FloatingText(`-${ultimateDamage.toFixed(0)}`, enemy.x, enemy.y, "orange", 25));
+                    return true; 
+                });
+            }
             
             if (enemiesKilled > 0) floatingTexts.push(new FloatingText(`${enemiesKilled} DÜŞMAN TEMİZLENDİ!`, W / 2, H / 2 + 30, "#FFD700", 30));
             updateInfoDisplay();
@@ -807,12 +1182,22 @@
         // --- OYUNCU KONTROLLERİ ---
         window.addEventListener('keydown', (e) => {
             keys[e.key.toLowerCase()] = true;
-            if (e.key.toLowerCase() === 'p' || e.key === 'escape') togglePause();
-            if (e.key === ' ' && !isPaused && !isGameOver) performDash();
-            if (e.key.toLowerCase() === 'b' && !isPaused && !isGameOver) triggerBomb(currentMouseX, currentMouseY); 
             
-            if (e.key.toLowerCase() === 'q') useAbilityQ(); 
-            if (e.key.toLowerCase() === 'e') useAbilityE(); 
+            // Oyun Duraklatma/Başlatma her zaman çalışır
+            if (e.key.toLowerCase() === 'p' || e.key === 'escape') {
+                togglePause();
+                return;
+            }
+
+            // Oyun kontrolleri sadece oyun aktifse (başlangıç ekranı kapalıysa VE duraklatılmamışsa) çalışır
+            const isGameActive = startScreen.style.display === 'none' && !isPaused && !isGameOver;
+
+            if (isGameActive) {
+                if (e.key === ' ') performDash();
+                if (e.key.toLowerCase() === 'b') triggerBomb(currentMouseX, currentMouseY); 
+                if (e.key.toLowerCase() === 'q') useAbilityQ(); 
+                if (e.key.toLowerCase() === 'e') useAbilityE(); 
+            }
         });
         window.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
 
@@ -850,7 +1235,7 @@
                 dashVelocityY = dashDirY * dashStrength;
                 
                 screenShake = 5;
-                floatingTexts.push(new FloatingText("WOOSH!", centerX, centerY - 40, "#00FFFF", 20));
+                floatingTexts.push(new FloatingText("WOOSH!", centerX, centerY - 40, selectedCharacter.projectileColor, 20));
 
                 setTimeout(() => { isDashing = false; }, 150);
             }
@@ -898,21 +1283,28 @@
             const drawY = centerY - recoilY;
             
             const spinRadius = playerRadius * 2.5; 
+            const charColor = selectedCharacter.color;
+            const projColor = selectedCharacter.projectileColor;
+            const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX); // Atış açısı
 
-            // Spinjitzu Görsel Efekti (Mavi Girdap)
+            // Hasar alındığında karakterin yanıp sönmesi
+            const globalAlpha = (isInvincibleFromHit || isInvincible) ? Math.abs(Math.sin(Date.now() / 50)) * 0.8 + 0.2 : 1.0; 
+            ctx.globalAlpha = globalAlpha;
+
+            // Spinjitzu Görsel Efekti (Karaktere özel)
             if (isSpinjitzuActive) {
                 const spinAngle = Date.now() / 20; 
                 
-                // Mavi enerji izi (Girdap)
+                // Enerji izi (Girdap/Ateş)
                 ctx.save();
                 ctx.globalAlpha = 0.8;
-                ctx.fillStyle = '#00bfff';
+                ctx.fillStyle = charColor; 
                 ctx.beginPath(); ctx.arc(drawX, drawY, spinRadius, 0, Math.PI * 2); ctx.fill();
 
-                // Dönen şimşek halkası
-                ctx.strokeStyle = 'white';
-                ctx.lineWidth = 10;
-                ctx.shadowColor = '#00FFFF';
+                // Dönen halka
+                ctx.strokeStyle = projColor;
+                ctx.lineWidth = selectedCharacter === Characters.FIRE ? 8 : 10;
+                ctx.shadowColor = projColor;
                 ctx.shadowBlur = 15;
                 
                 ctx.translate(drawX, drawY);
@@ -928,78 +1320,130 @@
                 ctx.restore();
                 
                 for(let i=0; i<3; i++) {
-                    particles.push(new Particle(drawX, drawY, Math.random()*3, '#00FFFF', {x:(Math.random()-0.5)*15, y:(Math.random()-0.5)*15}));
+                    particles.push(new Particle(drawX, drawY, Math.random()*3, projColor, {x:(Math.random()-0.5)*15, y:(Math.random()-0.5)*15}));
                 }
                 
             } else {
-                // Karakterin yeni soyut çizimi (Drone/Mekanik tarzı - "Jay" esintisi)
+                // Karakter Çizimi
                 
-                ctx.globalAlpha = 1.0; 
                 ctx.translate(drawX, drawY);
-                const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
                 ctx.rotate(angle); 
                 
-                // Ana gövde (Daha kalın bir merkez)
-                ctx.fillStyle = '#34495e'; // Koyu gri-mavi
-                ctx.beginPath();
-                ctx.ellipse(0, 0, playerRadius * 1.2, playerRadius * 0.8, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#2c3e50';
-                ctx.lineWidth = 3;
-                ctx.stroke();
+                if (selectedCharacter === Characters.FIRE) {
+                    // --- ATEŞ KARAKTERİ (SAVAŞÇI/NİNJA STİLİ) ---
+                    
+                    // Kanatlar/Bıçaklar (4 köşeli keskin yapı)
+                    ctx.fillStyle = projColor; // Altın/Sarı
+                    ctx.shadowColor = '#FF4500';
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    for (let i = 0; i < 4; i++) {
+                        const angleBlade = i * Math.PI / 2;
+                        const outerR = playerRadius * 2.0;
+                        const innerR = playerRadius * 0.8;
+                        
+                        // İçten dışa doğru sivri uçlar
+                        ctx.moveTo(Math.cos(angleBlade) * innerR, Math.sin(angleBlade) * innerR);
+                        ctx.lineTo(Math.cos(angleBlade + 0.1) * outerR, Math.sin(angleBlade + 0.1) * outerR);
+                        ctx.lineTo(Math.cos(angleBlade - 0.1) * outerR, Math.sin(angleBlade - 0.1) * outerR);
+                        ctx.lineTo(Math.cos(angleBlade) * innerR, Math.sin(angleBlade) * innerR);
+                    }
+                    ctx.fill();
+                    ctx.shadowBlur = 0; // Gölgeyi sıfırla
 
-                // Kanatlar/İticiler (Hafif dışa dönük)
-                ctx.fillStyle = '#7f8c8d'; // Açık gri metalik
-                ctx.strokeStyle = '#2c3e50';
-                ctx.lineWidth = 2;
+                    // Ana gövde diski
+                    ctx.fillStyle = charColor; 
+                    ctx.beginPath();
+                    ctx.arc(0, 0, playerRadius * 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
 
-                // Sol kanat
-                ctx.beginPath();
-                ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.5);
-                ctx.lineTo(-playerRadius * 2.5, -playerRadius * 1.2);
-                ctx.lineTo(-playerRadius * 2.2, -playerRadius * 0.8);
-                ctx.lineTo(-playerRadius * 0.8, 0);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
+                    // Merkez (Odak noktası)
+                    ctx.fillStyle = '#FF4500'; // Kırmızı merkez
+                    ctx.beginPath();
+                    ctx.arc(0, 0, playerRadius * 0.4, 0, Math.PI * 2);
+                    ctx.fill();
 
-                // Sağ kanat
-                ctx.beginPath();
-                ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.5);
-                ctx.lineTo(-playerRadius * 2.5, playerRadius * 1.2);
-                ctx.lineTo(-playerRadius * 2.2, playerRadius * 0.8);
-                ctx.lineTo(-playerRadius * 0.8, 0);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
+                    // Ateş İtici Efekti (Arka)
+                    if (keys['w'] || keys['s'] || keys['a'] || keys['d'] || isDashing) {
+                        const alpha = isDashing ? 1.0 : 0.6;
+                        ctx.fillStyle = `rgba(255, 100, 0, ${alpha})`;
+                        ctx.beginPath();
+                        ctx.moveTo(-playerRadius * 1.5, 0);
+                        ctx.lineTo(-playerRadius * 2.5, -playerRadius * 0.5);
+                        ctx.lineTo(-playerRadius * 2.5, playerRadius * 0.5);
+                        ctx.closePath();
+                        ctx.fill();
+                        for(let i=0; i<2; i++) particles.push(new Particle(drawX - Math.cos(angle) * playerRadius * 1.5, drawY - Math.sin(angle) * playerRadius * 1.5, Math.random()*3 + 1, '#FF4500', {x:(Math.random())* -10, y:(Math.random()-0.5)*5}, 'spark'));
+                    }
 
-                // Ön ışık / Hedefleme sensörü (Sarı/Altın)
-                ctx.fillStyle = '#FFD700'; // Sarı
-                ctx.beginPath();
-                ctx.arc(playerRadius * 1.1, 0, playerRadius * 0.3, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.shadowColor = '#f39c12';
-                ctx.shadowBlur = 5;
+                } else {
+                    // --- ELEKTRİK KARAKTERİ (DRONE STİLİ) ---
+                    
+                    // Ana gövde (Daha kalın, daha parlak)
+                    ctx.fillStyle = '#5dade2'; // Açık mavi
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, playerRadius * 1.2, playerRadius * 0.8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#34495e';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // Kanatlar/İticiler (Daha ince ve keskin)
+                    ctx.fillStyle = '#ecf0f1'; // Beyaz metalik
+                    ctx.strokeStyle = '#34495e';
+                    ctx.lineWidth = 1;
+
+                    // Sol kanat
+                    ctx.beginPath();
+                    ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.5);
+                    ctx.lineTo(-playerRadius * 2.0, -playerRadius * 1.0);
+                    ctx.lineTo(-playerRadius * 1.8, -playerRadius * 0.6);
+                    ctx.lineTo(-playerRadius * 0.8, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Sağ kanat
+                    ctx.beginPath();
+                    ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.5);
+                    ctx.lineTo(-playerRadius * 2.0, playerRadius * 1.0);
+                    ctx.lineTo(-playerRadius * 1.8, playerRadius * 0.6);
+                    ctx.lineTo(-playerRadius * 0.8, 0);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Ön ışık / Hedefleme sensörü (Parlak Mavi)
+                    ctx.fillStyle = '#00FFFF'; // Turkuaz
+                    ctx.beginPath();
+                    ctx.arc(playerRadius * 1.1, 0, playerRadius * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowColor = '#00FFFF';
+                    ctx.shadowBlur = 10;
+                    
+                    // Vurgu çizgileri
+                    ctx.strokeStyle = '#3498db'; 
+                    ctx.lineWidth = 2;
+                    ctx.shadowBlur = 0; 
+
+                    ctx.beginPath();
+                    ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.4);
+                    ctx.lineTo(playerRadius * 0.8, -playerRadius * 0.2);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.4);
+                    ctx.lineTo(playerRadius * 0.8, playerRadius * 0.2);
+                    ctx.stroke();
+                }
                 
-                // Jay'in elektrik mavisi vurgu çizgileri
-                ctx.strokeStyle = '#3498db'; // Mavi
-                ctx.lineWidth = 2;
-                ctx.shadowBlur = 0; // Gölgeyi sıfırla
-
-                ctx.beginPath();
-                ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.4);
-                ctx.lineTo(playerRadius * 0.8, -playerRadius * 0.2);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.4);
-                ctx.lineTo(playerRadius * 0.8, playerRadius * 0.2);
-                ctx.stroke();
-                
-                // Dash efekti
+                // Genel Dash Efekti
                 if (isDashing) {
                     ctx.globalAlpha = 0.5;
-                    ctx.fillStyle = '#00FFFF'; // Turkuaz mavisi
+                    ctx.fillStyle = projColor; // Karakterin mermi rengini kullan
                     ctx.beginPath(); ctx.arc(0, 0, playerRadius + 15, 0, Math.PI * 2); ctx.fill();
                 }
 
@@ -1027,6 +1471,7 @@
             canvas.addEventListener('click', singleShot);
             
             canvas.addEventListener('mousedown', (e) => {
+                if (startScreen.style.display !== 'none') return; // Sadece oyun aktifse çalışsın
                 if (e.button === 2 && !isGameOver && !isPaused) { 
                     e.preventDefault();
                     if(altFireInterval) clearInterval(altFireInterval); 
@@ -1131,6 +1576,8 @@
             }
 
             // --- BUTON MANTIĞI ---
+            // Bu butonlar, isGameActive kontrolü olmaksızın sadece click ile tetiklendiği için sorun oluşturmaz.
+            // Ancak, yetenek fonksiyonları içinde isPaused/isGameOver kontrolü zaten vardır.
             touchButtonQ.addEventListener('click', useAbilityQ);
             touchButtonE.addEventListener('click', useAbilityE);
             touchButtonDash.addEventListener('click', performDash);
@@ -1192,23 +1639,16 @@
                 if(screenShake < 0.5) screenShake = 0;
             }
 
-            ctx.fillStyle = 'rgba(44, 62, 80, 1)'; 
-            ctx.fillRect(0, 0, W, H);
-            
-            ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
-            for(let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-            for(let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+            // YENİ ARKA PLAN ÇAĞRISI
+            drawBackground();
 
-            // Yıldırım Ultisi Flash Efekti
+            // Ulti Flash Efekti
             if (ultimateFlash > 0) {
-                ctx.fillStyle = `rgba(255, 255, 255, ${ultimateFlash})`;
+                const flashColor = selectedCharacter === Characters.FIRE ? 'rgba(255, 165, 0, ' : 'rgba(255, 255, 255, ';
+                ctx.fillStyle = flashColor + `${ultimateFlash})`;
                 ctx.fillRect(0, 0, W, H);
                 ultimateFlash -= 0.08; 
             }
-
-            ctx.save(); ctx.globalAlpha = 0.1; ctx.font = 'bold 100px sans-serif';
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#FFD700'; 
-            ctx.fillText('ASLAN OYUN', W / 2, H / 2); ctx.restore();
 
             if (playerHitFlash > 0) {
                 ctx.fillStyle = `rgba(255, 0, 0, ${playerHitFlash * 0.5})`; 
@@ -1216,7 +1656,8 @@
                 playerHitFlash -= 0.03;
             }
 
-            if (lives === 1) {
+            // Can 3 veya altındayken titreşim
+            if (lives <= 3) {
                 lowHealthPulse += 0.1;
                 const alpha = (Math.sin(lowHealthPulse) + 1) / 2 * 0.2;
                 ctx.strokeStyle = `rgba(255, 0, 0, ${alpha + 0.2})`;
@@ -1227,7 +1668,7 @@
             drawPlayer();
             adjustDifficulty();
             
-            // Şimşek Çizgilerini Çiz
+            // Şimşek Çizgilerini Çiz (ELECTRIC Ulti)
             for (let i = lightningBolts.length - 1; i >= 0; i--) {
                 const bolt = lightningBolts[i];
                 bolt.update();
@@ -1235,7 +1676,7 @@
             }
 
             // Tüm nesneleri güncelleme döngüsü
-            [particles, floatingTexts, powerUps, projectiles, enemyProjectiles].forEach(arr => {
+            [particles, floatingTexts, powerUps, projectiles, enemyProjectiles, meteors].forEach(arr => {
                 for (let i = arr.length - 1; i >= 0; i--) {
                     const obj = arr[i];
                     obj.update();
@@ -1243,9 +1684,15 @@
                     if (arr === particles && obj.alpha <= 0) arr.splice(i, 1);
                     if (arr === floatingTexts && obj.life <= 0) arr.splice(i, 1);
                     if (arr === projectiles && obj.isBomb && obj.exploded && obj.explosionTimer > 60) arr.splice(i, 1);
+                    
+                    // Bombanın harita sınırlarına çarpma kontrolü (eski mantık)
                     if (arr === projectiles && obj.isBomb && !obj.exploded && (obj.x < 0 || obj.x > W || obj.y < 0 || obj.y > H)) { obj.explode(); }
+                    
                     if (arr === projectiles && !obj.isBomb && (obj.x > W || obj.x < 0 || obj.y > H || obj.y < 0)) arr.splice(i, 1);
                     
+                    // Meteorların temizlenmesi (FIRE Ulti)
+                    if (arr === meteors && obj.hitGround && obj.life <= 0) arr.splice(i, 1);
+
                     if (arr === powerUps && Math.hypot(centerX - obj.x, centerY - obj.y) < obj.radius + playerRadius) {
                         Sound.powerup(); 
                         fireRateMultiplier = 2.0; 
@@ -1254,19 +1701,33 @@
                         arr.splice(i, 1);
                     }
                     
-                    // Mermi-Düşman Çarpışması
+                    // DÜŞMAN BOMBA ÇARPIŞMASI
+                    if (arr === projectiles && obj.isBomb && !obj.exploded) {
+                        enemies.forEach((enemy) => {
+                            const dist = Math.hypot(obj.x - enemy.x, obj.y - enemy.y);
+                            
+                            // Bomba yarıçapı ile düşman yarıçapı çarpışması
+                            if (dist - enemy.radius < obj.radius) {
+                                // Çarptığında bombayı patlat
+                                obj.explode();
+                            }
+                        });
+                    }
+
+                    // Mermi-Düşman Çarpışması (Normal mermiler için)
                     if (arr === projectiles && !obj.isBomb && !obj.exploded) {
-                        enemies.forEach((enemy, enemyIndex) => {
+                        for (let j = enemies.length - 1; j >= 0; j--) { // İç döngüde tersten say
+                            const enemy = enemies[j];
                             const dist = Math.hypot(obj.x - enemy.x, obj.y - enemy.y);
                             if (dist - enemy.radius - obj.radius < 1) {
                                 
                                 const isDead = enemy.takeHit(); 
                                 projectiles.splice(i, 1); 
 
-                                if (!isDead && enemy.type === 'shield' && Math.random() < 0.5) return; 
+                                if (!isDead && enemy.type === 'shield' && Math.random() < 0.5) break; 
                                 
                                 updateInfoDisplay(); Sound.hit();
-                                for (let k = 0; k < 4; k++) particles.push(new Particle(obj.x, obj.y, Math.random() * 2, '#FFD700', 
+                                for (let k = 0; k < 4; k++) particles.push(new Particle(obj.x, obj.y, Math.random() * 2, selectedCharacter.projectileColor, 
                                     { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 10 }, 'spark'));
                                 
                                 enemy.x += 3; 
@@ -1281,24 +1742,33 @@
                                     // ORTA SEVİYE PATLAMA EFEKTİ (80 parçacık)
                                     for(let k=0; k<80; k++) particles.push(new Particle(enemy.x, enemy.y, Math.random()*8 + 2, enemy.baseColor, {x:(Math.random()-0.5)*20, y:(Math.random()-0.5)*20}));
                                     if (Math.random() < 0.1) powerUps.push(new PowerUp(enemy.x, enemy.y, 'firerate'));
-                                    enemies.splice(enemyIndex, 1);
+                                    enemies.splice(j, 1); // Doğru endeksi sil
+                                    
+                                    // Mermi zaten silindi, iç döngüyü kır
+                                    break;
                                 }
+                                break;
                             }
-                        });
+                        }
                     }
 
                     // Düşman Mermisi-Oyuncu Çarpışması
                     if (arr === enemyProjectiles && Math.hypot(centerX - obj.x, centerY - obj.y) < playerRadius + obj.radius) {
-                        if (!isDashing && !isInvincible) { 
+                        if (!isDashing && !isInvincible && !isInvincibleFromHit) { // Ekstra kontrol eklendi
                             lives--; 
                             playerHitFlash = 1.0; screenShake = 25; Sound.hit();
+                            hitStopTimer = 15; // Hasar aldığında kısa duraksama
+                            isInvincibleFromHit = true; // Yenilmezlik başlatıldı
+                            setTimeout(() => { isInvincibleFromHit = false; }, invincibilityDuration); // Yenilmezlik süresi bittiğinde kapat
                             updateInfoDisplay();
                             if (lives <= 0) endGame();
-                        } else if (isInvincible) {
-                            enemyProjectiles.splice(i, 1);
-                            floatingTexts.push(new FloatingText("KAÇIŞ!", centerX, centerY - 20, "#00bfff", 18));
+                        } else if (isInvincible || isInvincibleFromHit) {
+                            enemyProjectiles.splice(i, 1); // Mermiyi sil
+                            floatingTexts.push(new FloatingText("KAÇIŞ!", centerX, centerY - 20, selectedCharacter.projectileColor, 18));
                         }
+                        // Çarpışma oldu, mermiyi sil
                         enemyProjectiles.splice(i, 1);
+                        break; // Mermi dizisi döngüsünü kır
                     }
                     if (arr === enemyProjectiles && (obj.x > W || obj.x < 0 || obj.y > H || obj.y < 0)) enemyProjectiles.splice(i, 1);
                 }
@@ -1316,7 +1786,7 @@
                     if (spinDist - enemy.radius < spinRadius) {
                         const isDead = enemy.takeHit(); 
                         
-                        particles.push(new Particle(enemy.x, enemy.y, Math.random()*2, '#FFD700', {x:(Math.random()-0.5)*5, y:(Math.random()-0.5)*5}, 'spark'));
+                        particles.push(new Particle(enemy.x, enemy.y, Math.random()*2, selectedCharacter.projectileColor, {x:(Math.random()-0.5)*5, y:(Math.random()-0.5)*5}, 'spark'));
                         
                         if (isDead) {
                             Sound.explosion(); 
@@ -1324,7 +1794,7 @@
                             hitStopTimer = 5; 
                             let pts = 100 * enemy.maxHp; score += pts; 
                             coins += Math.floor(Math.random() * 10) + 5; 
-                            floatingTexts.push(new FloatingText(`SPIN +${pts}💰`, enemy.x, enemy.y, "#FFD700", 25));
+                            floatingTexts.push(new FloatingText(selectedCharacter.name + ` SPIN +${pts}💰`, enemy.x, enemy.y, selectedCharacter.projectileColor, 25));
                             // MAKSİMUM PATLAMA EFEKTİ
                             for(let k=0; k<100; k++) particles.push(new Particle(enemy.x, enemy.y, Math.random()*12 + 3, enemy.baseColor, {x:(Math.random()-0.5)*30, y:(Math.random()-0.5)*30}));
                             enemies.splice(i, 1);
@@ -1347,21 +1817,30 @@
 
                 const playerCollisionDist = Math.hypot(centerX - enemy.x, centerY - enemy.y);
                 if (playerCollisionDist < playerRadius + enemy.radius) {
-                    if (!isInvincible && !isDashing) {
+                    if (!isInvincible && !isDashing && !isInvincibleFromHit) { // Ekstra kontrol eklendi
                         lives--; 
                         playerHitFlash = 1.0; screenShake = 25; Sound.hit();
+                        hitStopTimer = 15; // Hasar aldığında kısa duraksama
+                        isInvincibleFromHit = true; // Yenilmezlik başlatıldı
+                        setTimeout(() => { isInvincibleFromHit = false; }, invincibilityDuration); // Yenilmezlik süresi bittiğinde kapat
                         floatingTexts.push(new FloatingText("HASAR!", centerX, centerY, "red", 30));
                         updateInfoDisplay();
                         if (lives <= 0) endGame();
                     }
                     const angle = Math.atan2(enemy.y - centerY, enemy.x - centerX);
-                    enemy.x += Math.cos(angle) * (isInvincible ? 20 : 5);
-                    enemy.y += Math.sin(angle) * (isInvincible ? 20 : 5);
+                    // Düşmanı daha güçlü itme
+                    const pushStrength = (isInvincible || isInvincibleFromHit) ? 30 : 5; 
+                    enemy.x += Math.cos(angle) * pushStrength; 
+                    enemy.y += Math.sin(angle) * pushStrength;
                 }
 
-                if (enemy.x < 0 && enemy.type !== 'bomber') { 
+                // Düşman ekran dışına çıkarsa (YENİ SİLME KONTROLÜ)
+                if (enemy.x < -enemy.radius) { 
                     lives--; 
                     playerHitFlash = 1.0; screenShake = 25; Sound.hit();
+                    hitStopTimer = 15; // Hasar aldığında kısa duraksama
+                    isInvincibleFromHit = true; // Yenilmezlik başlatıldı
+                    setTimeout(() => { isInvincibleFromHit = false; }, invincibilityDuration); // Yenilmezlik süresi bittiğinde kapat
                     floatingTexts.push(new FloatingText("KAÇIRDIN!", enemy.x + enemy.radius, enemy.y, "red", 20));
                     updateInfoDisplay();
                     enemies.splice(i, 1);
@@ -1405,13 +1884,20 @@
                     gameGuide.style.display = 'block'; 
                     startScreen.style.display = 'block'; 
                     gameUI.style.display = 'none';
+                    initGame();
                 }
             });
         }
 
         startButton.addEventListener('click', () => {
             let inputName = playerNameInput.value.trim();
-            if (inputName === '') inputName = 'Anonim Aslan';
+            
+            // Karakter seçimini oku
+            const selectedCharValue = document.querySelector('input[name="character"]:checked').value;
+            selectedCharacter = Characters[selectedCharValue.toUpperCase()];
+            
+            if (inputName === '') inputName = selectedCharacter.name + ' Savaşçısı';
+
             playerName = inputName.charAt(0).toUpperCase() + inputName.slice(1).toLowerCase();
             gameGuide.style.display = 'block'; startScreen.style.display = 'none'; gameUI.style.display = 'block';
             initGame();
