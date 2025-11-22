@@ -40,13 +40,13 @@
         /* --- GİRİŞ EKRANI --- */
         #startScreen {
             position: absolute; z-index: 100; background: rgba(255, 255, 255, 0.98);
-            padding: 15px; /* Padding çok daha agresif küçültüldü */
+            padding: 15px; /* Padding korundu */
             border-radius: 20px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            border-top: 5px solid #FF4500; /* Çerçeve kalınlığı azaltıldı */
-            border-bottom: 5px solid #FFD700; /* Çerçeve kalınlığı azaltıldı */
+            border-top: 5px solid #FF4500;
+            border-bottom: 5px solid #FFD700;
             max-width: 95%; 
-            width: 550px; /* Genişlik 3 karakter için artırıldı */
+            width: 550px;
             animation: fadeIn 0.5s ease-out;
             cursor: default; display: block; 
             /* Mobil scroll'u etkinleştirildi, sadece bu ekranda */
@@ -57,44 +57,70 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        #startScreen h1 { color: #FF4500; font-size: 1.8rem; /* Başlık küçültüldü */
-             margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 900; }
-        #startScreen p { color: #555; margin-bottom: 15px; line-height: 1.4; } /* Paragraf boşluğu azaltıldı */
+        #startScreen h1 { 
+            color: #FF4500; 
+            font-size: 1.8rem;
+            margin-bottom: 0px; /* BOŞLUK AZALTILDI */ 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 900; 
+        }
+        #startScreen p { 
+            color: #555; 
+            margin-bottom: 10px; /* BOŞLUK AZALTILDI */
+            line-height: 1.4; 
+        } 
         
         /* Kontroller Listesi için agresif optimizasyon */
         .controls-preview { 
             background: #f0f4ff; 
-            padding: 10px; /* Padding azaltıldı */
+            padding: 10px;
             border-radius: 10px; 
-            margin-bottom: 15px; /* Boşluk azaltıldı */
+            margin-bottom: 10px; /* BOŞLUK AZALTILDI */
             text-align: left; 
-            font-size: 0.85rem; /* Font boyutu küçültüldü */
+            font-size: 0.85rem;
             color: #333; 
             border: 1px solid #e1e8ed; 
         }
-        .controls-preview p { margin: 5px 0; display: flex; align-items: center; } /* Satır boşluğu azaltıldı */
+        .controls-preview p { margin: 5px 0; display: flex; align-items: center; }
         .controls-preview p:last-child { margin-bottom: 0; }
         .key-icon { display: inline-block; background: #fff; border: 1px solid #ccc; border-bottom: 3px solid #bbb; border-radius: 4px; padding: 2px 4px; margin-right: 4px; font-family: monospace; font-weight: bold; color: #555; font-size: 0.75rem; box-shadow: 0 1px 0 rgba(0,0,0,0.1); }
         
-        .input-group { margin-bottom: 15px; text-align: left; } /* Boşluk azaltıldı */
+        .input-group { 
+            margin-bottom: 10px; /* BOŞLUK AZALTILDI */
+            text-align: left; 
+        }
         .input-group label { display: block; font-weight: bold; color: #333; margin-bottom: 5px; }
         #playerNameInput { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
         #playerNameInput:focus { border-color: #FF4500; }
-        #startButton { background: linear-gradient(135deg, #FFD700, #FF4500); color: #333; border: none; padding: 12px 30px; font-size: 1rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(255, 69, 0, 0.5); width: 100%; margin-top: 10px; }
+        #startButton { 
+            background: linear-gradient(135deg, #FFD700, #FF4500); 
+            color: #333; 
+            border: none; 
+            padding: 12px 30px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            box-shadow: 0 4px 10px rgba(255, 69, 0, 0.5); 
+            width: 100%; 
+            margin-top: 5px; /* BOŞLUK AZALTILDI */ 
+        }
         #startButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 69, 0, 0.6); }
 
         /* --- KARAKTER SEÇİM STİL DÜZELTMESİ (GRID YAPISI) --- */
         .char-container { 
             /* 4 KARAKTER İÇİN ESNEK DÜZEN */
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Min 120px genişlik, esnek sütun */
-            gap: 10px; 
-            margin-top: 10px; /* Boşluk azaltıldı */
-            margin-bottom: 15px; /* Boşluk azaltıldı */
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px; /* BOŞLUK AZALTILDI */ 
+            margin-top: 8px; /* BOŞLUK AZALTILDI */
+            margin-bottom: 10px; /* BOŞLUK AZALTILDI */
         }
         .char-option {
             display: flex; flex-direction: column; align-items: center;
-            background: #f0f4f8; padding: 8px; /* Padding azaltıldı */
+            background: #f0f4f8; padding: 6px; /* Padding azaltıldı */
             border: 3px solid transparent; cursor: pointer; 
             transition: all 0.2s;
             text-align: center;
@@ -113,7 +139,7 @@
             z-index: 1;
         }
         .char-label {
-            padding: 5px; /* Padding daha da azaltıldı */
+            padding: 5px;
             border: 2px solid #ddd;
             border-radius: 8px;
             width: 100%;
@@ -126,40 +152,39 @@
             justify-content: space-between;
         }
         .char-name { 
-            font-size: 0.9rem; /* Daha küçük font */
+            font-size: 0.9rem;
             font-weight: 900; 
             margin-bottom: 2px; 
             text-transform: uppercase;
         }
         .char-desc {
-            font-size: 0.65rem; /* En küçük font */
+            font-size: 0.65rem;
             color: #777;
-            margin-top: 4px; /* Boşluk azaltıldı */
+            margin-top: 4px;
             padding-top: 4px;
             border-top: 1px dashed #eee;
-            min-height: 40px; /* Min yükseklik 3 karaktere göre ayarlandı */
+            min-height: 40px; 
             line-height: 1.2; 
         }
         
         /* Mobil Cihazlar için Ekstra Kompaktlık */
         @media (max-width: 550px) {
             #startScreen {
-                padding: 15px;
+                padding: 10px; /* Padding çok daha agresif küçültüldü */
             }
             .char-container {
-                grid-template-columns: 1fr; /* Mobil'de tek sütun daha iyi */
-                gap: 10px;
+                grid-template-columns: 1fr;
+                gap: 8px;
             }
             .char-option {
                 min-width: 100%;
             }
             .char-desc {
-                min-height: unset; /* Yükseklik kısıtlaması kaldırıldı */
-                min-height: 30px; /* Yeni minimum yükseklik */
+                min-height: 25px; /* Min yükseklik daha da azaltıldı */
                 font-size: 0.7rem;
             }
             #startScreen {
-                 width: 400px; /* Mobil genişliği ayarlandı */
+                 width: 400px;
             }
         }
         /* --- OYUN ARAYÜZÜ (HUD) --- */
@@ -474,6 +499,7 @@
                 <p style="margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #FF4500; font-weight: bold;">NASIL OYNANIR?</p>
                 <p><span class="key-icon">W</span><span class="key-icon">A</span><span class="key-icon">S</span><span class="key-icon">D</span> Hareket Et / <span style="font-weight: bold; color: #3498db;">JOYSTICK</span></p>
                 <p><span class="key-icon">SOL TIK</span> Ateş Et / <span style="font-weight: bold; color: #FF4500;">ATEŞ BUTONU</span></p>
+                <p style="font-weight: bold; color: #00FF00;">YENİ: MOBİLDE AKILLI OTO-NİŞAN DEVREDE!</p>
                 <p><span class="key-icon">SAĞ TIK</span> Seri Atış Modu</p>
                 <p><span class="key-icon">SPACE</span> Hızlı Atıl (Dash) ⚡</p>
                 <p><span class="key-icon">Q</span> <span id="qAbilityName">SPINJITZU</span></p>
@@ -789,6 +815,11 @@
             });
         }
         // ------------------------------------
+        
+        // --- YENİ OTO-NİŞAN MANTIĞI DEĞİŞKENLERİ ---
+        const AUTO_AIM_RANGE = 400; // 400 piksel menzil içinde otomatik nişan alır
+        const AUTO_AIM_ANGLE = 25; // Oyuncunun baktığı yöne doğru 25 derecelik koni içinde arama yapar
+        // ------------------------------------------
 
         // --- YENİ ÖFKE MODU DEĞİŞKENLERİ ---
         var killStreak = 0;
@@ -887,6 +918,44 @@
         // let bombImageLoaded = false;
         // bombImage.onload = () => { bombImageLoaded = true; };
 
+        // --- YENİ OTO-NİŞAN (AUTO-AIM) FONKSİYONU ---
+        function getAutoAimTarget() {
+            let closestEnemy = null;
+            let minDistance = AUTO_AIM_RANGE + 1;
+
+            // Oyuncunun hareket yönünü belirle
+            const aimAngle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
+            
+            enemies.forEach(enemy => {
+                const dist = Math.hypot(centerX - enemy.x, centerY - enemy.y);
+                
+                // 1. Menzil Kontrolü
+                if (dist <= AUTO_AIM_RANGE) {
+                    
+                    // 2. Açı (Koni) Kontrolü (Düşmanın oyuncunun baktığı yönde olup olmadığı)
+                    const angleToEnemy = Math.atan2(enemy.y - centerY, enemy.x - centerX);
+                    
+                    // Açı farkını hesapla (-PI ile PI arasında)
+                    let angleDiff = aimAngle - angleToEnemy;
+                    if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+                    if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+                    // Dereceye çevir ve kontrol et (25 derece)
+                    const angleDiffDegrees = Math.abs(angleDiff * 180 / Math.PI);
+                    
+                    if (angleDiffDegrees <= AUTO_AIM_ANGLE) {
+                        // Konide ve menzildeki en yakın düşmanı bul
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            closestEnemy = enemy;
+                        }
+                    }
+                }
+            });
+
+            return closestEnemy;
+        }
+
         // --- Mermi Atış Fonksiyonu (Yeniden Kullanılabilir) ---
         function singleShot() {
             if (isGameOver || isPaused) return;
@@ -896,8 +965,25 @@
             // Rage modu mermi boyutunu ve hızını artırır
             const radius = 6 * (isRaging ? rageRadiusMultiplier : 1); 
             
-            // Atış açısı: Oyuncunun baktığı yönü kullan
-            const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
+            // **********************************************
+            // YENİ OTO-NİŞAN MANTIĞI
+            // **********************************************
+            let finalTargetX = currentMouseX;
+            let finalTargetY = currentMouseY;
+
+            if (isTouchDevice) {
+                const target = getAutoAimTarget();
+
+                if (target) {
+                    // Hedef bulunduysa, nişangahı hedefin merkezine kilitle
+                    finalTargetX = target.x;
+                    finalTargetY = target.y;
+                }
+            }
+            // **********************************************
+            
+            // Atış açısı: Final hedefi kullan
+            const angle = Math.atan2(finalTargetY - centerY, finalTargetX - centerX);
             const speed = baseProjectileSpeed * fireRateMultiplier * (isRaging ? rageProjectileSpeedMultiplier : 1); 
             
             recoilX = Math.cos(angle) * 5;
@@ -2341,96 +2427,76 @@
                 ctx.restore();
             }
 
-            // Spinjitzu Görsel Efekti (YENİ 2.5D GÖRÜNÜM)
+            // Spinjitzu Görsel Efekti (YENİ GÜNCELLEME: Tok, hızlı dönen elemental girdap)
             if (isSpinjitzuActive) {
-                const spinAngle = Date.now() / 50; // Çok hızlı dönüş
+                const spinSpeed = Date.now() / 15; // ÇOK daha hızlı dönüş
                 const auraColor = selectedCharacter === Characters.FIRE ? '#FF4500' : 
                                   selectedCharacter === Characters.ICE ? '#00BFFF' : 
                                   selectedCharacter === Characters.EARTH ? '#8B4513' : '#00FFFF';
                 
-                const maxRadius = playerRadius * 2.5; 
-                const bladeCount = 6;
+                const outerRadius = playerRadius * 3.5; 
                 
                 ctx.save();
-                ctx.globalAlpha = 0.2;
+                ctx.globalAlpha = 1.0; 
                 ctx.shadowColor = auraColor;
-                ctx.shadowBlur = 50; 
-                ctx.fillStyle = auraColor; 
-                ctx.beginPath(); ctx.arc(0, 0, maxRadius * 1.2, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 50; // Maksimum parlama
                 
-                ctx.globalAlpha = 0.9;
-                ctx.shadowBlur = 10; 
-                ctx.shadowColor = projColor; 
-                
-                ctx.rotate(spinAngle);
-
-                for (let i = 0; i < bladeCount; i++) {
-                    const currentBladeAngle = (i * 2 * Math.PI / bladeCount);
-                    const perspectiveScale = Math.abs(Math.sin(spinAngle + currentBladeAngle)) * 0.6 + 0.4; 
-                    
+                // 1. Dönen Yüksek Enerjili Girdap Katmanları
+                const numRings = 4;
+                for (let i = 0; i < numRings; i++) {
                     ctx.save();
-                    ctx.rotate(currentBladeAngle);
+                    // Her halkayı farklı bir hızda ve yönde döndür
+                    ctx.rotate(spinSpeed * (i % 2 === 0 ? 1 : -1) + i * Math.PI / numRings); 
                     
-                    // Bıçak (Keskin Üçgen/Elips) - Genişlik değişimiyle 2.5D hissi
-                    ctx.fillStyle = projColor; 
+                    const currentRadius = playerRadius + (outerRadius - playerRadius) * (i / numRings);
+                    
                     ctx.beginPath();
-                    // DEĞERLER KALDIRILDI, ANCAK KOD YAPISI KORUNDU. BU ALAN TANIMSIZ KALDIĞI İÇİN HATALI OLABİLİR.
-                    // Bu kısımdaki `bladeLength` ve `bladeWidth` tanımlı değil. 
-                    // Ancak bu dosyanın önceki hali de aynı hataya sahipti ve amaç Spinjitzu çizimi olduğu için
-                    // düzeltme yapmadan devam ediyoruz. Sadece kodun akışını bozan bir hata yok.
-                    // Mantıksal olarak çizim yapmayacaktır, ancak oyunu kırmayacaktır.
-                    const bladeLength = playerRadius * 2; // FIX: Basit bir değer tanımlıyoruz
-                    const bladeWidth = playerRadius * 0.3; // FIX: Basit bir değer tanımlıyoruz
+                    // Düz çizgilerden oluşan, açılmış bir girdap şekli
+                    ctx.arc(0, 0, currentRadius, 0, Math.PI * 2);
                     
-                    ctx.moveTo(playerRadius * 0.8, 0); 
-                    ctx.lineTo(bladeLength * 0.9, bladeWidth); 
-                    ctx.lineTo(bladeLength, 0); 
-                    ctx.lineTo(bladeLength * 0.9, -bladeWidth); 
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Neon Kenar Çizgisi
-                    ctx.strokeStyle = '#FFFFFF';
-                    ctx.lineWidth = 1;
-                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = auraColor; 
+                    ctx.lineWidth = playerRadius * 0.5 - (i * 2); // Merkezde kalın, dışta ince
+                    ctx.globalAlpha = 0.6 - i * 0.1; // Dışa doğru solma
                     ctx.stroke();
 
                     ctx.restore(); 
                 }
                 
-                // 3. Merkezi Güç Çekirdeği (Pulsing Core)
-                ctx.rotate(-spinAngle); 
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = auraColor;
-                ctx.fillStyle = '#FFFFFF';
-                const pulse = Math.abs(Math.sin(Date.now() / 100)) * 5;
+                // 2. Merkezi Enerji Çekirdeği (Yoğun Işık)
+                ctx.shadowColor = '#FFFFFF';
+                ctx.shadowBlur = 80; // Beyaz ışık
+                ctx.fillStyle = auraColor;
+                const pulse = Math.abs(Math.sin(Date.now() / 50)) * 5;
                 ctx.beginPath();
-                ctx.arc(0, 0, playerRadius * 0.5 + pulse, 0, Math.PI * 2);
+                ctx.arc(0, 0, playerRadius * 0.8 + pulse, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
                 
-                // 4. Partikül Akışı
-                for(let i=0; i<10; i++) { 
+                // 3. Partikül Akışı (Dışarıya Doğru Fırlatma - Daha Az ve Yavaş)
+                // PARÇACIK MİKTARI 20'DEN 5'E DÜŞÜRÜLDÜ (20 / 4 = 5)
+                // HIZ MİKTARI 40+20'DEN 25+10'A DÜŞÜRÜLDÜ
+                for(let i=0; i<5; i++) { 
                     const travelAngle = Math.random() * 2 * Math.PI; 
-                    const startR = maxRadius * 0.8;
+                    const startR = playerRadius * 0.8;
+                    const speed = Math.random() * 25 + 10; // Yeni, daha yavaş fırlatma
                     particles.push(new Particle(
                         drawX + Math.cos(travelAngle) * startR, 
                         drawY + Math.sin(travelAngle) * startR, 
-                        Math.random()*2 + 1, 
+                        Math.random()*4 + 1, // Biraz daha büyük parçacık
                         auraColor, 
-                        { x: Math.cos(travelAngle) * 10, y: Math.sin(travelAngle) * 10 }
+                        { x: Math.cos(travelAngle) * speed, y: Math.sin(travelAngle) * speed }
                     ));
                 }
                 
-                ctx.restore(); // Save/Restore for Spinjitzu
+                ctx.restore(); 
 
             } 
             
             // NORMAL KARAKTER ÇİZİMİ (SİSTEMİN ÜSTÜNDE KALMASI İÇİN)
             
             ctx.save();
-            ctx.globalAlpha = isSpinjitzuActive ? 1.0 : globalAlpha; 
+            ctx.globalAlpha = isSpinjitzuActive ? 0.0 : globalAlpha; // Spinjitzu aktifken karakter gövdesini gizle
             
             if (selectedCharacter === Characters.FIRE) {
                 // --- ATEŞ KARAKTERİ (SAVAŞÇI) ---
@@ -2967,6 +3033,7 @@
                 if (deltaX > deadZone) keys['d'] = true;
                 
                 // Atış hedefi: Joystick yönünü kullan
+                // OTO-NİŞAN İÇİN GEREKLİ: currentMouseX ve currentMouseY'yi oyuncunun baktığı yöne ayarla
                 currentMouseX = centerX + deltaX * 5; 
                 currentMouseY = centerY + deltaY * 5;
             }
