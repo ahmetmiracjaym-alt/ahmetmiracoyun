@@ -14,6 +14,24 @@
             font-family: 'Roboto', sans-serif; background-color: #2c3e50; user-select: none; 
             cursor: crosshair;
         }
+        
+        /* **************************************** */
+        /* YENİ: YATAY ORYANTASYON KİLİDİ (MOBİL) */
+        /* **************************************** */
+        /* Sadece mobil cihazlar (pointer: coarse) ve dikey modda ise body'i döndürerek yatay görünmesini sağlar.
+           NOT: Bu kod, tarayıcının native oryantasyon kilidi API'si yerine CSS ile zorlama yapar. */
+        @media (orientation: portrait) and (pointer: coarse) {
+            body {
+                width: 100vh;
+                height: 100vw;
+                transform: rotate(90deg) translate(0, -100vw);
+                transform-origin: top left;
+                position: absolute;
+                top: 0;
+                left: 100vw;
+            }
+        }
+        
         #gameContainer {
             position: relative; width: 100%; height: 100%; display: flex;
             justify-content: center; align-items: center;
@@ -287,6 +305,8 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             position: absolute;
+            /* YENİ DÜZELTME: Joystick handle'da transition'ı kaldırdık
+               ancak handle'ı sıfırlarken transition'ı geçici olarak geri getirmemiz gerek. */
             transition: none; 
         }
 
@@ -720,11 +740,26 @@
         var fireInterval = null;
 
         function setCanvasSize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight; 
+            // YATAY MOD KİLİDİ NEDENİYLE BOYUTLAR EKRANIN GÖRSEL BOYUTLARINI ALMALI
+            if (isTouchDevice && window.innerHeight > window.innerWidth) {
+                // Eğer telefon dikey ama biz CSS ile zorluyorsak, Canvas boyutunu manuel olarak değiştir.
+                canvas.width = window.innerHeight;
+                canvas.height = window.innerWidth;
+            } else {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight; 
+            }
             W = canvas.width; H = canvas.height;
+            
+            // Eğer oyun başladıysa (centerX/Y sıfırlanmamışsa) karakteri ekranda tut
+            if (level > 0 && !isGameOver) {
+                 centerX = Math.max(playerRadius, Math.min(W - playerRadius, centerX));
+                 centerY = Math.max(playerRadius, Math.min(H - playerRadius, centerY));
+            }
         }
         window.addEventListener('resize', setCanvasSize); 
+        // Oryantasyon değişimi sonrası yeniden boyutlandırma
+        window.addEventListener('orientationchange', setCanvasSize); 
         setCanvasSize();
 
         var score = 0;
@@ -2869,6 +2904,14 @@
                 if (e.touches.length > 0 && activeTouchId === null) {
                     e.preventDefault();
                     activeTouchId = e.touches[0].identifier;
+                    // Başlangıç noktasını güncelle (handle'ın sıfırlanma yerini ayarlar)
+                    rect = leftPad.getBoundingClientRect();
+                    baseX = rect.left + rect.width / 2;
+                    baseY = rect.top + rect.height / 2;
+                    
+                    // Joystick'i hareket ettir (CSS transform)
+                    joystickHandle.style.transform = `translate(0, 0)`;
+
                     handleJoystickMove(e.touches[0]);
                 }
             }, { passive: false });
@@ -2908,8 +2951,10 @@
                     deltaX *= ratio;
                     deltaY *= ratio;
                 }
-
+                
                 // Joystick'i hareket ettir (CSS transform)
+                // YENİ: Joystick bırakıldığında takılı kalmaması için transition'ı kaldır
+                joystickHandle.style.transition = 'none'; 
                 joystickHandle.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
 
                 // Klavye tuşlarını simüle et (W, A, S, D)
@@ -2927,8 +2972,17 @@
             }
 
             function resetJoystick() {
+                // YENİ DÜZELTME: Bırakıldığında merkeze yumuşak bir geçiş için transition ekle
+                joystickHandle.style.transition = 'transform 0.1s ease-out';
                 joystickHandle.style.transform = `translate(0, 0)`;
+                
+                // Klavye tuşlarını sıfırla
                 keys = {};
+
+                // Kısa bir süre sonra transition'ı kaldırarak bir sonraki dokunuşta akıcılığı sağla
+                setTimeout(() => {
+                    joystickHandle.style.transition = 'none';
+                }, 100); 
             }
 
             // --- BUTON MANTIĞI ---
@@ -3379,6 +3433,10 @@
 
             playerName = inputName.charAt(0).toUpperCase() + inputName.slice(1).toLowerCase();
             gameGuide.style.display = 'block'; startScreen.style.display = 'none'; gameUI.style.display = 'block';
+            
+            // Yeni boyutu ayarla (Oryantasyon değiştiyse)
+            setCanvasSize();
+
             initGame();
         });
 
