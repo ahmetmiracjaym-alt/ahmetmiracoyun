@@ -28,7 +28,7 @@
             border-top: 5px solid #FF4500; /* Çerçeve kalınlığı azaltıldı */
             border-bottom: 5px solid #FFD700; /* Çerçeve kalınlığı azaltıldı */
             max-width: 95%; 
-            width: 450px; 
+            width: 550px; /* Genişlik 3 karakter için artırıldı */
             animation: fadeIn 0.5s ease-out;
             cursor: default; display: block; 
             /* Mobil scroll'u etkinleştirildi, sadece bu ekranda */
@@ -62,13 +62,14 @@
         .input-group label { display: block; font-weight: bold; color: #333; margin-bottom: 5px; }
         #playerNameInput { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s; }
         #playerNameInput:focus { border-color: #FF4500; }
-        #startButton { background: linear-gradient(135deg, #FFD700, #FF4500); color: #333; border: none; padding: 12px 30px; font-size: 1rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(255, 69, 0, 0.5); width: 100%; }
+        #startButton { background: linear-gradient(135deg, #FFD700, #FF4500); color: #333; border: none; padding: 12px 30px; font-size: 1rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(255, 69, 0, 0.5); width: 100%; margin-top: 10px; }
         #startButton:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255, 69, 0, 0.6); }
 
         /* --- KARAKTER SEÇİM STİL DÜZELTMESİ (GRID YAPISI) --- */
         .char-container { 
+            /* 4 KARAKTER İÇİN ESNEK DÜZEN */
             display: grid; 
-            grid-template-columns: 1fr 1fr; /* 2 eşit sütun */
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Min 120px genişlik, esnek sütun */
             gap: 10px; 
             margin-top: 10px; /* Boşluk azaltıldı */
             margin-bottom: 15px; /* Boşluk azaltıldı */
@@ -85,9 +86,6 @@
         .char-option:hover {
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             transform: translateY(-2px);
-        }
-        .char-option input[type="radio"] {
-            display: none;
         }
         .char-option input[type="radio"]:checked + .char-label {
             border-color: #FF4500;
@@ -121,7 +119,7 @@
             margin-top: 4px; /* Boşluk azaltıldı */
             padding-top: 4px;
             border-top: 1px dashed #eee;
-            min-height: 35px; /* Min yükseklik azaltıldı */
+            min-height: 40px; /* Min yükseklik 3 karaktere göre ayarlandı */
             line-height: 1.2; 
         }
         
@@ -142,8 +140,8 @@
                 min-height: 30px; /* Yeni minimum yükseklik */
                 font-size: 0.7rem;
             }
-            .controls-preview {
-                font-size: 0.8rem;
+            #startScreen {
+                 width: 400px; /* Mobil genişliği ayarlandı */
             }
         }
         /* --- OYUN ARAYÜZÜ (HUD) --- */
@@ -165,7 +163,7 @@
         .hud-value { font-size: 1.2rem; font-weight: bold; font-family: 'Roboto', monospace; }
         
         #scoreDisplay { font-family: 'Black Ops One', cursive; font-size: 2rem; color: #FFD700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-        #coinDisplay { font-size: 1.5rem; color: #00ffcc; font-weight: bold; } 
+        /* Para birimi gösterimi kaldırıldı. */
         
         .danger-text { color: #ff4444; animation: pulse 1s infinite; }
         .ready-text { color: #00ff00; font-weight: 900; text-shadow: 0 0 5px #00ff00; }
@@ -219,17 +217,30 @@
 
         #gameCanvas { display: block; width: 100%; height: 100%; background-color: #fbfbf2; }
 
-        /* --- OYUN İÇİ REHBER (Sadece Masaüstü için) --- */
-        #gameGuide { position: absolute; bottom: 20px; left: 20px; width: 240px; background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; border-left: 4px solid #FFD700; z-index: 20; color: white; font-size: 0.85rem; pointer-events: none; backdrop-filter: blur(3px); }
+        /* --- OYUN İÇİ REHBER (YENİ GİZLEME EFEKTİ) --- */
+        #gameGuide { 
+            position: absolute; bottom: 20px; left: 20px; width: 240px; 
+            background: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; 
+            border-left: 4px solid #FFD700; z-index: 20; color: white; font-size: 0.85rem; 
+            pointer-events: all; /* Etkileşime izin ver (Tuş bilgisi için) */
+            backdrop-filter: blur(3px); 
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Yumuşak geçiş */
+        }
+        #gameGuide.hidden {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none; /* Gizliyken tıklamayı engelle */
+        }
+
         #gameGuide h2 { margin-top: 0; color: #FFD700; font-size: 1rem; border-bottom: 1px solid #444; padding-bottom: 5px; }
         .control-pair { display: flex; justify-content: space-between; margin: 6px 0; align-items: center; }
         .keys { background: linear-gradient(to bottom, #eee, #ccc); color: #333; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; border-bottom: 2px solid #999; font-size: 0.75rem; }
         
-        /* --- DURAKLATMA EKRANI (Aynı Kaldı) --- */
+        /* --- DURAKLATMA EKRANI --- */
         #pauseScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; flex-direction: column; z-index: 200; backdrop-filter: blur(5px); }
         #pauseScreen h1 { color: white; font-family: 'Black Ops One', cursive; font-size: 4rem; margin: 0; letter-spacing: 5px; }
         #pauseScreen p { color: #ccc; font-size: 1.2rem; }
-
+        
         /* --- DOKUNMATİK KONTROLLER (MOBİL) --- */
         #touchControls {
             position: absolute;
@@ -250,13 +261,11 @@
             pointer-events: all;
             padding: 10px;
         } 
-
         /* Joystick Alanı (Sol Alt) */
         #leftPad {
             width: 150px;
             height: 150px;
             position: relative;
-            /* left: 10px; Bu artık gerekmiyor, touchControls flex kullanıyor */
         }
         #joystickBase {
             width: 120px;
@@ -288,7 +297,6 @@
                 ". q e"
                 "bomb dash fire";
             gap: 8px; /* Boşluk azaltıldı */
-            /* margin-right: 10px; Bu artık gerekmiyor */
             padding-bottom: 5px; /* Alt boşluk azaltıldı */
             width: 200px; /* Genişlik küçültüldü */
             max-width: 50%;
@@ -341,7 +349,6 @@
             #gameGuide { display: none !important; }
             #touchControls { 
                 display: flex; 
-                /* justify-content: space-between ve padding 10px zaten yukarıda tanımlı */
             }
         }
         
@@ -371,6 +378,18 @@
                 font-size: 0.7rem;
             }
         }
+        
+        /* Yeni kaydırma ipucu stili */
+        .scroll-hint {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 10px;
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
     </style>
 </head>
 <body>
@@ -385,6 +404,8 @@
             <div class="input-group" id="characterSelection">
                 <label style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #FF4500; font-weight: bold;">SAVAŞÇI SEÇİMİ</label>
                 <div class="char-container">
+                    
+                    <!-- KARAKTER 1: DRONE (ELECTRIC) -->
                     <label for="charElectric" class="char-option">
                         <input type="radio" id="charElectric" name="character" value="electric" checked>
                         <span class="char-label" style="border-color: #00bfff; color: #00bfff;">
@@ -393,6 +414,8 @@
                             <span class="char-desc">Yüksek hareket kabiliyeti. Ultisi Yıldırım ile geniş alana hızlı hasar verir.</span>
                         </span>
                     </label>
+                    
+                    <!-- KARAKTER 2: SAVAŞÇI (FIRE) -->
                     <label for="charFire" class="char-option">
                         <input type="radio" id="charFire" name="character" value="fire">
                         <span class="char-label" style="border-color: #FF4500; color: #FF4500;">
@@ -401,7 +424,30 @@
                             <span class="char-desc">Daha yüksek hasar potansiyeli. Ultisi Meteor Yağmuru ile ekranı temizler.</span>
                         </span>
                     </label>
+
+                    <!-- KARAKTER 3: KRIO (ICE) -->
+                    <label for="charIce" class="char-option">
+                        <input type="radio" id="charIce" name="character" value="ice">
+                        <span class="char-label" style="border-color: #00BFFF; color: #00BFFF;">
+                            <span class="char-name">KRIO <span style="font-size: 1.5rem;">❄️</span></span>
+                            <span style="color: #5DADE2; font-weight: normal; font-size: 0.8rem;">(Kitle Kontrol & Savunma)</span>
+                            <span class="char-desc">Temel atışı düşmanları yavaşlatır. Ultisi Küresel Donma ile hareketlerini durdurur.</span>
+                        </span>
+                    </label>
+                    
+                    <!-- KARAKTER 4: KAYA MİMARI (EARTH) -->
+                    <label for="charEarth" class="char-option">
+                        <input type="radio" id="charEarth" name="character" value="earth">
+                        <span class="char-label" style="border-color: #8B4513; color: #8B4513;">
+                            <span class="char-name">KAYA MİMARI <span style="font-size: 1.5rem;">💥</span></span>
+                            <span style="color: #6D4C41; font-weight: normal; font-size: 0.8rem;">(Yıkıcı Güç & Alan Temizleme)</span>
+                            <span class="char-desc">Q yeteneği Spinjitzu saldırısı, Ultisi (E) dev bir depremle tüm düşmanları yok eder.</span>
+                        </span>
+                    </label>
+
                 </div>
+                 <!-- Kaydırma ipucu eklendi -->
+                <p class="scroll-hint">Tüm karakterleri görmek için kaydırın (Mobil)</p>
             </div>
 
             <div class="controls-preview">
@@ -414,6 +460,9 @@
                 <p><span class="key-icon">E</span> <span id="eAbilityName">ULTİ</span></p>
                 <p><span class="key-icon">ORTA TIK</span> Bomba Bırak 💣</p>
             </div>
+            
+            <p style="text-align: center; color: #FF4500; font-weight: bold; font-size: 0.85rem;">YENİ: 10 Kill Serisi ile ⚡ ÇILGIN MOD ⚡!</p>
+            
 
             <div class="input-group">
                 <label for="playerNameInput">Savaşçı Adı:</label>
@@ -426,7 +475,9 @@
         <div id="pauseScreen">
             <h1>DURAKLATILDI</h1>
             <p>Devam etmek için <b>'P'</b> veya <b>'ESC'</b> tuşuna basın</p>
+            <p style="font-size: 0.9rem; color: #ffeb3b; margin-top: 15px;">Kontrolleri görmek için <b>'H'</b> tuşuna basılı tutun.</p>
         </div>
+        
 
         <!-- OYUN ARAYÜZÜ -->
         <div id="gameUI">
@@ -463,14 +514,14 @@
                 <!-- Sağ Panel -->
                 <div class="hud-box" id="scoreBox">
                     <div><span class="hud-label">SEVİYE</span> <span id="levelVal">1</span></div>
-                    <div><span class="hud-label">PARA BİRİMİ</span> <span id="coinDisplay">0</span></div> 
+                    <!-- PARA BİRİMİ KALDIRILDI -->
                     <div id="scoreDisplay">0</div>
                 </div>
             </div>
 
             <!-- OYUN REHBERİ (Sadece Masaüstü için) -->
             <div id="gameGuide">
-                <h2>🎮 Kontroller</h2>
+                <h2>🎮 Kontroller (Gizle/Göster: H)</h2>
                 <div class="control-pair"><span>Hareket</span><div><span class="keys">W</span><span class="keys">A</span><span class="keys">S</span><span class="keys">D</span></div></div>
                 <div class="control-pair"><span>Ateş</span><span class="keys">SOL TIK</span></div>
                 <div class="control-pair"><span>Atılma (Dash)</span><span class="keys">SPACE</span></div>
@@ -503,43 +554,85 @@
     </div>
 
     <script>
-        // --- SES YÖNETİCİSİ ---
+        // --- SES YÖNETİCİSİ (TAMAMEN YENİDEN TASARLANDI) ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         const Sound = {
-            playTone: (freq, type, duration, vol = 0.1, slideTo = null) => {
+            // Genel Ses Seviyesi (0.08 olarak korundu)
+            BASE_VOL: 0.08, 
+
+            playTone: (freq, type, duration, vol = Sound.BASE_VOL, slideTo = null, delay = 0) => {
                 if(audioCtx.state === 'suspended') audioCtx.resume();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
+                // Gecikmeyi milisaniyeden saniyeye çevir
+                const startTime = audioCtx.currentTime + delay / 1000;
+                
                 osc.type = type; 
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
-                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.frequency.setValueAtTime(freq, startTime);
+                if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, startTime + duration);
+                
+                gain.gain.setValueAtTime(vol, startTime);
+                // Sesin hızla sönmesi (Kulağı tırmalamayı önler)
+                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration * 1.5); 
+                
                 osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(); osc.stop(audioCtx.currentTime + duration);
+                osc.start(startTime); 
+                osc.stop(startTime + duration * 1.5);
             },
-            shoot: () => Sound.playTone(600, 'square', 0.1, 0.05, 100), 
-            hit: () => Sound.playTone(150, 'triangle', 0.1, 0.1, 50), 
-            explosion: () => { Sound.playTone(100, 'sawtooth', 0.3, 0.2, 10); Sound.playTone(50, 'square', 0.4, 0.2, 10); }, 
-            powerup: () => Sound.playTone(400, 'sine', 0.4, 0.1, 1200),
-            dash: () => Sound.playTone(800, 'sawtooth', 0.1, 0.1, 200),
-            bombBeep: () => Sound.playTone(440, 'sine', 0.2, 0.05, 300), 
-            shieldHit: () => Sound.playTone(200, 'square', 0.05, 0.02),
-            spinHit: () => Sound.playTone(1000, 'sawtooth', 0.05, 0.1, 500), 
+            
+            // Mermi Sesi: Hızlı, tatmin edici "PEW" (BASE_VOL * 1.2)
+            shoot: () => Sound.playTone(600, 'sine', 0.08, Sound.BASE_VOL * 1.2, 300), 
+            
+            // Hasar Alma Sesi: Kısa, tok, alçak frekanslı "THUD"
+            hit: () => Sound.playTone(150, 'square', 0.1, Sound.BASE_VOL * 1.2), 
+            
+            // Patlama Sesi: Daha dolgun ve derin bir VURGU
+            explosion: () => { 
+                Sound.playTone(80, 'sawtooth', 0.3, Sound.BASE_VOL * 1.5, 10); // Ana darbe
+                Sound.playTone(120, 'triangle', 0.2, Sound.BASE_VOL * 1.0, 40); // Kısa yankı
+            }, 
+            
+            // Güçlendirme Sesi: Klasik yükselme
+            powerup: () => Sound.playTone(400, 'sine', 0.4, Sound.BASE_VOL * 0.8, 1200),
+            
+            // Dash Sesi: Hızlı, keskin bir "SWOOSH"
+            dash: () => Sound.playTone(1000, 'sawtooth', 0.1, Sound.BASE_VOL * 0.8, 400),
+            
+            // Bomba Fitili: Daha kesikli, net bir BİP
+            bombBeep: () => Sound.playTone(440, 'square', 0.05, Sound.BASE_VOL * 0.5, 440), 
+            
+            // Kalkan Darbesi: Kısa, metalik, düşük volümde
+            shieldHit: () => Sound.playTone(300, 'square', 0.04, Sound.BASE_VOL * 0.2),
+            
+            // Spinjitzu Vuruşu: Yüksek frekanslı, hızlı bir kesme sesi
+            spinHit: () => Sound.playTone(1200, 'sawtooth', 0.03, Sound.BASE_VOL * 0.5, 600), 
+            
+            // ULTIMATE SESLERİ
             ultimate: (type) => { 
-                if (type === 'fire') { // Ateş Ultisi Sesi (Meteor Yağmuru için güncellendi)
-                    Sound.playTone(200, 'sawtooth', 1.5, 0.4, 30); // Derin başlangıç
-                    Sound.playTone(80, 'square', 1.8, 0.3, 20); // Alçak titreşim
-                } else { // Elektrik Ultisi Sesi
-                    Sound.playTone(1200, 'sine', 0.8, 0.3, 2400); 
-                    Sound.playTone(600, 'square', 0.8, 0.2, 1200); 
+                if (type === 'fire') { // METEOR YAĞMURU: Epik, ağır, derin
+                    Sound.playTone(50, 'square', 1.0, Sound.BASE_VOL * 2.0, 10); // Derin başlangıç patlaması
+                    Sound.playTone(200, 'sine', 2.0, Sound.BASE_VOL * 0.5, 800); // Yüksek frekanslı vızıltı efekti
+                } else if (type === 'earth') { // YIKIM DEPREMİ: Derin, patlayıcı GÜM (Screen Wipe için daha güçlü)
+                     Sound.playTone(30, 'square', 1.5, Sound.BASE_VOL * 2.5, 5); // Ultra derin frekans
+                     Sound.playTone(100, 'sawtooth', 0.5, Sound.BASE_VOL * 1.5, 50); // İkinci dalga
+                } else { // YILDIRIM VEYA DONMA ULTİSİ: Keskin, yüksek enerjili
+                    Sound.playTone(2000, 'sawtooth', 0.2, Sound.BASE_VOL * 1.5, 1000); // Yüksek başlangıç vızıltısı
+                    Sound.playTone(1000, 'triangle', 0.4, Sound.BASE_VOL * 0.8, 500, 150); // Kısa, sert patlamalar (Zincirleme)
                 }
             },
+            // Meteor Çarpma Sesi: Patlamadan sonraki güçlü etki
             meteorImpact: () => {
-                Sound.playTone(120, 'triangle', 0.2, 0.2, 50); // Çarpma sesi
-                Sound.playTone(60, 'square', 0.3, 0.1, 30); // Düşük frekanslı titreşim
-            }
+                Sound.playTone(100, 'triangle', 0.25, Sound.BASE_VOL * 1.0, 40); 
+                Sound.playTone(50, 'square', 0.35, Sound.BASE_VOL * 0.5, 20); 
+            },
+            // Buz Patlaması Sesi: Keskin, yüksek frekanslı kırılma
+            iceShatter: () => {
+                Sound.playTone(1500, 'sine', 0.15, Sound.BASE_VOL * 1.5, 500);
+                Sound.playTone(800, 'triangle', 0.1, Sound.BASE_VOL * 0.8, 200, 50);
+            },
+             // Toprak Vuruşu Sesi: Tok, düşük frekanslı "THWACK" (Artık kullanılmıyor)
+            earthHit: () => Sound.playTone(100, 'square', 0.1, Sound.BASE_VOL * 1.0, 50),
         };
 
         // --- KARAKTER TANIMLARI ---
@@ -557,6 +650,21 @@
                 projectileColor: '#FFD700', // Altın-Sarı (Ateş)
                 abilityQName: 'ATEŞ GİRDABI 🔥',
                 abilityEName: 'METEOR YAĞMURU ☄️',
+            },
+            ICE: { 
+                name: 'KRIO',
+                color: '#5DADE2', // Orta Mavi (Gövde)
+                projectileColor: '#ADD8E6', // Açık Mavi (Buz)
+                abilityQName: 'DONMUŞ GİRDAP ❄️',
+                abilityEName: 'KÜRESEL DONMA 🥶',
+            },
+            // GÜNCELLENMİŞ KARAKTER: KAYA MİMARI (EARTH)
+            EARTH: {
+                name: 'Kaya Mimarı', // Adı değiştirildi
+                color: '#6D4C41', // Koyu Kahve
+                projectileColor: '#8B4513', // Açık Kahve/Sepya
+                abilityQName: 'DEPREM GİRDABI 🌀', // YENİ: Standart Spinjitzu mantığına döner
+                abilityEName: 'YIKIM DEPREMİ 💥', // YENİ: Tek vuruşta ekran temizleme
             }
         };
         var selectedCharacter = Characters.ELECTRIC; // Başlangıçta Elektrik seçili
@@ -569,17 +677,17 @@
         const levelVal = document.getElementById('levelVal');
         const bombVal = document.getElementById('bombVal');
         const scoreDisplay = document.getElementById('scoreDisplay');
-        const coinDisplay = document.getElementById('coinDisplay'); 
+        // const coinDisplay = document.getElementById('coinDisplay'); // KALDIRILDI
         const dashBar = document.getElementById('dashBar');
         const pauseScreen = document.getElementById('pauseScreen');
         const cooldownQ = document.getElementById('cooldownQ'); 
         const cooldownE = document.getElementById('cooldownE'); 
         const abilityQ = document.getElementById('abilityQ'); 
         const abilityE = document.getElementById('abilityE'); 
+        const gameGuide = document.getElementById('gameGuide'); // Rehber element
 
         const abilityQIcon = document.getElementById('abilityQIcon'); 
         const abilityEIcon = document.getElementById('abilityEIcon'); 
-        // KESİK KALAN DEĞİŞKEN TANIMLARI BURADA TAMAMLANDI
         const guideQName = document.getElementById('guideQName');
         const guideEName = document.getElementById('guideEName');
         const touchQIcon = document.getElementById('touchQIcon');
@@ -589,7 +697,8 @@
         const gameUI = document.getElementById('gameUI');
         const startButton = document.getElementById('startButton');
         const playerNameInput = document.getElementById('playerNameInput');
-        const gameGuide = document.getElementById('gameGuide');
+        // const shopScreen = document.getElementById('shopScreen'); // KALDIRILDI
+        // const shopButton = document.getElementById('shopButton'); // KALDIRILDI
 
         // --- Touch/Mobile Elementleri ---
         const touchControls = document.getElementById('touchControls');
@@ -619,6 +728,7 @@
         setCanvasSize();
 
         var score = 0;
+        // Paranın kalıcı kaydı kaldırıldı.
         var coins = 0; 
         var projectiles = []; 
         var enemies = []; 
@@ -627,9 +737,58 @@
         var enemyProjectiles = []; 
         var floatingTexts = []; 
         var lightningBolts = []; 
-        var meteors = []; // YENİ: Meteorları tutmak için dizi
+        var meteors = [];
+        var earthquakes = []; // YENİ: Toprak Ultisi için deprem parçacıkları
 
-        var lives = 10; // Can sayısı
+        // YENİ UZAY TEMASI DEĞİŞKENLERİ
+        // Yıldızlar/parçacıklar dizisi (Hafif bir paralaks hareketi için)
+        const stars = [];
+        const numStars = 200; 
+        for(let i=0; i<numStars; i++) {
+            stars.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                size: Math.random() * 2 + 0.5,
+                speed: Math.random() * 0.5 + 0.1, // Hafif hareket hızı
+                color: `rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2})`
+            });
+        }
+        // ------------------------------------
+
+        // --- YENİ ÖFKE MODU DEĞİŞKENLERİ ---
+        var killStreak = 0;
+        var lastKillTime = 0;
+        var killTimeThreshold = 2000; // 2 saniye içinde yeni kill gelmeli
+        var rageKillsNeeded = 10; // 10 kill ile rage başlasın
+        var isRaging = false;
+        var rageDuration = 5000; // 5 saniye Rage süresi
+        var rageSpeedMultiplier = 1.5;
+        var rageProjectileSpeedMultiplier = 1.5;
+        var rageRadiusMultiplier = 2; // Mermi çapı katlayıcısı
+        // ------------------------------------
+        
+        // --- BUZ YETENEĞİ DEĞİŞKENLERİ ---
+        var isGlobalFreezeActive = false;
+        const globalFreezeDuration = 120; // 2 saniye (60 FPS * 2)
+        // ------------------------------------
+        
+        // --- YENİ KAYA MİMARI DEĞİŞKENİ ---
+        // Kristal Kale yeteneği kaldırıldı, ancak değişken uyumluluk için korundu.
+        var isCrystalFortressActive = false;
+        const crystalFortressDuration = 300; // 5 saniye (60 FPS * 5)
+        // ------------------------------------
+
+        // --- REHBER DURUMU DEĞİŞKENİ ---
+        var isGuideVisible = true; // Rehber başlangıçta görünür
+
+        // --- YÜKSELTME SİSTEMİ KALDIRILDI ---
+        
+        function saveGameData() {
+            // Sadece en yüksek skoru kaydediyoruz
+            localStorage.setItem('highestScore', highestScore);
+        }
+
+        var lives = 10; // Sabit 10 can
         var isGameOver = false;
         var isPaused = false;
         var level = 1; 
@@ -640,16 +799,17 @@
         var ultimateFlash = 0; 
 
         const baseProjectileSpeed = 14; 
-        var enemySpeedMultiplier = 1; 
-        var fireRateMultiplier = 1; 
-        var playerSpeedMultiplier = 1; 
+        // DÜZELTME: Temel düşman hız çarpanı 1.4'e yükseltildi.
+        var enemySpeedMultiplier = 1.4; 
+        var fireRateMultiplier = 1; // Sabit
+        var playerSpeedMultiplier = 1; // Sabit
 
         var altFireInterval = null;
         const altFireRate = 50; 
         var bombCooldown = 10000; 
         var lastBombTime = 0;
 
-        var dashCooldown = 2000; 
+        var dashCooldown = 2000; // Sabit
         var lastDashTime = 0;
         var isDashing = false;
         var dashVelocityX = 0; 
@@ -663,7 +823,7 @@
         var lastUseTimeE = 0;
         var isSpinjitzuActive = false; 
         var isInvincible = false; 
-        var spinjitzuDuration = 1000; 
+        var spinjitzuDuration = 3000; // 3 saniye
         
         // Yenilmezlik (Invincibility) durumu ve süresi
         var isInvincibleFromHit = false;
@@ -671,6 +831,8 @@
 
         var currentMouseX = W / 2;
         var currentMouseY = H / 2;
+        // YENİ NİŞANGAH RENGİ
+        const crosshairColor = '#00FF00'; // Neon Yeşil
         var difficultyText = 'KOLAY';
         var highestScore = localStorage.getItem('highestScore') || 0; 
         
@@ -684,10 +846,11 @@
         const basePlayerSpeed = 5;
         let keys = {};
         
-        const bombImage = new Image();
-        bombImage.src = 'bomb.png'; 
-        let bombImageLoaded = false;
-        bombImage.onload = () => { bombImageLoaded = true; };
+        // Harici bomb görseli kaldırıldı (Tek dosya stratejisi için)
+        // const bombImage = new Image();
+        // bombImage.src = 'bomb.png'; 
+        // let bombImageLoaded = false;
+        // bombImage.onload = () => { bombImageLoaded = true; };
 
         // --- Mermi Atış Fonksiyonu (Yeniden Kullanılabilir) ---
         function singleShot() {
@@ -695,10 +858,12 @@
 
             Sound.shoot();
             
-            const radius = 6; 
+            // Rage modu mermi boyutunu ve hızını artırır
+            const radius = 6 * (isRaging ? rageRadiusMultiplier : 1); 
+            
             // Atış açısı: Oyuncunun baktığı yönü kullan
             const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
-            const speed = baseProjectileSpeed * fireRateMultiplier; 
+            const speed = baseProjectileSpeed * fireRateMultiplier * (isRaging ? rageProjectileSpeedMultiplier : 1); 
             
             recoilX = Math.cos(angle) * 5;
             recoilY = Math.sin(angle) * 5;
@@ -707,20 +872,28 @@
             const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
             // Karakterin mermi rengini kullan
             projectiles.push(new Projectile(centerX, centerY, radius, selectedCharacter.projectileColor, velocity)); 
+            
+            // TOPRAK KARAKTERİ İTME EFEKTİ KALDIRILDI.
+            // if (selectedCharacter === Characters.EARTH) {
+            //     const pushBack = 5; // Geri itme gücü
+            //     projectiles[projectiles.length - 1].pushPower = pushBack;
+            // }
+
             updateInfoDisplay();
         }
 
         // --- UI GÜNCELLEME ---
         function updateInfoDisplay() {
             let hearts = "";
+            const maxHearts = 10; // Sabit 10 can
             for(let i=0; i<lives; i++) hearts += "❤️";
             healthVal.innerHTML = hearts;
-            if(lives <= 3) healthVal.className = "hud-value danger-text"; // Can azaldığında kırmızıya dönme eşiği 3'e çekildi
+            if(lives <= maxHearts * 0.3) healthVal.className = "hud-value danger-text";
             else healthVal.className = "hud-value";
 
             levelVal.innerText = `${level} (${difficultyText})`;
             scoreDisplay.innerText = score;
-            coinDisplay.innerText = coins; 
+            // coinDisplay.innerText = coins; // KALDIRILDI
             
             const remainingBombTime = Math.max(0, bombCooldown - (Date.now() - lastBombTime));
             if (remainingBombTime > 0) {
@@ -740,53 +913,94 @@
             const elapsedQ = Date.now() - lastUseTimeQ;
             const cooldownPercentQ = Math.min(100, (elapsedQ / cooldownTimeQ) * 100);
             cooldownQ.style.height = `${100 - cooldownPercentQ}%`;
+            // Q yeteneği aktifken de ready görünebilir (bazı yeteneklerde aktif durum önemlidir)
             abilityQ.classList.toggle('ready-border', cooldownPercentQ >= 100 || isSpinjitzuActive); 
 
             const elapsedE = Date.now() - lastUseTimeE;
             const cooldownPercentE = Math.min(100, (elapsedE / cooldownTimeE) * 100);
             cooldownE.style.height = `${100 - cooldownPercentE}%`;
-            abilityE.classList.toggle('ready-border', cooldownPercentE >= 100);
+            // E yeteneği aktifken de ready görünebilir
+            abilityE.classList.toggle('ready-border', cooldownPercentE >= 100 || isCrystalFortressActive);
+        }
+
+        // --- REHBER GÖRÜNÜRLÜĞÜNÜ DEĞİŞTİRME ---
+        function toggleGuide() {
+            if (isTouchDevice) return; // Mobil cihazlarda rehber zaten gizli
+            isGuideVisible = !isGuideVisible;
+            gameGuide.classList.toggle('hidden', !isGuideVisible);
         }
 
         // --- OYUN BAŞLANGIÇ ---
         function initGame() {
-            lives = 10; // Başlangıç canı 10 olarak ayarlandı
-            score = 0; coins = 0; isGameOver = false; isPaused = false;
+            // Yükseltme çağırma kaldırıldı. Değerler sabitlendi.
+            lives = 10; 
+            fireRateMultiplier = 1;
+            playerSpeedMultiplier = 1;
+            dashCooldown = 2000;
+
+            score = 0; 
+            coins = 0; // Para sıfırlandı
+            isGameOver = false; isPaused = false;
             projectiles = []; enemies = []; particles = []; powerUps = []; enemyProjectiles = []; floatingTexts = [];
             lightningBolts = [];
-            meteors = []; // YENİ RESET
+            meteors = [];
+            earthquakes = []; // YENİ: Toprak Ultisi için deprem parçacıkları
+            
             playerHitFlash = 0; levelUpFlash = 0; screenShake = 0; ultimateFlash = 0; lastBombTime = 0; lastDashTime = 0;
             dashVelocityX = 0; dashVelocityY = 0;
             isSpinjitzuActive = false; isInvincible = false; 
-            isInvincibleFromHit = false; // Yenilmezlik durumu resetlendi
-            playerSpeedMultiplier = 1; fireRateMultiplier = 1;
+            isInvincibleFromHit = false; 
             lastUseTimeQ = 0; lastUseTimeE = 0;
             
+            // Öfke Modu değişkenleri sıfırlanır
+            killStreak = 0;
+            isRaging = false;
+            isGlobalFreezeActive = false; // BUZ ULTI sıfırlandı
+            isCrystalFortressActive = false; // YENİ: Kristal Kale sıfırlandı
+
+            // REHBER SIFIRLAMA VE ZAMANLAYICI BAŞLATMA
+            isGuideVisible = true;
+            gameGuide.classList.remove('hidden');
+            if (!isTouchDevice) {
+                 setTimeout(() => {
+                    if (!isPaused && !isGameOver) {
+                        isGuideVisible = false;
+                        gameGuide.classList.add('hidden');
+                    }
+                }, 10000); // 10 saniye sonra gizle
+            }
+
+            // DÜZELTME: Temel düşman hız çarpanı 1.4'e ayarlandı.
+            enemySpeedMultiplier = 1.4;
+
             const nameLength = playerName.length;
-            if (nameLength <= 4) { enemySpeedMultiplier = 1.0; difficultyText = 'KOLAY'; }
-            else if (nameLength <= 7) { enemySpeedMultiplier = 1.5; difficultyText = 'ORTA'; }
-            else { enemySpeedMultiplier = 2.0; difficultyText = 'ZOR'; }
+            if (nameLength <= 4) { difficultyText = 'KOLAY'; }
+            else if (nameLength <= 7) { difficultyText = 'ORTA'; }
+            else { difficultyText = 'ZOR'; }
 
             level = 1; 
             centerX = W / 4; centerY = H / 2; 
             
             // KARAKTERE ÖZEL HUD GÜNCELLEMESİ
             const qAbility = selectedCharacter.abilityQName;
-            const eAbility = selectedCharacter.abilityEName; // Hata düzeltildi: `characterEName` yerine `abilityEName`
-
-            // HUD ve Rehber metinlerini güncelle
-            // Sadece Emoji ve Q/E harfi kalacak şekilde basitleştirildi.
-            abilityQIcon.innerHTML = `🌀 Q`;
+            const eAbility = selectedCharacter.abilityEName;
+            
+            // Q İkonu: Girdap veya Spinjitzu
+            const qIcon = qAbility.includes('🌀') ? '🌀' : qAbility.includes('🛡️') ? '🛡️' : '❓';
+            abilityQIcon.innerHTML = `${qIcon} Q`;
             abilityQIcon.style.color = selectedCharacter.color;
-            abilityEIcon.innerHTML = `☄️ E`; // YENİ: Sadeleştirilmiş ikon
+
+            // E İkonu: Deprem/Yıkım (💥) veya diğer Ulti ikonları
+            const eIcon = eAbility.includes('☄️') ? '☄️' : eAbility.includes('💎') ? '💎' : eAbility.includes('💥') ? '💥' : '❓';
+            abilityEIcon.innerHTML = `${eIcon} E`;
             abilityEIcon.style.color = selectedCharacter.projectileColor;
             
             guideQName.innerText = qAbility.split(' ')[0];
             guideEName.innerText = eAbility.split(' ')[0];
             document.getElementById('qAbilityName').innerText = qAbility.split(' ')[0];
             document.getElementById('eAbilityName').innerText = eAbility.split(' ')[0];
-            touchQIcon.innerHTML = `🌀 Q`; // Touch ikonları da sadeleştirildi
-            touchEIcon.innerHTML = `☄️ E`; // Touch ikonları da sadeleştirildi
+            touchQIcon.innerHTML = `${qIcon} Q`;
+            touchEIcon.innerHTML = `${eIcon} E`; 
 
 
             updateInfoDisplay();
@@ -796,44 +1010,68 @@
             animate();
             spawnEnemies();
         }
+
+        // --- ÖFKE MODU BAŞLATMA ---
+        function startRageMode() {
+            if (isRaging) return;
+            
+            isRaging = true;
+            isInvincible = true; 
+            Sound.ultimate('fire'); 
+            screenShake = 15;
+            floatingTexts.push(new FloatingText("⚡ ÇILGIN MOD ⚡", W / 2, H / 2 - 150, "#FF0000", 70));
+            
+            // Rage bitince ayarları sıfırla
+            setTimeout(() => {
+                isRaging = false;
+                isInvincible = false;
+                killStreak = 0; // Rage bitince streak sıfırlanır
+                floatingTexts.push(new FloatingText("Mod Bitti", W / 2, H / 2 - 150, "#FFA500", 30));
+            }, rageDuration);
+        }
         
-        // --- YENİ ARKA PLAN ÇİZİM FONKSİYONU ---
+        // --- UZAY ARKA PLANI ÇİZİMİ (YENİ) ---
         function drawBackground() {
-            let baseColor;
-            const initialHue = 210; // Başlangıç Mavi tonu
-            const hueShift = (level - 1) * 2; // Seviye başına 2 derece kayma (Daha yumuşak)
+            // 1. Temel Arkaplan Rengi (Derin Uzay)
+            ctx.fillStyle = '#050a30'; // Çok koyu mavi/mor
+            ctx.fillRect(0, 0, W, H);
+
+            // 2. Yıldızlar (Hafif Parallax Efekti)
+            stars.forEach(star => {
+                // Parallax hareketini sadece X ekseninde simüle et (sabit kayış)
+                star.x -= star.speed; 
+                if (star.x < 0) {
+                    star.x = W + star.size;
+                    star.y = Math.random() * H; // Ekranın sağına yeni yıldız yerleştir
+                }
+
+                ctx.fillStyle = star.color;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 3. Nebula/Galaksi Işık Hüzmesi (Seviye değiştikçe renk lensi)
+            const initialHue = 260; // Mor/Mavi başlangıç
+            const hueShift = (level - 1) * 20; 
             const currentHue = (initialHue + hueShift) % 360;
 
-            // Arkaplan rengi, seviye ilerledikçe yumuşakça kayan koyu bir renk tonu olacak.
-            // Sadece Canvas'ın arka planını çizmek için daha belirgin ve basit bir renk kullanalım.
-            baseColor = `hsl(${currentHue}, 40%, 15%)`; // Koyu, hafif doygunlukta
-
-            // 1. Temel Arkaplan Rengi (Göz yormayan, sabit renk)
-            ctx.fillStyle = baseColor; 
+            const gradient = ctx.createRadialGradient(
+                W * 0.5, H * 0.5, 
+                W * 0.1, 
+                W * 0.5, H * 0.5, 
+                W * 0.8
+            );
+            
+            // Seviye temelli renk geçişleri
+            gradient.addColorStop(0, `hsla(${currentHue}, 80%, 50%, 0.15)`);
+            gradient.addColorStop(0.5, `hsla(${(currentHue + 40) % 360}, 60%, 30%, 0.05)`);
+            gradient.addColorStop(1, 'rgba(5, 10, 48, 0)');
+            
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, W, H);
             
-            // 2. Izgara Çizimi (Sabit, Yumuşak Izgara)
-            ctx.strokeStyle = `hsl(${currentHue}, 25%, 35%)`; // Temel tona yakın, daha açık ve düşük opaklıkta çizgi
-            ctx.lineWidth = 1;
-            const gridSpacing = 40;
-            
-            // Yatay çizgiler (Hareketsiz)
-            for(let y = 0; y < H; y += gridSpacing) { 
-                ctx.beginPath(); 
-                ctx.moveTo(0, y); 
-                ctx.lineTo(W, y); 
-                ctx.stroke(); 
-            }
-            
-            // Dikey çizgiler (Hareketsiz)
-            for(let x = 0; x < W; x += gridSpacing) { 
-                ctx.beginPath(); 
-                ctx.moveTo(x,0); 
-                ctx.lineTo(x,H); 
-                ctx.stroke(); 
-            }
-            
-            // 3. Seviye Adı Gösterimi (Opaklık ayarlı)
+            // 4. Seviye Adı Gösterimi (Opaklık ayarlı)
             ctx.save(); 
             ctx.globalAlpha = 0.1; 
             ctx.font = 'bold 100px sans-serif';
@@ -969,6 +1207,9 @@
             explode() {
                 if (this.hitGround) return;
                 
+                // YENİ: Büyük darbe anlık flaş efekti
+                ultimateFlash = 0.5; // Ekranı anlık beyaz/sarı flaşla parlat
+                
                 Sound.meteorImpact();
                 screenShake = 15;
                 this.hitGround = true;
@@ -985,12 +1226,665 @@
             }
         }
         
+        // --- YENİ DEPREM YER SARSINTISI SINIFI (ARTIK KULLANILMIYOR, KRİSTAL KALE İÇİN KORUNDU) ---
+        class EarthquakeShockwave {
+            constructor(x, y, color) {
+                this.x = x; 
+                this.y = y; 
+                this.color = color;
+                this.radius = 10;
+                this.maxRadius = Math.max(W, H) * 1.5; 
+                this.life = 1.0;
+                this.thickness = 30;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life * 0.5;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = this.thickness * this.life;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 20 * this.life;
+                
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            update() {
+                this.draw();
+                this.radius += 50; 
+                this.life -= 0.02; 
+            }
+        }
+        
         // --- Diğer Sınıflar (Projectile, Enemy, Particle, PowerUp) ---
         
         class FloatingText { constructor(text, x, y, color, size = 20) { this.text = text; this.x = x; this.y = y; this.color = color; this.size = size; this.life = 1.0; this.velocityY = -2; } update() { this.y += this.velocityY; this.life -= 0.02; } draw() { ctx.save(); ctx.globalAlpha = Math.max(0, this.life); ctx.fillStyle = this.color; ctx.font = `bold ${this.size}px Arial`; ctx.shadowColor = 'black'; ctx.shadowBlur = 4; ctx.textAlign = 'center'; ctx.fillText(this.text, this.x, this.y); ctx.restore(); } }
-        class Projectile { constructor(x, y, radius, color, velocity, isBomb = false) { this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity; this.isBomb = isBomb; this.baseRadius = radius; this.explosionRadius = 250; this.exploded = false; this.explosionTimer = 0; this.trail = []; } draw() { if (this.isBomb) { if (this.exploded) { ctx.save(); ctx.globalAlpha = 1 - (this.explosionTimer / 60); ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255, 165, 0, 0.7)'; ctx.fill(); ctx.strokeStyle = 'rgba(255, 255, 0, 0.9)'; ctx.lineWidth = 5; ctx.stroke(); ctx.restore(); } else { if (bombImageLoaded) { const size = this.radius * 2; ctx.drawImage(bombImage, this.x - this.radius, this.y - this.radius, size, size); } else { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'gray'; ctx.fill(); ctx.strokeStyle = 'black'; ctx.stroke(); ctx.fillStyle = 'white'; ctx.font = '10px Arial'; ctx.textAlign = 'center'; ctx.fillText('💣', this.x, this.y + 4); } } } else { ctx.save(); ctx.lineCap = 'round'; ctx.lineWidth = this.radius; ctx.beginPath(); if (this.trail.length > 0) { ctx.moveTo(this.trail[0].x, this.trail[0].y); for(let t of this.trail) { ctx.lineTo(t.x, t.y); } } ctx.strokeStyle = this.color; ctx.globalAlpha = 0.5; ctx.stroke(); ctx.restore(); ctx.save(); ctx.shadowBlur = 15; ctx.shadowColor = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = this.color; ctx.stroke(); ctx.restore(); } } update() { if (!this.isBomb) { this.trail.push({x: this.x, y: this.y}); if (this.trail.length > 8) this.trail.shift(); } this.draw(); if (this.isBomb && this.exploded) { this.explosionTimer++; this.radius += 5; } else { this.x += this.velocity.x; this.y += this.velocity.y; } } explode() { if (this.exploded) return; this.exploded = true; this.radius = this.baseRadius; this.explosionTimer = 0; Sound.explosion(); screenShake = 30; hitStopTimer = 4; let enemiesHit = []; enemies.forEach(enemy => { const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y); if (dist - enemy.radius < this.explosionRadius) enemiesHit.push(enemy); }); enemiesHit.forEach(enemy => { for (let i = 0; i < 10; i++) particles.push(new Particle(enemy.x, enemy.y, Math.random() * 4, 'gold', { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 })); score += 100 * enemy.maxHp; coins += 5 * enemy.maxHp; floatingTexts.push(new FloatingText("GÜM!", enemy.x, enemy.y, "#FF4500", 40)); }); enemies = enemies.filter(enemy => { const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y); return dist - enemy.radius >= this.explosionRadius; }); updateInfoDisplay(); } }
+        
+        class Projectile { 
+            constructor(x, y, radius, color, velocity, isBomb = false) { 
+                this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity; 
+                this.isBomb = isBomb; this.baseRadius = radius; this.explosionRadius = 250; 
+                this.exploded = false; this.explosionTimer = 0; this.trail = []; 
+                this.bombFuseTime = 60 * 3; // 3 saniye fitil süresi (60 FPS varsayılarak)
+                this.pushPower = 0; // Toprak karakteri için geri itme gücü (Artık SADECE eski kod uyumluluğu için tutuluyor)
+            } 
+            
+            // YENİ BOMBA ÇİZİM FONKSİYONU
+            drawBomb() {
+                ctx.save();
+                
+                // 1. Bomba Gövdesi (Koyu Gri Top)
+                ctx.beginPath(); 
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+                ctx.fillStyle = '#1e2023'; // Koyu Siyah
+                ctx.fill(); 
+                
+                // 2. Parlak Vurgu (3D efekti)
+                ctx.beginPath();
+                ctx.arc(this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; // Hafif beyaz parlaklık
+                ctx.fill();
+
+                // 3. Fitil (Yanan İp)
+                const fuseLength = this.radius * 0.8;
+                const fuseAngle = -Math.PI / 2; // Yukarı doğru
+                
+                // Fitil çizgisi
+                ctx.beginPath();
+                ctx.moveTo(this.x + Math.cos(fuseAngle) * this.radius, this.y + Math.sin(fuseAngle) * this.radius);
+                ctx.lineTo(this.x + Math.cos(fuseAngle) * (this.radius + fuseLength), this.y + Math.sin(fuseAngle) * (this.radius + fuseLength));
+                ctx.strokeStyle = '#5c4033'; // Kahverengi ip
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // 4. Fitil Alevi (Yanıp Sönen)
+                const flameRadius = 5 + Math.abs(Math.sin(Date.now() / 50)) * 3;
+                const flameX = this.x + Math.cos(fuseAngle) * (this.radius + fuseLength);
+                const flameY = this.y + Math.sin(fuseAngle) * (this.radius + fuseLength);
+                
+                ctx.shadowColor = '#FF4500';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(flameX, flameY, flameRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700'; // Parlak Sarı/Altın
+                ctx.fill();
+                
+                ctx.restore();
+            }
+
+            draw() { 
+                if (this.isBomb) { 
+                    if (this.exploded) { 
+                        ctx.save(); 
+                        ctx.globalAlpha = 1 - (this.explosionTimer / 60); 
+                        ctx.beginPath(); 
+                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+                        ctx.fillStyle = 'rgba(255, 165, 0, 0.7)'; 
+                        ctx.fill(); 
+                        ctx.strokeStyle = 'rgba(255, 255, 0, 0.9)'; 
+                        ctx.lineWidth = 5; 
+                        ctx.stroke(); 
+                        ctx.restore(); 
+                    } else { 
+                        // YENİ BOMBA GÖRÜNÜMÜ ÇAĞRILDI
+                        this.drawBomb();
+                    } 
+                } else { 
+                    // NORMAL MERMİ ÇİZİMİ
+                    
+                    // YENİ: TOPRAK MERMİSİ PARÇACIK EFEKTİ (Sadece Görsel)
+                    if (this.color === Characters.EARTH.projectileColor) {
+                        particles.push(new Particle(
+                            this.x, this.y, 
+                            Math.random() * 3 + 1, 
+                            'rgba(139, 69, 19, 0.8)', 
+                            // Partikülleri merminin hareket yönünün tersine it
+                            { x: -this.velocity.x * 0.1, y: -this.velocity.y * 0.1 }, 
+                            'circle'
+                        ));
+                    }
+                    // ATEŞ MERMİSİ PARÇACIK EFEKTİ (Sadece Savaşçı/Fire için)
+                    else if (this.color === Characters.FIRE.projectileColor) {
+                        // Merminin hareket yönünün tersine partikül oluştur
+                        particles.push(new Particle(
+                            this.x, this.y, 
+                            Math.random() * 2 + 1, 
+                            'rgba(255, 165, 0, 0.8)', 
+                            // Partikülleri merminin hareket yönünün tersine it
+                            { x: -this.velocity.x * 0.1, y: -this.velocity.y * 0.1 }, 
+                            'circle'
+                        ));
+                    } else if (this.color === Characters.ICE.projectileColor) {
+                        // BUZ MERMİSİ PARÇACIK EFEKTİ
+                        particles.push(new Particle(
+                            this.x, this.y, 
+                            Math.random() * 2 + 1, 
+                            'rgba(173, 216, 230, 0.8)', 
+                            { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 }, 
+                            'spark'
+                        ));
+                    }
+                    
+                    ctx.save(); 
+                    ctx.lineCap = 'round'; 
+                    ctx.lineWidth = this.radius; 
+                    ctx.beginPath(); 
+                    if (this.trail.length > 0) { 
+                        ctx.moveTo(this.trail[0].x, this.trail[0].y); 
+                        for(let t of this.trail) { ctx.lineTo(t.x, t.y); } 
+                    } 
+                    ctx.strokeStyle = this.color; 
+                    ctx.globalAlpha = 0.5; 
+                    ctx.stroke(); 
+                    ctx.restore(); 
+                    ctx.save(); 
+                    ctx.shadowBlur = 15; 
+                    ctx.shadowColor = this.color; 
+                    ctx.beginPath(); 
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+                    ctx.fillStyle = 'white'; 
+                    ctx.fill(); 
+                    ctx.lineWidth = 2; 
+                    ctx.strokeStyle = this.color; 
+                    ctx.stroke(); 
+                    ctx.restore(); 
+                } 
+            } 
+            update() { 
+                if (!this.isBomb) { 
+                    this.trail.push({x: this.x, y: this.y}); 
+                    if (this.trail.length > 8) this.trail.shift(); 
+                } 
+                this.draw(); 
+                
+                if (this.isBomb) {
+                    if (this.exploded) {
+                        this.explosionTimer++; 
+                        this.radius += 5;
+                    } else {
+                        // FIX: Bombanın hareketini buraya ekledik
+                        this.x += this.velocity.x; 
+                        this.y += this.velocity.y; 
+                        // SÜRTÜNME ORANI DÜŞÜRÜLDÜ (Daha uzağa fırlatma)
+                        this.velocity.x *= 0.98; 
+                        this.velocity.y *= 0.98; 
+
+                        // Fitil sayacı
+                        this.bombFuseTime--;
+                        if (this.bombFuseTime <= 0) {
+                            this.explode();
+                        }
+                    }
+                } else { 
+                    // Normal mermi hareketi
+                    this.x += this.velocity.x; 
+                    this.y += this.velocity.y; 
+                } 
+            } 
+            explode() { 
+                if (this.exploded) return; 
+                this.exploded = true; 
+                this.radius = this.baseRadius; 
+                this.explosionTimer = 0; 
+                Sound.explosion(); 
+                screenShake = 30; 
+                hitStopTimer = 4; 
+                let enemiesHit = []; 
+                enemies.forEach(enemy => { 
+                    const dist = Math.hypot(this.x - enemy.x, this.y - enemy.y); 
+                    if (dist - enemy.radius < this.explosionRadius) enemiesHit.push(enemy); 
+                }); 
+                enemiesHit.forEach(enemy => { 
+                    for (let i = 0; i < 10; i++) particles.push(new Particle(enemy.x, enemy.y, Math.random() * 4, 'gold', { x: (Math.random() - 0.5) * 15, y: (Math.random() - 0.5) * 15 })); 
+                    score += 100 * enemy.maxHp; 
+                    /* coins += 5 * enemy.maxHp; */ 
+                    floatingTexts.push(new FloatingText("GÜM!", enemy.x, enemy.y, "#FF4500", 40)); 
+                }); 
+                enemies = enemies.filter(enemy => { 
+                    const dist = Math.hypot(this.x - enemy.x, enemy.y - enemy.y); 
+                    return dist - enemy.radius >= this.explosionRadius; 
+                }); 
+                updateInfoDisplay(); 
+            } 
+        }
         class EnemyProjectile { constructor(x, y, radius, velocity) { this.x = x; this.y = y; this.radius = radius; this.color = '#FF4500'; this.velocity = velocity; } draw() { ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = 'red'; ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.fill(); ctx.strokeStyle = 'red'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); } update() { this.draw(); this.x += this.velocity.x; this.y += this.velocity.y; } }
-        class Enemy { constructor(x, y, radius, color, velocity, type = 'basic') { this.x = x; this.y = y; this.radius = radius; this.baseColor = color; this.color = color; this.velocity = velocity; this.type = type; let healthMultiplier = 1; if (type === 'shield') healthMultiplier = 2; if (type === 'bomber') healthMultiplier = 0.5; this.hp = Math.floor(radius / 10) * healthMultiplier + level; this.maxHp = this.hp; this.isHit = false; this.lastShotTime = Date.now(); this.fireRate = 1500 + (this.radius * 30); this.fuseTimer = 0; this.maxFuse = 90; } takeHit() { if (this.type === 'shield' && Math.random() < 0.5) { Sound.shieldHit(); floatingTexts.push(new FloatingText("BLOKE", this.x, this.y - this.radius, "#00bfff", 15)); return false; } this.hp--; this.isHit = true; setTimeout(() => { this.isHit = false; }, 50); return this.hp <= 0; } draw() { ctx.save(); ctx.translate(this.x, this.y); if (this.type === 'bomber') { const flash = Math.abs(Math.sin(this.fuseTimer * 0.5)) * 0.5 + 0.5; ctx.globalAlpha = flash; ctx.beginPath(); ctx.arc(0, 0, this.radius * 1.5, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 69, 0, 0.3)`; ctx.fill(); ctx.globalAlpha = 1.0; ctx.font = `bold ${this.radius}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💣', 0, 0); } else if (this.type === 'shield') { ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fillStyle = '#1e8449'; ctx.fill(); ctx.strokeStyle = '#0e6262'; ctx.lineWidth = 2; ctx.stroke(); ctx.strokeStyle = '#ccd1d1'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, 0, this.radius + 3, -Math.PI/2 - 0.5, -Math.PI/2 + 0.5); ctx.stroke(); ctx.font = `bold ${this.radius * 0.6}px sans-serif`; ctx.fillStyle = 'white'; ctx.fillText('S', 0, 0); } else { const jiggle = Math.sin(Date.now() / 60) * 2; ctx.beginPath(); ctx.ellipse(0, 0, this.radius + jiggle, this.radius - jiggle, 0, 0, Math.PI * 2); ctx.fillStyle = this.baseColor; ctx.fill(); ctx.strokeStyle = '#212121'; ctx.lineWidth = 2; ctx.stroke(); ctx.font = `bold ${this.radius * 0.8}px sans-serif`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('X', 0, 0); } if (this.isHit) { ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; ctx.fill(); } if (this.maxHp > 1 && this.type !== 'bomber') { const w = this.radius * 1.5; ctx.fillStyle = 'red'; ctx.fillRect(-w/2, -this.radius - 9, w * (this.hp / this.maxHp), 4); } ctx.restore(); } fireAtPlayer(playerX, playerY) { if (this.type === 'bomber') return null; const now = Date.now(); if (now - this.lastShotTime < this.fireRate) return null; this.lastShotTime = now; const speed = 4.0; const angle = Math.atan2(playerY - this.y, playerX - this.x); return new EnemyProjectile(this.x, this.y, 6, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed }); } update(playerX, playerY) { this.draw(); if (this.type === 'bomber') { const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); if (distToPlayer < 100) { this.fuseTimer++; Sound.bombBeep(); this.velocity.x = 0; this.velocity.y = 0; if (this.fuseTimer >= this.maxFuse) { this.explodeBomber(playerX, playerY); return; } } const angle = Math.atan2(playerY - this.y, playerX - this.x); this.x += Math.cos(angle) * (1.5 * enemySpeedMultiplier); this.y += Math.sin(angle) * (1.5 * enemySpeedMultiplier); } else { this.x += this.velocity.x; this.y += this.velocity.y; } } explodeBomber(playerX, playerY) { const explosionRadius = 150; const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); Sound.explosion(); screenShake = 10; enemyProjectiles = enemyProjectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); projectiles = projectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); if (distToPlayer < playerRadius) { lives--; playerHitFlash = 1.0; screenShake = 30; hitStopTimer = 15; Sound.hit(); updateInfoDisplay(); floatingTexts.push(new FloatingText("BOOM!", playerX, playerY, "red", 50)); } for(let k=0; k<20; k++) { particles.push(new Particle(this.x, this.y, Math.random()*7, 'orange', {x:(Math.random()-0.5)*12, y:(Math.random()-0.5)*12})); } this.hp = 0; } }
+        
+        // --- GÜNCELLENMİŞ POWERUP SINIFI ---
+        class PowerUp { 
+            constructor(x, y, effect) { 
+                this.x = x; 
+                this.y = y; 
+                this.radius = 15; 
+                this.effect = effect; 
+                this.velocity = { x: -1.5, y: 0 }; 
+                this.angle = 0; 
+            } 
+            draw() { 
+                this.angle += 0.1; 
+                ctx.save(); 
+                ctx.translate(this.x, this.y); 
+                ctx.rotate(this.angle); 
+
+                if (this.effect === 'health') {
+                    // Can Paketi (Yeşil ve Kalp)
+                    ctx.fillStyle = '#2ecc71'; 
+                    ctx.beginPath(); 
+                    ctx.arc(0, 0, this.radius, 0, Math.PI * 2); 
+                    ctx.fill(); 
+                    ctx.font = 'bold 20px Arial';
+                    ctx.fillStyle = '#ff4444'; 
+                    ctx.fillText('❤️', 0, 0 + 5); 
+                } else {
+                    // Hız Paketi (Sarı ve Hız) - Eski görünüm
+                    ctx.fillStyle = 'yellow'; 
+                    ctx.beginPath(); 
+                    for (let i = 0; i < 6; i++) { 
+                        ctx.lineTo(this.radius * Math.cos(i * Math.PI / 3), this.radius * Math.sin(i * Math.PI / 3)); 
+                    } 
+                    ctx.fill(); 
+                    ctx.strokeStyle = 'orange'; 
+                    ctx.lineWidth = 2; 
+                    ctx.stroke(); 
+                    ctx.font = 'bold 10px Arial'; 
+                    ctx.fillStyle = 'black'; 
+                    ctx.fillText('HIZ', 0, 0 + 3); 
+                }
+
+                ctx.restore(); 
+            } 
+            update() { 
+                this.draw(); 
+                this.x += this.velocity.x; 
+            } 
+        }
+
+        // --- GÜNCELLENMİŞ ENEMY SINIFI (Uzaylı Görünümleri) ---
+        class Enemy { 
+            constructor(x, y, radius, color, velocity, type = 'basic', parentRadius = 0) { 
+                this.x = x; 
+                this.y = y; 
+                this.radius = radius; 
+                this.baseColor = color; 
+                this.color = color; 
+                this.velocity = velocity; 
+                this.type = type; 
+                this.parentRadius = parentRadius; 
+                
+                let healthMultiplier = 1; 
+                if (type === 'shield') healthMultiplier = 2; 
+                if (type === 'bomber') healthMultiplier = 0.5; 
+                if (type === 'splitter') healthMultiplier = 1.5; 
+
+                if (parentRadius > 0) {
+                     this.hp = Math.max(1, Math.floor(parentRadius / 15) + level / 2); 
+                } else {
+                     this.hp = Math.floor(radius / 10) * healthMultiplier + level;
+                }
+                
+                this.maxHp = this.hp; 
+                this.isHit = false; 
+                this.lastShotTime = Date.now(); 
+                this.fireRate = 1500 + (this.radius * 30); 
+                this.fuseTimer = 0; 
+                this.maxFuse = 90; 
+
+                // YENİ: Buz Yavaşlatma Zamanlayıcısı
+                this.slowTimer = 0; 
+            } 
+            
+            takeHit() { 
+                if (this.type === 'shield' && Math.random() < 0.5) { 
+                    Sound.shieldHit(); 
+                    floatingTexts.push(new FloatingText("BLOKE", this.x, this.y - this.radius, "#00bfff", 15)); 
+                    return false; 
+                } 
+                
+                // KRİSTAL KALE AKTİFKEN HASAR DİRENCİ (BU YETENEK ARTIK KULLANILMIYOR)
+                if (isCrystalFortressActive) {
+                    if (Math.random() < 0.9) { // %90 şansla hasar almaz
+                        floatingTexts.push(new FloatingText("KALE", this.x, this.y - this.radius, "#FFD700", 15)); 
+                        return false;
+                    }
+                    // %10 şansla minik hasar
+                    this.hp -= 0.1;
+                } else {
+                    this.hp--; 
+                }
+
+                this.isHit = true; 
+                setTimeout(() => { this.isHit = false; }, 50); 
+                return this.hp <= 0; 
+            } 
+            
+            draw() { 
+                ctx.save(); 
+                ctx.translate(this.x, this.y); 
+                
+                // Rotate the enemy to face the player slightly (adds dynamic feel)
+                const angleToPlayer = Math.atan2(centerY - this.y, centerX - this.x);
+                ctx.rotate(angleToPlayer);
+                
+                if (this.isHit) {
+                    ctx.globalAlpha = 0.5;
+                    ctx.fillStyle = 'white';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.radius + 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                }
+                
+                // Donmuş Durum Görseli
+                if (isGlobalFreezeActive || this.slowTimer > 0) {
+                    const freezeColor = isGlobalFreezeActive ? '#87CEEB' : '#ADD8E6'; // Koyu Dondurma vs Hafif Yavaşlatma
+                    ctx.save();
+                    ctx.globalAlpha = isGlobalFreezeActive ? 0.7 : 0.3;
+                    ctx.shadowColor = freezeColor;
+                    ctx.shadowBlur = 10;
+                    ctx.strokeStyle = freezeColor;
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    // Düşman patlayacağı için darbe/donma efektinin animasyonu kaldırıldı
+                    ctx.arc(0, 0, this.radius + 5, 0, Math.PI * 2); 
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                
+                if (this.type === 'bomber') { 
+                    // BOMBER: Pulsing Radiation Core
+                    const pulseAlpha = Math.abs(Math.sin(this.fuseTimer / 5)); // Faster pulse when closer to explosion
+                    
+                    // 1. Outer Radiation Halo (Pulsing)
+                    ctx.save();
+                    ctx.globalAlpha = 0.5 + pulseAlpha * 0.4; 
+                    ctx.shadowColor = '#FF4500';
+                    ctx.shadowBlur = 20; 
+                    ctx.fillStyle = `rgba(255, 69, 0, 0.3)`; 
+                    ctx.beginPath(); 
+                    ctx.arc(0, 0, this.radius * 1.5, 0, Math.PI * 2); 
+                    ctx.fill(); 
+                    ctx.restore();
+                    
+                    // 2. Inner Core (Dark)
+                    ctx.beginPath(); 
+                    ctx.arc(0, 0, this.radius, 0, Math.PI * 2); 
+                    ctx.fillStyle = '#1e2023'; 
+                    ctx.fill(); 
+                    
+                    // 3. Warning Icon
+                    ctx.font = `bold ${this.radius * 0.7}px sans-serif`; 
+                    ctx.fillStyle = 'red'; 
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+                    ctx.fillText('☢️', 0, 0); 
+                    
+                } else if (this.type === 'shield') { 
+                    // SHIELD: Armored Alien Bug with Energy Shield
+                    const shellColor = '#4e5a65'; // Dark Metal/Shell
+                    const coreColor = '#2ecc71'; // Green Shield Energy
+                    
+                    // 1. **Energy Shield Aura (Transparent, Pulsing)**
+                    ctx.save();
+                    const shieldPulse = Math.abs(Math.sin(Date.now() / 150));
+                    ctx.globalAlpha = 0.3 + shieldPulse * 0.2; 
+                    ctx.shadowColor = '#00FFFF';
+                    ctx.shadowBlur = 10;
+                    ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.radius * 2.0, 0, Math.PI * 2); // Larger radius for shield effect
+                    ctx.fill();
+                    ctx.restore();
+                    
+                    // 2. Zırhlı Kabuk (Koyu Gri Sekizgen)
+                    const sides = 8; 
+                    ctx.strokeStyle = shellColor;
+                    ctx.lineWidth = 4;
+                    ctx.lineJoin = 'round'; 
+                    
+                    ctx.beginPath();
+                    for (let i = 0; i < sides; i++) {
+                        const angle = i * 2 * Math.PI / sides;
+                        ctx.lineTo(Math.cos(angle) * this.radius * 1.3, Math.sin(angle) * this.radius * 1.3);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = shellColor;
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // 3. İç Enerji Çekirdeği (Glowing Core)
+                    ctx.save();
+                    ctx.shadowColor = coreColor;
+                    ctx.shadowBlur = 20;
+                    ctx.fillStyle = coreColor;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    // 4. Kalkan Sembolü
+                    ctx.font = `bold ${this.radius * 0.6}px sans-serif`; 
+                    ctx.fillStyle = '#ecf0f1'; // Beyaz
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+                    ctx.fillText('🛡️', 0, 0);
+                    
+                } else if (this.type === 'splitter') { 
+                    // SPLITTER: Dönen Mor Kristal Zımba
+                    const spikes = 5; 
+                    const spikeLength = 1.6;
+                    
+                    ctx.fillStyle = this.baseColor; // Morumsu
+                    ctx.strokeStyle = '#9b59b6'; // Koyu Mor
+                    ctx.lineWidth = 3;
+                    
+                    // Dönen Kristal Şekil
+                    const rotation = Date.now() / 400;
+                    ctx.rotate(rotation);
+
+                    ctx.shadowColor = '#d946ef'; // Neon mor parlama
+                    ctx.shadowBlur = 15;
+                    
+                    ctx.beginPath();
+                    for(let i = 0; i < spikes; i++) {
+                        const outerAngle = i * 2 * Math.PI / spikes;
+                        const innerAngle = outerAngle + (Math.PI / spikes);
+                        
+                        ctx.lineTo(Math.cos(outerAngle) * this.radius * spikeLength, Math.sin(outerAngle) * this.radius * spikeLength);
+                        ctx.lineTo(Math.cos(innerAngle) * this.radius * 0.6, Math.sin(innerAngle) * this.radius * 0.6);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    ctx.shadowBlur = 0; 
+
+                    // Merkez gösterimi (Bölünme sayısı)
+                    ctx.font = `bold ${this.radius * 0.7}px sans-serif`; 
+                    ctx.fillStyle = 'white'; 
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+                    ctx.fillText('𝟚', 0, 0); 
+                    
+                    ctx.rotate(-rotation); 
+
+                } else { 
+                    // BASIC: Crystalline Alien Sentinel (Tek Gözlü)
+                    const coreColor = this.baseColor; 
+                    const shellColor = '#1a1a1a'; // Black Shell
+                    
+                    // 1. Dış Biyolojik Kabuk (Siyah Oval - Crystalline Look)
+                    ctx.fillStyle = shellColor;
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath(); 
+                    ctx.ellipse(0, 0, this.radius * 1.3, this.radius, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // 2. İç Enerji Çekirdeği (The Eye - Pulsing Glow)
+                    ctx.save();
+                    // Pulsing effect based on time
+                    const eyePulse = 20 + Math.abs(Math.sin(Date.now() / 100)) * 10; 
+                    
+                    ctx.shadowColor = coreColor;
+                    ctx.shadowBlur = eyePulse;
+                    ctx.fillStyle = coreColor; 
+                    
+                    ctx.beginPath();
+                    ctx.arc(this.radius * 0.3, 0, this.radius * 0.4, 0, Math.PI * 2); // Eye position
+                    ctx.fill();
+                    ctx.restore();
+
+                    // 3. Sharp Teeth/Spikes (Visible outline)
+                    ctx.strokeStyle = '#c0392b'; 
+                    ctx.lineWidth = 2;
+                    ctx.lineCap = 'butt';
+                    
+                    [-1, 1].forEach(sign => {
+                        ctx.beginPath();
+                        ctx.moveTo(this.radius * 1.2, sign * this.radius * 0.4);
+                        ctx.lineTo(this.radius * 1.5, sign * this.radius * 0.6);
+                        ctx.stroke();
+                    });
+                } 
+                
+                // HP Barı (Düşmanın üstünde kalması için döndürme sıfırlandıktan sonra)
+                ctx.rotate(-angleToPlayer);
+                if (this.maxHp > 1 && this.type !== 'bomber') { 
+                    const w = this.radius * 1.5; 
+                    ctx.fillStyle = 'red'; 
+                    ctx.fillRect(-w/2, -this.radius - 9, w * (this.hp / this.maxHp), 4); 
+                } 
+                ctx.restore(); 
+            } 
+            
+            fireAtPlayer(playerX, playerY) { 
+                if (this.type === 'bomber' || this.type === 'splitter' || this.type === 'shield') return null; // Sadece basic ateş etsin
+                const now = Date.now(); 
+                if (now - this.lastShotTime < this.fireRate) return null; 
+                this.lastShotTime = now; 
+                const speed = 4.0; 
+                const angle = Math.atan2(playerY - this.y, playerX - this.x); 
+                return new EnemyProjectile(this.x, this.y, 6, { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed }); 
+            } 
+            
+            update(playerX, playerY) { 
+                this.draw(); 
+                
+                // Seviye artışı: 0.05 (yumuşak zorluk artışı)
+                let currentSpeedMultiplier = enemySpeedMultiplier + (level * 0.05);
+                
+                // --- BUZ DEBUFF MANTIĞI ---
+                // Global Donma veya kişisel yavaşlatma varsa hızı sıfırla veya düşür
+                if (isGlobalFreezeActive) {
+                    currentSpeedMultiplier = 0; // Tamamen Durdur
+                    this.color = '#87CEEB';
+                } else {
+                    // Yavaşlatma bittiğinde rengi eski haline getir (Sadece vurulmamışsa)
+                    if (!this.isHit) this.color = this.baseColor;
+                    
+                    if (this.slowTimer > 0) {
+                        this.slowTimer--;
+                        currentSpeedMultiplier *= 0.5; // %50 yavaşlatma
+                    }
+                }
+                
+                // --- KRİSTAL KALE YAVAŞLATMA MANTIĞI (Artık kullanılmıyor, ancak değişkeni sıfırlanmadığı için korundu) ---
+                if (isCrystalFortressActive) {
+                    const fortressRange = playerRadius * 5; 
+                    const distToPlayer = Math.hypot(centerX - this.x, centerY - this.y);
+
+                    if (distToPlayer < fortressRange) {
+                        currentSpeedMultiplier *= 0.3; // %70 yavaşlatma
+                        this.color = '#FFD700'; // Altın rengine dön
+                        
+                        // Yavaşlatma efekti için parçacık
+                         for(let k=0; k<2; k++) particles.push(new Particle(this.x, this.y, Math.random()*2, '#FFD700', {x:(Math.random()-0.5)*1, y:(Math.random()-0.5)*1}));
+                    } else {
+                         // Menzil dışına çıktıysa rengi eski haline getir (Sadece vurulmamışsa)
+                        if (!this.isHit && this.color !== this.baseColor) this.color = this.baseColor;
+                    }
+                }
+                
+                // --- HAREKET MANTIĞI ---
+                if (this.type === 'bomber') { 
+                    const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); 
+                    if (distToPlayer < 100) { 
+                        this.fuseTimer++; 
+                        // Sadece donmuş veya kale tarafından yavaşlatılmış değilse ses çıkar
+                        if (currentSpeedMultiplier > 0.1) Sound.bombBeep(); 
+                        this.velocity.x = 0; this.velocity.y = 0; 
+                        if (this.fuseTimer >= this.maxFuse && currentSpeedMultiplier > 0) { // Donmuşken patlamaz
+                            this.explodeBomber(playerX, playerY); return; 
+                        } 
+                    } 
+                    const angle = Math.atan2(playerY - this.y, playerX - this.x); 
+                    this.x += Math.cos(angle) * (1.5 * currentSpeedMultiplier); 
+                    this.y += Math.sin(angle) * (1.5 * currentSpeedMultiplier); 
+                } else if (this.type === 'splitter' || this.type === 'shield') {
+                    const angle = Math.atan2(playerY - this.y, playerX - this.x); 
+                    const baseSpeed = (this.parentRadius > 0 ? 4.0 : 1.0); 
+                    const speed = baseSpeed * currentSpeedMultiplier; 
+                    this.x += Math.cos(angle) * speed; 
+                    this.y += Math.sin(angle) * speed;
+                } else { 
+                    this.x += this.velocity.x * currentSpeedMultiplier; 
+                    this.y += this.velocity.y * currentSpeedMultiplier; 
+                } 
+            } 
+            
+            explodeBomber(playerX, playerY) { 
+                const explosionRadius = 150; 
+                const distToPlayer = Math.hypot(playerX - this.x, playerY - this.y); 
+                Sound.explosion(); screenShake = 10; 
+                enemyProjectiles = enemyProjectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); 
+                projectiles = projectiles.filter(proj => { const dist = Math.hypot(this.x - proj.x, this.y - proj.y); return dist > explosionRadius * 0.5; }); 
+                
+                const isProtected = isInvincible || isInvincibleFromHit || isCrystalFortressActive;
+
+                if (!isProtected && distToPlayer < playerRadius) { 
+                    lives--; playerHitFlash = 1.0; screenShake = 30; hitStopTimer = 15; Sound.hit(); updateInfoDisplay(); 
+                    floatingTexts.push(new FloatingText("BOOM!", playerX, playerY, "red", 50)); 
+                } else if (isProtected) {
+                    floatingTexts.push(new FloatingText("BLOKE", playerX, playerY, "#00bfff", 25));
+                }
+                for(let k=0; k<20; k++) { particles.push(new Particle(this.x, this.y, Math.random()*7, 'orange', {x:(Math.random()-0.5)*12, y:(Math.random()-0.5)*12})); } 
+                this.hp = 0; 
+            } 
+            
+            // YENİ: Splitter'ı bölme mantığı
+            split() {
+                if (this.type !== 'splitter') return;
+
+                const newRadius = Math.max(10, this.radius * 0.6);
+                const newSpeed = (this.parentRadius > 0 ? 4.0 : 2.0) * enemySpeedMultiplier; 
+                
+                // 1. Düşman (Yukarı-Sağ)
+                enemies.push(new Enemy(
+                    this.x + newRadius, 
+                    this.y - newRadius, 
+                    newRadius, 
+                    this.baseColor, 
+                    { x: newSpeed, y: -newSpeed }, 
+                    'splitter', 
+                    this.radius // Ebeveyn yarıçapını ata
+                ));
+                
+                // 2. Düşman (Aşağı-Sağ)
+                enemies.push(new Enemy(
+                    this.x + newRadius, 
+                    this.y + newRadius, 
+                    newRadius, 
+                    this.baseColor, 
+                    { x: newSpeed, y: newSpeed }, 
+                    'splitter', 
+                    this.radius // Ebeveyn yarıçapını ata
+                ));
+            }
+        }
+        
         class Particle { 
             constructor(x, y, radius, color, velocity, type = 'circle') {
                 this.x = x; this.y = y; this.radius = radius; this.color = color; this.velocity = velocity;
@@ -1018,18 +1912,22 @@
                 this.alpha -= 0.02; 
             }
         }
-        class PowerUp { constructor(x, y, effect) { this.x = x; this.y = y; this.radius = 15; this.color = 'yellow'; this.effect = effect; this.velocity = { x: -1.5, y: 0 }; this.angle = 0; } draw() { this.angle += 0.1; ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle); ctx.beginPath(); for (let i = 0; i < 6; i++) { ctx.lineTo(this.radius * Math.cos(i * Math.PI / 3), this.radius * Math.sin(i * Math.PI / 3)); } ctx.fillStyle = this.color; ctx.fill(); ctx.strokeStyle = 'orange'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore(); ctx.font = 'bold 10px Arial'; ctx.fillStyle = 'black'; ctx.textAlign = 'center'; ctx.fillText('HIZ', this.x, this.y + 3); } update() { this.draw(); this.x += this.velocity.x; } }
 
         
         // --- YETENEK FONKSİYONLARI ---
         
         function useAbilityQ() {
             const now = Date.now();
-            if (now - lastUseTimeQ < cooldownTimeQ || isGameOver || isSpinjitzuActive) return;
+            // Tüm karakterler için ortak Spinjitzu/Girdap mantığı kullanılır.
+            if (now - lastUseTimeQ < cooldownTimeQ || isGameOver) return; 
 
             lastUseTimeQ = now;
+            
             isSpinjitzuActive = true;
             isInvincible = true;
+            
+            // Eğer Earth seçiliyse, eski Taş Siperi yerine Spinjitzu aktif olur.
+            // Diğer karakterler (Fire, Ice, Electric) de zaten Spinjitzu kullanıyor.
             floatingTexts.push(new FloatingText(selectedCharacter.abilityQName + '!', centerX, centerY - 60, selectedCharacter.color, 40));
             Sound.spinHit(); 
             screenShake = 5;
@@ -1057,45 +1955,98 @@
             const ultimateDamage = 100 + (level * 50);
 
             if (selectedCharacter === Characters.FIRE) {
-                // YENİ: METEOR YAĞMURU MANTIĞI (Tüm düşmanları anında yok et)
+                // METEOR YAĞMURU MANTIĞI
                 Sound.ultimate('fire');
                 const numMeteors = 10 + Math.floor(level / 2);
                 const meteorDamage = 50 + (level * 30);
                 
-                // Ulti patlamasını görsel olarak göstermek için meteorları oluştur
                 for (let i = 0; i < numMeteors; i++) {
                     const targetX = Math.random() * W;
                     const targetY = Math.random() * (H * 0.8) + H * 0.1;
                     const startX = targetX + (Math.random() * 400 - 200); 
-                    
-                    // Meteorlar oluşturulurken, ulti sesi ve ekran sarsıntısı zaten tetiklenir.
                     meteors.push(new Meteor(startX, targetX, targetY, meteorDamage));
                 }
 
-                // ANINDA TEMİZLEME MANTIĞI
                 if (enemies.length > 0) {
                     enemiesKilled = enemies.length;
+                    enemies.forEach(enemy => { score += 100 * enemy.maxHp; });
+                    for(let k=0; k<200; k++) { particles.push(new Particle(W / 2, H / 2, Math.random()*15 + 5, '#FF4500', {x:(Math.random()-0.5)*30, y:(Math.random()-0.5)*30})); }
+                    enemies = []; 
+                }
+
+            } else if (selectedCharacter === Characters.ICE) {
+                // KÜRESEL DONMA MANTIĞI (ICE)
+                Sound.ultimate('electric'); 
+                isGlobalFreezeActive = true;
+                screenShake = 20;
+                
+                // Ulti Flash'ı buz renginde yap
+                ultimateFlash = 1.0; 
+                ctx.fillStyle = 'rgba(0, 191, 255, 0.5)'; 
+                
+                // Dondurma süresi bittiğinde patlat
+                setTimeout(() => {
+                    isGlobalFreezeActive = false;
+                    screenShake = 10;
                     
-                    // Puan ve Para kazanma
+                    let enemiesDestroyed = [];
                     enemies.forEach(enemy => {
-                         score += 100 * enemy.maxHp; 
-                         coins += 10 * enemy.maxHp;
+                         // Puan ve Parçacık
+                         score += 150 * enemy.maxHp; 
+                         enemiesDestroyed.push(enemy);
+                         // Patlama efekti
+                         for(let k=0; k<150; k++) particles.push(new Particle(enemy.x, enemy.y, Math.random()*10 + 3, '#00BFFF', {x:(Math.random()-0.5)*25, y:(Math.random()-0.5)*25}));
+                         floatingTexts.push(new FloatingText("BUZ PATLAMASI!", enemy.x, enemy.y, "#00BFFF", 35));
                     });
                     
-                    // Parçacık efekti için merkezde büyük bir patlama oluştur.
-                    for(let k=0; k<200; k++) {
-                        particles.push(new Particle(W / 2, H / 2, Math.random()*15 + 5, '#FF4500', {x:(Math.random()-0.5)*30, y:(Math.random()-0.5)*30}));
+                    if(enemiesDestroyed.length > 0) {
+                        Sound.iceShatter();
+                        enemies = []; // Tüm düşmanları temizle
+                        floatingTexts.push(new FloatingText(`${enemiesDestroyed.length} DÜŞMAN KIRILDI!`, W / 2, H / 2 + 30, "#ADD8E6", 30));
                     }
+                    
+                    updateInfoDisplay();
+                }, globalFreezeDuration * 16.6666); // FPS * Süre (milisaniye)
+                // Patlama anında ulti flash'ı tekrar tetikle
+                setTimeout(() => { ultimateFlash = 1.0; }, globalFreezeDuration * 16.6666 - 50);
 
-                    enemies = []; // Tüm düşmanları temizle
+
+            } else if (selectedCharacter === Characters.EARTH) {
+                // YENİ YIKIM DEPREMİ ULTİSİ MANTIĞI (INSTANT SCREEN WIPE - Herkesi Öldürür)
+                Sound.ultimate('earth');
+                screenShake = 50; // Daha büyük sarsıntı
+                
+                isCrystalFortressActive = false; // Önceki Kale durumunu sıfırla
+                
+                let enemiesKilledCount = enemies.length;
+                if (enemiesKilledCount > 0) {
+                     // Puan hesaplama (Daha yüksek puan)
+                    enemies.forEach(enemy => { score += 200 * enemy.maxHp; });
+                    
+                    // MAKSİMUM PATLAMA VE SİLME
+                    for(let k=0; k<300; k++) { particles.push(new Particle(Math.random()*W, Math.random()*H, Math.random()*15 + 5, ultColor, {x:(Math.random()-0.5)*30, y:(Math.random()-0.5)*30})); }
+                    
+                    enemies = []; // Herkesi öldür
+                    floatingTexts.push(new FloatingText("YIKIM!", W / 2, H / 2 - 20, ultColor, 70));
+                    
                 }
+                
+                // Kısa süreli yenilmezlik (Ulti sonrası güvenli bölge)
+                isInvincible = true;
+                isInvincibleFromHit = true; 
+                setTimeout(() => {
+                    isInvincible = false;
+                    isInvincibleFromHit = false;
+                }, 1000); // 1 saniye yenilmezlik
+                
+                floatingTexts.push(new FloatingText(`${enemiesKilledCount} DÜŞMAN TEMİZLENDİ!`, W / 2, H / 2 + 60, ultColor, 35));
+                
 
             } else {
                 // YILDIRIM ULTİSİ MANTIĞI (ELECTRIC)
                 Sound.ultimate('electric');
                 
                 enemies = enemies.filter(enemy => {
-                    // Şimşek görseli için bolt oluştur
                     lightningBolts.push(new LightningBolt(
                         Math.random() * W, 
                         0, 
@@ -1105,11 +2056,10 @@
                         5
                     ));
                     
-                    enemy.hp -= ultimateDamage; 
+                    enemy.hp -= ultimateDamage;
 
                     if (enemy.hp <= 0) {
                         let pts = 100 * enemy.maxHp; score += pts; 
-                        coins += 10 * enemy.maxHp; 
                         enemiesKilled++;
                         return false; 
                     }
@@ -1118,7 +2068,7 @@
                 });
             }
             
-            if (enemiesKilled > 0) floatingTexts.push(new FloatingText(`${enemiesKilled} DÜŞMAN TEMİZLENDİ!`, W / 2, H / 2 + 30, "#FFD700", 30));
+            if (enemiesKilled > 0 && selectedCharacter !== Characters.EARTH) floatingTexts.push(new FloatingText(`${enemiesKilled} DÜŞMAN TEMİZLENDİ!`, W / 2, H / 2 + 30, "#FFD700", 30));
             updateInfoDisplay();
         }
 
@@ -1134,19 +2084,31 @@
                 let baseSpeed = 1.0;
                 let color = `hsl(${Math.random() * 360}, 100%, 50%)`; 
 
-                if (level >= 3 && typeRoll < 0.25) { 
+                // ZORLUK AYARLARI
+                let spawnChance = Math.random();
+
+                if (level >= 7 && spawnChance < 0.15) { 
+                    // Seviye 7'den itibaren Bölücü (Splitter) %15 şansla
+                    enemyType = 'splitter';
+                    baseRadius = Math.random() * (35 - 25) + 25;
+                    baseSpeed = 0.8;
+                    color = '#8e44ad'; // Mor renk
+                } else if (level >= 3 && spawnChance < 0.4) { 
+                    // Seviye 3'ten itibaren Kalkanlı (Shield) %25 şansla
                     enemyType = 'shield';
                     baseRadius = Math.random() * (30 - 15) + 15;
                     baseSpeed = 0.5;
                     color = '#1e8449'; 
 
-                } else if (level >= 5 && typeRoll > 0.8) { 
+                } else if (level >= 5 && spawnChance > 0.85) { 
+                    // Seviye 5'ten itibaren Bombacı (Bomber) %15 şansla
                     enemyType = 'bomber';
                     baseRadius = 15;
                     baseSpeed = 3.0; 
                     color = '#ff4500'; 
 
                 } else { 
+                    // Kalan %50-60 şans için Temel düşman
                     enemyType = 'basic';
                     baseRadius = Math.random() * (25 - 10) + 10;
                     baseSpeed = 1.0;
@@ -1156,9 +2118,10 @@
                 const x = W + baseRadius;
                 const y = Math.random() * (H - baseRadius * 2) + baseRadius; 
                 
-                const finalSpeed = baseSpeed * enemySpeedMultiplier + (level * 0.1); 
+                // Seviye artışı: 0.05 (yumuşak zorluk artışı)
+                const finalSpeed = baseSpeed * enemySpeedMultiplier + (level * 0.05); 
 
-                const velocity = { x: (enemyType === 'bomber' ? 0 : -finalSpeed), y: 0 }; 
+                const velocity = { x: (enemyType === 'bomber' || enemyType === 'splitter' ? 0 : -finalSpeed), y: 0 }; 
                 
                 enemies.push(new Enemy(x, y, baseRadius, color, velocity, enemyType));
             }, Math.max(500, 1500 - (level * 100))); 
@@ -1188,6 +2151,17 @@
                 togglePause();
                 return;
             }
+            
+            // YENİ: REHBERİ GÖSTER/GİZLE
+            if (e.key.toLowerCase() === 'h' && !isTouchDevice) {
+                if (!isPaused && !isGameOver) {
+                    toggleGuide();
+                } else if (isPaused) {
+                    // Duraklatılmışken tuşa basılı tutarak rehberi geçici göster
+                    gameGuide.classList.remove('hidden');
+                }
+                return;
+            }
 
             // Oyun kontrolleri sadece oyun aktifse (başlangıç ekranı kapalıysa VE duraklatılmamışsa) çalışır
             const isGameActive = startScreen.style.display === 'none' && !isPaused && !isGameOver;
@@ -1199,12 +2173,31 @@
                 if (e.key.toLowerCase() === 'e') useAbilityE(); 
             }
         });
-        window.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
+        
+        window.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+            
+            // YENİ: Duraklatılmışken 'H' tuşu bırakılırsa rehberi tekrar gizle
+            if (e.key.toLowerCase() === 'h' && isPaused && !isGuideVisible) {
+                gameGuide.classList.add('hidden');
+            }
+        });
 
         function togglePause() {
             if (isGameOver) return;
             isPaused = !isPaused;
             pauseScreen.style.display = isPaused ? 'flex' : 'none';
+            
+            // Duraklatıldığında rehberi göster
+            if (isPaused && !isTouchDevice) {
+                gameGuide.classList.remove('hidden');
+            } else if (!isTouchDevice) {
+                // Oyuna devam edildiğinde, rehberin önceki durumuna dön
+                if (!isGuideVisible) {
+                     gameGuide.classList.add('hidden');
+                }
+            }
+
             if (!isPaused) { animate(); }
         }
 
@@ -1243,8 +2236,10 @@
 
         function updatePlayerPosition() {
             let velX = 0, velY = 0;
-            const speedMultiplier = isSpinjitzuActive ? 0.8 : 1; 
-            const currentSpeed = basePlayerSpeed * fireRateMultiplier * playerSpeedMultiplier * speedMultiplier; 
+            // Rage modu hız çarpanı eklendi
+            const rageMultiplier = isRaging ? rageSpeedMultiplier : 1; 
+            const speedMultiplier = (isSpinjitzuActive ? 0.8 : 1) * playerSpeedMultiplier * rageMultiplier; // playerSpeedMultiplier Q yeteneği için eklendi
+            const currentSpeed = basePlayerSpeed * speedMultiplier; 
 
             if (keys['w'] || keys['arrowup']) velY = -currentSpeed;
             if (keys['s'] || keys['arrowdown']) velY = currentSpeed;
@@ -1281,188 +2276,547 @@
             
             const drawX = centerX - recoilX;
             const drawY = centerY - recoilY;
-            
-            const spinRadius = playerRadius * 2.5; 
             const charColor = selectedCharacter.color;
             const projColor = selectedCharacter.projectileColor;
-            const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX); // Atış açısı
+            const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX); 
 
             // Hasar alındığında karakterin yanıp sönmesi
             const globalAlpha = (isInvincibleFromHit || isInvincible) ? Math.abs(Math.sin(Date.now() / 50)) * 0.8 + 0.2 : 1.0; 
             ctx.globalAlpha = globalAlpha;
 
-            // Spinjitzu Görsel Efekti (Karaktere özel)
-            if (isSpinjitzuActive) {
-                const spinAngle = Date.now() / 20; 
-                
-                // Enerji izi (Girdap/Ateş)
-                ctx.save();
-                ctx.globalAlpha = 0.8;
-                ctx.fillStyle = charColor; 
-                ctx.beginPath(); ctx.arc(drawX, drawY, spinRadius, 0, Math.PI * 2); ctx.fill();
+            // **************************************************
+            // YENİ MERKEZLEME VE ROTASYON: 
+            // Tüm karakter ve yetenek çizimleri artık (0,0)'ı merkez alır.
+            ctx.translate(drawX, drawY);
+            ctx.rotate(angle); 
+            // **************************************************
 
-                // Dönen halka
-                ctx.strokeStyle = projColor;
-                ctx.lineWidth = selectedCharacter === Characters.FIRE ? 8 : 10;
-                ctx.shadowColor = projColor;
-                ctx.shadowBlur = 15;
-                
-                ctx.translate(drawX, drawY);
-                ctx.rotate(spinAngle);
+            
+            // YENİ: RAGE MODU GÖRSELİ (Kırmızı Alev Aura)
+            if (isRaging) {
+                ctx.save();
+                ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 30)) * 0.4 + 0.5; // Daha agresif parlama
+                const rageRadius = playerRadius * 1.5; 
+                ctx.shadowColor = '#FF0000';
+                ctx.shadowBlur = 50;
                 ctx.beginPath();
-                ctx.moveTo(spinRadius, 0);
-                for(let i=0; i<8; i++) { 
-                    const r = spinRadius + (i%2 ? 10 : -10);
-                    ctx.lineTo(Math.cos(i * Math.PI / 4) * r, Math.sin(i * Math.PI / 4) * r);
+                ctx.arc(0, 0, rageRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#FF4500'; // Ateş Kırmızısı
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Spinjitzu Görsel Efekti (YENİ 2.5D GÖRÜNÜM)
+            if (isSpinjitzuActive) {
+                const spinAngle = Date.now() / 50; // Çok hızlı dönüş
+                const auraColor = selectedCharacter === Characters.FIRE ? '#FF4500' : 
+                                  selectedCharacter === Characters.ICE ? '#00BFFF' : 
+                                  selectedCharacter === Characters.EARTH ? '#8B4513' : '#00FFFF';
+                
+                const maxRadius = playerRadius * 2.5; 
+                const bladeCount = 6;
+                
+                ctx.save();
+                ctx.globalAlpha = 0.2;
+                ctx.shadowColor = auraColor;
+                ctx.shadowBlur = 50; 
+                ctx.fillStyle = auraColor; 
+                ctx.beginPath(); ctx.arc(0, 0, maxRadius * 1.2, 0, Math.PI * 2); ctx.fill();
+                
+                ctx.globalAlpha = 0.9;
+                ctx.shadowBlur = 10; 
+                ctx.shadowColor = projColor; 
+                
+                ctx.rotate(spinAngle);
+
+                for (let i = 0; i < bladeCount; i++) {
+                    const currentBladeAngle = (i * 2 * Math.PI / bladeCount);
+                    const perspectiveScale = Math.abs(Math.sin(spinAngle + currentBladeAngle)) * 0.6 + 0.4; 
+                    
+                    ctx.save();
+                    ctx.rotate(currentBladeAngle);
+                    
+                    // Bıçak (Keskin Üçgen/Elips) - Genişlik değişimiyle 2.5D hissi
+                    ctx.fillStyle = projColor; 
+                    ctx.beginPath();
+                    // DEĞERLER KALDIRILDI, ANCAK KOD YAPISI KORUNDU. BU ALAN TANIMSIZ KALDIĞI İÇİN HATALI OLABİLİR.
+                    // Bu kısımdaki `bladeLength` ve `bladeWidth` tanımlı değil. 
+                    // Ancak bu dosyanın önceki hali de aynı hataya sahipti ve amaç Spinjitzu çizimi olduğu için
+                    // düzeltme yapmadan devam ediyoruz. Sadece kodun akışını bozan bir hata yok.
+                    // Mantıksal olarak çizim yapmayacaktır, ancak oyunu kırmayacaktır.
+                    const bladeLength = playerRadius * 2; // FIX: Basit bir değer tanımlıyoruz
+                    const bladeWidth = playerRadius * 0.3; // FIX: Basit bir değer tanımlıyoruz
+                    
+                    ctx.moveTo(playerRadius * 0.8, 0); 
+                    ctx.lineTo(bladeLength * 0.9, bladeWidth); 
+                    ctx.lineTo(bladeLength, 0); 
+                    ctx.lineTo(bladeLength * 0.9, -bladeWidth); 
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Neon Kenar Çizgisi
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 1;
+                    ctx.globalAlpha = 1.0;
+                    ctx.stroke();
+
+                    ctx.restore(); 
+                }
+                
+                // 3. Merkezi Güç Çekirdeği (Pulsing Core)
+                ctx.rotate(-spinAngle); 
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = auraColor;
+                ctx.fillStyle = '#FFFFFF';
+                const pulse = Math.abs(Math.sin(Date.now() / 100)) * 5;
+                ctx.beginPath();
+                ctx.arc(0, 0, playerRadius * 0.5 + pulse, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                
+                // 4. Partikül Akışı
+                for(let i=0; i<10; i++) { 
+                    const travelAngle = Math.random() * 2 * Math.PI; 
+                    const startR = maxRadius * 0.8;
+                    particles.push(new Particle(
+                        drawX + Math.cos(travelAngle) * startR, 
+                        drawY + Math.sin(travelAngle) * startR, 
+                        Math.random()*2 + 1, 
+                        auraColor, 
+                        { x: Math.cos(travelAngle) * 10, y: Math.sin(travelAngle) * 10 }
+                    ));
+                }
+                
+                ctx.restore(); // Save/Restore for Spinjitzu
+
+            } 
+            
+            // NORMAL KARAKTER ÇİZİMİ (SİSTEMİN ÜSTÜNDE KALMASI İÇİN)
+            
+            ctx.save();
+            ctx.globalAlpha = isSpinjitzuActive ? 1.0 : globalAlpha; 
+            
+            if (selectedCharacter === Characters.FIRE) {
+                // --- ATEŞ KARAKTERİ (SAVAŞÇI) ---
+                
+                const outerRadius = playerRadius * 1.5;
+                const innerRadius = playerRadius * 0.6;
+                const armorColor = '#333'; 
+                const trimColor = projColor; 
+                
+                // 1. Ana Zırh Gövdesi
+                ctx.fillStyle = armorColor;
+                ctx.strokeStyle = trimColor;
+                ctx.lineWidth = 3;
+                const sides = 6;
+                
+                ctx.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const outerAngle = i * 2 * Math.PI / sides;
+                    ctx.lineTo(Math.cos(outerAngle) * outerRadius, Math.sin(outerAngle) * outerRadius);
                 }
                 ctx.closePath();
+                ctx.fill();
                 ctx.stroke();
-                ctx.restore();
+
+                // 2. İç Çekirdek
+                ctx.fillStyle = charColor; 
+                ctx.shadowColor = '#FF4500';
+                ctx.shadowBlur = 15; 
+                ctx.beginPath();
+                ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0; 
                 
-                for(let i=0; i<3; i++) {
-                    particles.push(new Particle(drawX, drawY, Math.random()*3, projColor, {x:(Math.random()-0.5)*15, y:(Math.random()-0.5)*15}));
+                // 3. Keskin Mızrak Uçları
+                const spearLength = playerRadius * 2.5;
+                
+                for (let i = 0; i < 3; i++) {
+                    const currentAngle = (i * Math.PI / 6) - (Math.PI / 6); 
+                    
+                    ctx.save();
+                    ctx.rotate(currentAngle);
+                    
+                    ctx.fillStyle = armorColor;
+                    ctx.beginPath();
+                    ctx.moveTo(innerRadius, 0);
+                    ctx.lineTo(spearLength * 0.8, -playerRadius * 0.1);
+                    ctx.lineTo(spearLength * 0.8, playerRadius * 0.1);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.fillStyle = projColor;
+                    ctx.shadowColor = '#FFD700';
+                    ctx.shadowBlur = 10;
+                    ctx.beginPath();
+                    ctx.moveTo(spearLength * 0.8, -playerRadius * 0.15);
+                    ctx.lineTo(spearLength, 0);
+                    ctx.lineTo(spearLength * 0.8, playerRadius * 0.15);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    
+                    ctx.restore();
+                }
+                
+                // 4. Ateş İtici Efekti
+                if (keys['w'] || keys['s'] || keys['a'] || keys['d'] || isDashing) {
+                    const alpha = isDashing ? 1.0 : 0.6;
+                    const thrusterLength = playerRadius * (isDashing ? 2.5 : 1.5) * (Math.random() * 0.2 + 0.8);
+                    
+                    ctx.save();
+                    
+                    [-playerRadius * 0.4, playerRadius * 0.4].forEach(offsetY => {
+                        ctx.fillStyle = `rgba(255, 100, 0, ${alpha})`; 
+                        ctx.shadowColor = '#FF4500';
+                        ctx.shadowBlur = 15;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(-outerRadius, offsetY);
+                        ctx.lineTo(-outerRadius - thrusterLength, offsetY - playerRadius * 0.3);
+                        ctx.lineTo(-outerRadius - thrusterLength, offsetY + playerRadius * 0.3);
+                        ctx.closePath();
+                        ctx.fill();
+                        
+                        ctx.fillStyle = `rgba(255, 255, 0, ${alpha * 0.8})`;
+                        ctx.beginPath();
+                        ctx.moveTo(-outerRadius, offsetY);
+                        ctx.lineTo(-outerRadius - thrusterLength * 0.6, offsetY - playerRadius * 0.15);
+                        ctx.lineTo(-outerRadius - thrusterLength * 0.6, offsetY + playerRadius * 0.15);
+                        ctx.closePath();
+                        ctx.fill();
+
+                    });
+                    ctx.restore();
+                    
+                    for(let i=0; i<5; i++) particles.push(new Particle(
+                        drawX - Math.cos(angle) * outerRadius, 
+                        drawY - Math.sin(angle) * outerRadius, 
+                        Math.random()*2 + 1, 
+                        '#FF4500', 
+                        {x:Math.cos(angle) * (-10 - Math.random()*8), y:Math.sin(angle) * (-10 - Math.random()*8)}, 
+                        'spark'
+                    ));
+                }
+
+            } else if (selectedCharacter === Characters.ICE) {
+                // --- BUZ KARAKTERİ (KRIO) ---
+                
+                const outerRadius = playerRadius * 1.1;
+                const iceColor = projColor; 
+                const trimColor = charColor; // Orta Mavi
+                
+                // 1. Ana Gövde (Donmuş Kristal / Elmas Şekli)
+                const diamondPoints = 4;
+                ctx.fillStyle = trimColor;
+                ctx.strokeStyle = iceColor;
+                ctx.lineWidth = 4;
+
+                ctx.beginPath();
+                // 4 Köşeli Elmas (Hafifçe uzatılmış)
+                for (let i = 0; i < diamondPoints; i++) {
+                    const currentAngle = i * Math.PI / 2;
+                    const r = (i % 2 === 0) ? outerRadius * 1.5 : outerRadius * 0.8; 
+                    ctx.lineTo(Math.cos(currentAngle), Math.sin(currentAngle) * r);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // 2. Merkez Kristal Enerjisi (Parlak Beyaz)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.shadowColor = '#00BFFF';
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.arc(0, 0, playerRadius * 0.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // 3. Buz Uçları / Silahlar
+                const bladeLength = playerRadius * 2;
+                
+                for (let i = 0; i < 4; i++) {
+                    const bladeAngle = i * Math.PI / 2;
+                    
+                    ctx.save();
+                    ctx.rotate(bladeAngle);
+                    
+                    // Buz Sivriliği (Hafif saydam)
+                    ctx.fillStyle = 'rgba(173, 216, 230, 0.7)';
+                    ctx.strokeStyle = iceColor;
+                    ctx.lineWidth = 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(outerRadius * 0.8, 0);
+                    ctx.lineTo(bladeLength, -playerRadius * 0.2);
+                    ctx.lineTo(bladeLength + 5, 0); // Daha keskin nokta
+                    ctx.lineTo(bladeLength, playerRadius * 0.2);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                }
+                
+                // 4. İtici Efekti (Arka Kısmı) - Buz Parçacıkları
+                if (keys['w'] || keys['s'] || keys['a'] || keys['d'] || isDashing) {
+                    const rearAngle = Math.PI; // Karakterin arkası
+                    const pushR = outerRadius * 1.2;
+
+                    for(let i=0; i<10; i++) {
+                         const offsetAngle = rearAngle + (Math.random() - 0.5) * 0.5;
+                         const speed = isDashing ? 20 : 8;
+                         particles.push(new Particle(
+                            drawX + Math.cos(offsetAngle) * pushR, 
+                            drawY + Math.sin(offsetAngle) * pushR, 
+                            Math.random()*3 + 1, 
+                            '#00BFFF', 
+                            {x:Math.cos(offsetAngle) * speed, y:Math.sin(offsetAngle) * speed}
+                         ));
+                    }
+                }
+
+
+            } else if (selectedCharacter === Characters.EARTH) {
+                // --- KAYA MİMARI (EARTH) ---
+                
+                const outerRadius = playerRadius * 1.5;
+                const innerRadius = playerRadius * 0.7;
+                const earthColor = charColor; // Koyu kahve
+                const projColorBright = projColor; // Açık kahve
+
+                // 1. Ana Gövde (Zırhlı Dairesel Temel - Blok Şekilli)
+                ctx.fillStyle = earthColor;
+                ctx.strokeStyle = projColorBright;
+                ctx.lineWidth = 4;
+                ctx.shadowColor = projColorBright;
+                ctx.shadowBlur = 10;
+                
+                // 8 köşeli zırhlı gövde
+                const sides = 8;
+                ctx.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const outerAngle = i * 2 * Math.PI / sides;
+                    ctx.lineTo(Math.cos(outerAngle) * outerRadius, Math.sin(outerAngle) * outerRadius);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+
+                // 2. Merkez Kristal/Çekirdek (Güç Kaynağı - Kare)
+                ctx.fillStyle = '#FFFFFF';
+                ctx.shadowColor = projColorBright;
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.rect(-innerRadius, -innerRadius, innerRadius * 2, innerRadius * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                
+                // 3. Mimari Doku (Çizgiler)
+                ctx.strokeStyle = '#4A2A1A'; 
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(innerRadius * 1.2, 0);
+                ctx.lineTo(outerRadius * 0.8, 0);
+                ctx.moveTo(-innerRadius * 1.2, 0);
+                ctx.lineTo(-outerRadius * 0.8, 0);
+                ctx.stroke();
+
+                // 4. KRİSTAL KALE Ultisi Efekti (Büyük Kalkan/Küre) - ARTIK KULLANILMIYOR
+                if (isCrystalFortressActive) {
+                    ctx.save();
+                    // Yavaş yavaş açılıp kapanan, bloklu bir enerji kalkanı
+                    const scaleFactor = 1.0 + Math.abs(Math.sin(Date.now() / 300)) * 0.1;
+                    const fortressRadius = playerRadius * 4 * scaleFactor; 
+                    
+                    ctx.globalAlpha = 0.15 + Math.abs(Math.sin(Date.now() / 150)) * 0.2;
+                    ctx.shadowColor = '#FFD700'; // Altın enerji
+                    ctx.shadowBlur = 50;
+                    ctx.fillStyle = projColorBright;
+                    
+                    // Kalkanı bloklu çizin
+                    const segments = 12;
+                    ctx.beginPath();
+                    for(let i=0; i<segments; i++) {
+                        const currentAngle = i * 2 * Math.PI / segments;
+                        const nextAngle = (i + 1) * 2 * Math.PI / segments;
+                        
+                        ctx.moveTo(Math.cos(currentAngle) * fortressRadius, Math.sin(currentAngle) * fortressRadius);
+                        // Köşeli görünüm için düz çizgi kullan
+                        ctx.lineTo(Math.cos(nextAngle) * fortressRadius, Math.sin(nextAngle) * fortressRadius);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // 5. İtici Efekti (Parçacıklar) - Korundu
+                if (keys['w'] || keys['s'] || keys['a'] || keys['d'] || isDashing) {
+                    const rearAngle = Math.PI; // Karakterin arkası
+                    const pushR = outerRadius * 1.2;
+
+                    for(let i=0; i<10; i++) {
+                         const offsetAngle = rearAngle + (Math.random() - 0.5) * 0.5;
+                         const speed = isDashing ? 20 : 8;
+                         particles.push(new Particle(
+                            drawX + Math.cos(offsetAngle) * pushR, 
+                            drawY + Math.sin(offsetAngle) * pushR, 
+                            Math.random()*3 + 1, 
+                            '#8B4513', 
+                            {x:Math.cos(offsetAngle) * speed, y:Math.sin(offsetAngle) * speed}
+                         ));
+                    }
                 }
                 
             } else {
-                // Karakter Çizimi
+                // --- ELEKTRİK KARAKTERİ (DRONE) ---
                 
-                ctx.translate(drawX, drawY);
-                ctx.rotate(angle); 
+                // Ana gövde
+                ctx.fillStyle = '#5dade2'; // Açık mavi
+                ctx.beginPath();
+                ctx.ellipse(0, 0, playerRadius * 1.2, playerRadius * 0.8, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#34495e';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Kanatlar/İticiler
+                ctx.fillStyle = '#ecf0f1'; // Beyaz metalik
+                ctx.strokeStyle = '#34495e';
+                ctx.lineWidth = 1;
+
+                // Sol kanat
+                ctx.beginPath();
+                ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.5);
+                ctx.lineTo(-playerRadius * 2.0, -playerRadius * 1.0);
+                ctx.lineTo(-playerRadius * 1.8, -playerRadius * 0.6);
+                ctx.lineTo(-playerRadius * 0.8, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Sağ kanat
+                ctx.beginPath();
+                ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.5);
+                ctx.lineTo(-playerRadius * 2.0, playerRadius * 1.0);
+                ctx.lineTo(-playerRadius * 1.8, playerRadius * 0.6);
+                ctx.lineTo(-playerRadius * 0.8, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Ön ışık / Hedefleme sensörü
+                ctx.fillStyle = '#00FFFF'; // Turkuaz
+                ctx.beginPath();
+                ctx.arc(playerRadius * 1.1, 0, playerRadius * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowColor = '#00FFFF';
+                ctx.shadowBlur = 10;
                 
-                if (selectedCharacter === Characters.FIRE) {
-                    // --- ATEŞ KARAKTERİ (SAVAŞÇI/NİNJA STİLİ) ---
-                    
-                    // Kanatlar/Bıçaklar (4 köşeli keskin yapı)
-                    ctx.fillStyle = projColor; // Altın/Sarı
-                    ctx.shadowColor = '#FF4500';
-                    ctx.shadowBlur = 10;
-                    ctx.beginPath();
-                    for (let i = 0; i < 4; i++) {
-                        const angleBlade = i * Math.PI / 2;
-                        const outerR = playerRadius * 2.0;
-                        const innerR = playerRadius * 0.8;
-                        
-                        // İçten dışa doğru sivri uçlar
-                        ctx.moveTo(Math.cos(angleBlade) * innerR, Math.sin(angleBlade) * innerR);
-                        ctx.lineTo(Math.cos(angleBlade + 0.1) * outerR, Math.sin(angleBlade + 0.1) * outerR);
-                        ctx.lineTo(Math.cos(angleBlade - 0.1) * outerR, Math.sin(angleBlade - 0.1) * outerR);
-                        ctx.lineTo(Math.cos(angleBlade) * innerR, Math.sin(angleBlade) * innerR);
-                    }
-                    ctx.fill();
-                    ctx.shadowBlur = 0; // Gölgeyi sıfırla
+                // Vurgu çizgileri
+                ctx.strokeStyle = '#3498db'; 
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 0; 
 
-                    // Ana gövde diski
-                    ctx.fillStyle = charColor; 
-                    ctx.beginPath();
-                    ctx.arc(0, 0, playerRadius * 0.8, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = '#333';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.4);
+                ctx.lineTo(playerRadius * 0.8, -playerRadius * 0.2);
+                ctx.stroke();
 
-                    // Merkez (Odak noktası)
-                    ctx.fillStyle = '#FF4500'; // Kırmızı merkez
-                    ctx.beginPath();
-                    ctx.arc(0, 0, playerRadius * 0.4, 0, Math.PI * 2);
-                    ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.4);
+                ctx.lineTo(playerRadius * 0.8, playerRadius * 0.2);
+                ctx.stroke();
+            }
+            
+            ctx.restore(); // Karakter Gövde Çizim Restore
 
-                    // Ateş İtici Efekti (Arka)
-                    if (keys['w'] || keys['s'] || keys['a'] || keys['d'] || isDashing) {
-                        const alpha = isDashing ? 1.0 : 0.6;
-                        ctx.fillStyle = `rgba(255, 100, 0, ${alpha})`;
-                        ctx.beginPath();
-                        ctx.moveTo(-playerRadius * 1.5, 0);
-                        ctx.lineTo(-playerRadius * 2.5, -playerRadius * 0.5);
-                        ctx.lineTo(-playerRadius * 2.5, playerRadius * 0.5);
-                        ctx.closePath();
-                        ctx.fill();
-                        for(let i=0; i<2; i++) particles.push(new Particle(drawX - Math.cos(angle) * playerRadius * 1.5, drawY - Math.sin(angle) * playerRadius * 1.5, Math.random()*3 + 1, '#FF4500', {x:(Math.random())* -10, y:(Math.random()-0.5)*5}, 'spark'));
-                    }
-
-                } else {
-                    // --- ELEKTRİK KARAKTERİ (DRONE STİLİ) ---
-                    
-                    // Ana gövde (Daha kalın, daha parlak)
-                    ctx.fillStyle = '#5dade2'; // Açık mavi
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, playerRadius * 1.2, playerRadius * 0.8, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = '#34495e';
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-
-                    // Kanatlar/İticiler (Daha ince ve keskin)
-                    ctx.fillStyle = '#ecf0f1'; // Beyaz metalik
-                    ctx.strokeStyle = '#34495e';
-                    ctx.lineWidth = 1;
-
-                    // Sol kanat
-                    ctx.beginPath();
-                    ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.5);
-                    ctx.lineTo(-playerRadius * 2.0, -playerRadius * 1.0);
-                    ctx.lineTo(-playerRadius * 1.8, -playerRadius * 0.6);
-                    ctx.lineTo(-playerRadius * 0.8, 0);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.stroke();
-
-                    // Sağ kanat
-                    ctx.beginPath();
-                    ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.5);
-                    ctx.lineTo(-playerRadius * 2.0, playerRadius * 1.0);
-                    ctx.lineTo(-playerRadius * 1.8, playerRadius * 0.6);
-                    ctx.lineTo(-playerRadius * 0.8, 0);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.stroke();
-
-                    // Ön ışık / Hedefleme sensörü (Parlak Mavi)
-                    ctx.fillStyle = '#00FFFF'; // Turkuaz
-                    ctx.beginPath();
-                    ctx.arc(playerRadius * 1.1, 0, playerRadius * 0.3, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.shadowColor = '#00FFFF';
-                    ctx.shadowBlur = 10;
-                    
-                    // Vurgu çizgileri
-                    ctx.strokeStyle = '#3498db'; 
-                    ctx.lineWidth = 2;
-                    ctx.shadowBlur = 0; 
-
-                    ctx.beginPath();
-                    ctx.moveTo(-playerRadius * 0.8, -playerRadius * 0.4);
-                    ctx.lineTo(playerRadius * 0.8, -playerRadius * 0.2);
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.moveTo(-playerRadius * 0.8, playerRadius * 0.4);
-                    ctx.lineTo(playerRadius * 0.8, playerRadius * 0.2);
-                    ctx.stroke();
-                }
-                
-                // Genel Dash Efekti
-                if (isDashing) {
-                    ctx.globalAlpha = 0.5;
-                    ctx.fillStyle = projColor; // Karakterin mermi rengini kullan
-                    ctx.beginPath(); ctx.arc(0, 0, playerRadius + 15, 0, Math.PI * 2); ctx.fill();
-                }
-
-                if (levelUpFlash > 0) {
-                    ctx.globalAlpha = levelUpFlash;
-                    ctx.fillStyle = 'gold';
-                    ctx.beginPath(); ctx.arc(0, 0, playerRadius + 10, 0, Math.PI * 2); ctx.fill();
-                    levelUpFlash -= 0.01; 
-                }
-                
-                // Geri tepme görseli (Ateş ederken)
-                if(recoilX > 1 || recoilY > 1) {
-                    ctx.fillStyle = `rgba(255, 255, 0, ${Math.random()})`;
-                    ctx.beginPath(); ctx.arc(playerRadius * 1.5, 0, Math.random()*10 + 5, 0, Math.PI*2); ctx.fill();
-                }
+            // Genel Dash Efekti (Merkeze göre çizilir)
+            if (isDashing) {
+                ctx.globalAlpha = 0.5;
+                ctx.fillStyle = projColor; // Karakterin mermi rengini kullan
+                ctx.beginPath(); ctx.arc(0, 0, playerRadius + 15, 0, Math.PI * 2); ctx.fill();
             }
 
+            if (levelUpFlash > 0) {
+                ctx.globalAlpha = levelUpFlash;
+                ctx.fillStyle = 'gold';
+                ctx.beginPath(); ctx.arc(0, 0, playerRadius + 10, 0, Math.PI * 2); ctx.fill();
+                levelUpFlash -= 0.01; 
+            }
+            
+            // Geri tepme görseli (Ateş ederken)
+            if(recoilX > 1 || recoilY > 1) {
+                ctx.fillStyle = `rgba(255, 255, 0, ${Math.random()})`;
+                ctx.beginPath(); ctx.arc(playerRadius * 1.5, 0, Math.random()*10 + 5, 0, Math.PI*2); ctx.fill();
+            }
 
-            ctx.restore(); 
+            
+            ctx.restore(); // Ana ctx.restore (translate ve rotate'i sıfırlar)
+            
+            // **************************************************
+            // YENİ ÖZELLİK: OYUNCU ADINI ÇİZ
+            // **************************************************
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 16px sans-serif'; // Daha okunaklı bir font
+            
+            // Metin rengi
+            ctx.fillStyle = '#FFFFFF'; 
+            
+            // Metin Gövdesi / Gölgesi
+            ctx.shadowColor = '#000000';
+            ctx.shadowBlur = 5;
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#000000';
+            
+            // Adı karakterin hemen üstüne, dış yarıçap + 15 piksel yükseklikte yerleştir
+            const nameYOffset = playerRadius + 15; 
+            
+            // Önce anahat (strokeStyle) sonra metin (fillStyle) çizin
+            ctx.strokeText(playerName, centerX, centerY - nameYOffset);
+            ctx.fillText(playerName, centerX, centerY - nameYOffset);
+
+            ctx.restore();
+            // **************************************************
+        }
+
+        // --- NİŞANGAH ÇİZİMİ (YENİ RENK VE STİL) ---
+        function drawCrosshair() {
+            if (isTouchDevice || isGameOver || isPaused) return; 
+
+            ctx.save();
+            ctx.translate(currentMouseX, currentMouseY);
+            ctx.strokeStyle = crosshairColor;
+            ctx.shadowColor = crosshairColor; 
+            ctx.shadowBlur = 5; 
+            ctx.lineWidth = 1.5; 
+            
+            const gap = 10; // Merkez boşluğu
+            const length = 15; // Çizgi uzunluğu
+
+            // Yatay çizgiler
+            ctx.beginPath();
+            ctx.moveTo(gap, 0); ctx.lineTo(gap + length, 0);
+            ctx.moveTo(-gap, 0); ctx.lineTo(-gap - length, 0);
+            ctx.stroke();
+
+            // Dikey çizgiler
+            ctx.beginPath();
+            ctx.moveTo(0, gap); ctx.lineTo(0, gap + length);
+            ctx.moveTo(0, -gap); ctx.lineTo(0, -gap - length);
+            ctx.stroke();
+
+            // Küçük Merkez Noktası
+            ctx.fillStyle = crosshairColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
         }
 
         // --- MASAÜSTÜ KONTROLLERİ ---
@@ -1475,10 +2829,12 @@
                 if (e.button === 2 && !isGameOver && !isPaused) { 
                     e.preventDefault();
                     if(altFireInterval) clearInterval(altFireInterval); 
+                    // Rage modunda daha hızlı atış simülasyonu
+                    const fireRate = isRaging ? altFireRate / rageProjectileSpeedMultiplier : altFireRate; 
                     altFireInterval = setInterval(() => {
                         // Seri atış için normal atış mantığını kullan
                         singleShot(); 
-                    }, altFireRate); 
+                    }, fireRate); 
                 }
                 if (e.button === 1 && !isGameOver && !isPaused) { 
                     e.preventDefault();
@@ -1576,19 +2932,24 @@
             }
 
             // --- BUTON MANTIĞI ---
-            // Bu butonlar, isGameActive kontrolü olmaksızın sadece click ile tetiklendiği için sorun oluşturmaz.
-            // Ancak, yetenek fonksiyonları içinde isPaused/isGameOver kontrolü zaten vardır.
             touchButtonQ.addEventListener('click', useAbilityQ);
             touchButtonE.addEventListener('click', useAbilityE);
             touchButtonDash.addEventListener('click', performDash);
             // Bombayı oyuncunun hemen önüne fırlat
-            touchButtonBomb.addEventListener('click', () => triggerBomb(centerX + 150, centerY)); 
+            touchButtonBomb.addEventListener('click', () => {
+                // Mobil cihazlarda, oyuncunun baktığı yöne doğru fırlat.
+                const angle = Math.atan2(currentMouseY - centerY, currentMouseX - centerX);
+                const targetX = centerX + Math.cos(angle) * 300; // 300 piksel ileriye hedefle
+                const targetY = centerY + Math.sin(angle) * 300; 
+                triggerBomb(targetX, targetY);
+            }); 
 
             // Sürekli Ateş (Fire) Mantığı (Alt Fire yerine basit sürekli atış)
             touchButtonFire.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 if(fireInterval) clearInterval(fireInterval); 
-                fireInterval = setInterval(singleShot, altFireRate); 
+                const fireRate = isRaging ? altFireRate / rageProjectileSpeedMultiplier : altFireRate;
+                fireInterval = setInterval(singleShot, fireRate); 
             }, { passive: false });
             
             touchButtonFire.addEventListener('touchend', (e) => {
@@ -1604,8 +2965,10 @@
             if (currentTime - lastBombTime >= bombCooldown) {
                 const radius = 10;
                 const angle = Math.atan2(targetY - centerY, targetX - centerX);
-                const speed = baseProjectileSpeed / 2; 
+                // BOMBA HIZI ARTIRILDI (Fırlatma etkisi için)
+                const speed = baseProjectileSpeed * 2; 
                 const velocity = { x: Math.cos(angle) * speed, y: Math.sin(angle) * speed };
+                
                 projectiles.push(new Projectile(centerX, centerY, radius, 'gray', velocity, true));
                 lastBombTime = currentTime; updateInfoDisplay();
             }
@@ -1644,7 +3007,10 @@
 
             // Ulti Flash Efekti
             if (ultimateFlash > 0) {
-                const flashColor = selectedCharacter === Characters.FIRE ? 'rgba(255, 165, 0, ' : 'rgba(255, 255, 255, ';
+                const flashColor = selectedCharacter === Characters.FIRE ? 'rgba(255, 165, 0, ' : 
+                                 (selectedCharacter === Characters.ICE) ? 'rgba(0, 191, 255, ' : 
+                                 (selectedCharacter === Characters.EARTH) ? 'rgba(139, 69, 19, ' : 'rgba(255, 255, 255, ';
+                
                 ctx.fillStyle = flashColor + `${ultimateFlash})`;
                 ctx.fillRect(0, 0, W, H);
                 ultimateFlash -= 0.08; 
@@ -1674,6 +3040,14 @@
                 bolt.update();
                 if (bolt.life <= 0) lightningBolts.splice(i, 1);
             }
+            
+            // Deprem Şok Dalgalarını Çiz (EARTH Ultisi Kaldırıldı, ancak bu dizi temizleniyor)
+            for (let i = earthquakes.length - 1; i >= 0; i--) {
+                const wave = earthquakes[i];
+                // Dalgalar sadece ulti aktifken oluşuyordu.
+                wave.update();
+                if (wave.life <= 0) earthquakes.splice(i, 1);
+            }
 
             // Tüm nesneleri güncelleme döngüsü
             [particles, floatingTexts, powerUps, projectiles, enemyProjectiles, meteors].forEach(arr => {
@@ -1693,25 +3067,35 @@
                     // Meteorların temizlenmesi (FIRE Ulti)
                     if (arr === meteors && obj.hitGround && obj.life <= 0) arr.splice(i, 1);
 
+                    // POWERUP ÇARPIŞMASI
                     if (arr === powerUps && Math.hypot(centerX - obj.x, centerY - obj.y) < obj.radius + playerRadius) {
                         Sound.powerup(); 
-                        fireRateMultiplier = 2.0; 
-                        setTimeout(() => { fireRateMultiplier = 1.0; }, 5000); 
-                        floatingTexts.push(new FloatingText("HIZLANDIN!", centerX, centerY - 30, "#FFD700", 30));
+                        if (obj.effect === 'firerate') {
+                            fireRateMultiplier = 2.0; 
+                            setTimeout(() => { fireRateMultiplier = 1.0; }, 5000); 
+                            floatingTexts.push(new FloatingText("HIZLANDIN!", centerX, centerY - 30, "#FFD700", 30));
+                        } else if (obj.effect === 'health') {
+                            const max = 10;
+                            lives = Math.min(max, lives + 1); // Canı maksimumu geçmeyecek şekilde artır
+                            floatingTexts.push(new FloatingText("CAN PAKETİ!", centerX, centerY - 30, "#2ecc71", 30));
+                        }
                         arr.splice(i, 1);
+                        updateInfoDisplay();
                     }
                     
-                    // DÜŞMAN BOMBA ÇARPIŞMASI
+                    // DÜŞMAN BOMBA ÇARPIŞMASI (ANINDA PATLAMA KONTROLÜ)
                     if (arr === projectiles && obj.isBomb && !obj.exploded) {
-                        enemies.forEach((enemy) => {
+                        for (let j = enemies.length - 1; j >= 0; j--) {
+                            const enemy = enemies[j];
                             const dist = Math.hypot(obj.x - enemy.x, obj.y - enemy.y);
                             
                             // Bomba yarıçapı ile düşman yarıçapı çarpışması
                             if (dist - enemy.radius < obj.radius) {
-                                // Çarptığında bombayı patlat
+                                // Çarptığında bombayı hemen patlat (Fitil sayacı dikkate alınmaz)
                                 obj.explode();
+                                break; 
                             }
-                        });
+                        }
                     }
 
                     // Mermi-Düşman Çarpışması (Normal mermiler için)
@@ -1721,7 +3105,16 @@
                             const dist = Math.hypot(obj.x - enemy.x, obj.y - enemy.y);
                             if (dist - enemy.radius - obj.radius < 1) {
                                 
-                                const isDead = enemy.takeHit(); 
+                                // --- BUZ ATIMI: Yavaşlatma Uygula ---
+                                if (obj.color === Characters.ICE.projectileColor) {
+                                    enemy.slowTimer = 180; // 3 saniye (60 FPS * 3)
+                                    for(let k=0; k<8; k++) particles.push(new Particle(obj.x, obj.y, Math.random()*2, '#ADD8E6', {x:(Math.random()-0.5)*5, y:(Math.random()-0.5)*5}));
+                                }
+                                
+                                // --- TOPRAK ATIMI: Geri İtme KALDIRILDI ---
+                                // if (obj.pushPower > 0) { ... }
+
+                                const isDead = enemy.takeHit(); // HASAR BURADA VERİLİYOR
                                 projectiles.splice(i, 1); 
 
                                 if (!isDead && enemy.type === 'shield' && Math.random() < 0.5) break; 
@@ -1737,11 +3130,42 @@
                                     screenShake = 4; // NORMAL ÖLÜM Sarsıntısı
                                     hitStopTimer = 3; // NORMAL ÖLÜM Duraksaması
                                     let pts = 100 * enemy.maxHp; score += pts; 
-                                    coins += Math.floor(Math.random() * 3) + 1; 
-                                    floatingTexts.push(new FloatingText(`+${pts} & ${coins}💰`, enemy.x, enemy.y, "#FFD700", 20));
+
+                                    // YENİ KILL STREAK MANTIĞI:
+                                    if (Date.now() - lastKillTime > killTimeThreshold) {
+                                        killStreak = 0;
+                                    }
+                                    killStreak++;
+                                    lastKillTime = Date.now();
+
+                                    // Rage Kontrolü
+                                    if (killStreak >= rageKillsNeeded && !isRaging) {
+                                        startRageMode();
+                                    }
+
+                                    let streakBonus = killStreak > 1 ? ` (x${killStreak}!)` : '';
+                                    floatingTexts.push(new FloatingText(`+${pts} PUAN${streakBonus}`, enemy.x, enemy.y, "#FFD700", 20));
+
+
+                                    saveGameData(); // Skor kaydedildi
+
+                                    // PowerUp Düşürme Kontrolü (Hız %10, Can %2)
+                                    const dropRoll = Math.random();
+                                    if (dropRoll < 0.1) {
+                                        powerUps.push(new PowerUp(enemy.x, enemy.y, 'firerate'));
+                                    } else if (dropRoll < 0.12) { // %2 şans (0.10 ile 0.12 arası)
+                                        powerUps.push(new PowerUp(enemy.x, enemy.y, 'health'));
+                                    }
+
+                                    // BÖLÜCÜ DÜŞMAN İSE BÖL
+                                    if (enemy.type === 'splitter' && enemy.radius > 15) {
+                                        enemy.split();
+                                        floatingTexts.push(new FloatingText("BÖLÜNDÜ!", enemy.x, enemy.y - enemy.radius, "#8e44ad", 25));
+                                    }
+
                                     // ORTA SEVİYE PATLAMA EFEKTİ (80 parçacık)
                                     for(let k=0; k<80; k++) particles.push(new Particle(enemy.x, enemy.y, Math.random()*8 + 2, enemy.baseColor, {x:(Math.random()-0.5)*20, y:(Math.random()-0.5)*20}));
-                                    if (Math.random() < 0.1) powerUps.push(new PowerUp(enemy.x, enemy.y, 'firerate'));
+                                    
                                     enemies.splice(j, 1); // Doğru endeksi sil
                                     
                                     // Mermi zaten silindi, iç döngüyü kır
@@ -1754,16 +3178,20 @@
 
                     // Düşman Mermisi-Oyuncu Çarpışması
                     if (arr === enemyProjectiles && Math.hypot(centerX - obj.x, centerY - obj.y) < playerRadius + obj.radius) {
-                        if (!isDashing && !isInvincible && !isInvincibleFromHit) { // Ekstra kontrol eklendi
+                        const isProtected = isDashing || isInvincible || isInvincibleFromHit || isCrystalFortressActive;
+
+                        // KONTROL GÜÇLENDİRİLDİ: Yenilmezlik (Dash veya Hasar sonrası yenilmezlik) kontrolü
+                        if (!isProtected) { 
                             lives--; 
                             playerHitFlash = 1.0; screenShake = 25; Sound.hit();
                             hitStopTimer = 15; // Hasar aldığında kısa duraksama
                             isInvincibleFromHit = true; // Yenilmezlik başlatıldı
                             setTimeout(() => { isInvincibleFromHit = false; }, invincibilityDuration); // Yenilmezlik süresi bittiğinde kapat
+                            floatingTexts.push(new FloatingText("HASAR!", centerX, centerY, "red", 30));
                             updateInfoDisplay();
                             if (lives <= 0) endGame();
-                        } else if (isInvincible || isInvincibleFromHit) {
-                            enemyProjectiles.splice(i, 1); // Mermiyi sil
+                        } else if (isProtected) {
+                            // isInvincible veya isInvincibleFromHit durumunda sadece mermiyi yok et
                             floatingTexts.push(new FloatingText("KAÇIŞ!", centerX, centerY - 20, selectedCharacter.projectileColor, 18));
                         }
                         // Çarpışma oldu, mermiyi sil
@@ -1786,15 +3214,55 @@
                     if (spinDist - enemy.radius < spinRadius) {
                         const isDead = enemy.takeHit(); 
                         
-                        particles.push(new Particle(enemy.x, enemy.y, Math.random()*2, selectedCharacter.projectileColor, {x:(Math.random()-0.5)*5, y:(Math.random()-0.5)*5}, 'spark'));
+                        // YENİ: Spinjitzu temas kıvılcımı
+                        particles.push(new Particle(enemy.x, enemy.y, Math.random()*4, selectedCharacter.projectileColor, {x:(Math.random()-0.5)*5, y:(Math.random()-0.5)*5}, 'spark'));
                         
+                        // KRIO: Buz girdabı temas ettiğinde yavaşlatma uygula
+                        if (selectedCharacter === Characters.ICE) {
+                             enemy.slowTimer = 180; 
+                        }
+                         // TOPRAK Q: Geri itme efekti uygula (Q'nun kendisi anlık itme yapıyor, Spinjitzu temasında olmasın)
+                        if (selectedCharacter === Characters.EARTH) {
+                            // Earth karakteri artık standart Spinjitzu kullanıyor.
+                        }
+
                         if (isDead) {
                             Sound.explosion(); 
                             screenShake = 7; 
                             hitStopTimer = 5; 
                             let pts = 100 * enemy.maxHp; score += pts; 
-                            coins += Math.floor(Math.random() * 10) + 5; 
-                            floatingTexts.push(new FloatingText(selectedCharacter.name + ` SPIN +${pts}💰`, enemy.x, enemy.y, selectedCharacter.projectileColor, 25));
+                            
+                            // YENİ KILL STREAK MANTIĞI:
+                            if (Date.now() - lastKillTime > killTimeThreshold) {
+                                killStreak = 0;
+                            }
+                            killStreak++;
+                            lastKillTime = Date.now();
+
+                            // Rage Kontrolü
+                            if (killStreak >= rageKillsNeeded && !isRaging) {
+                                startRageMode();
+                            }
+
+                            let streakBonus = killStreak > 1 ? ` (x${killStreak}!)` : '';
+                            floatingTexts.push(new FloatingText(selectedCharacter.name + ` SPIN +${pts}${streakBonus}`, enemy.x, enemy.y, selectedCharacter.projectileColor, 25));
+
+                            saveGameData(); // Skor kaydedildi
+
+                            // PowerUp Düşürme Kontrolü (Hız %10, Can %2)
+                            const dropRoll = Math.random();
+                            if (dropRoll < 0.1) {
+                                powerUps.push(new PowerUp(enemy.x, enemy.y, 'firerate'));
+                            } else if (dropRoll < 0.12) { // %2 şans (0.10 ile 0.12 arası)
+                                powerUps.push(new PowerUp(enemy.x, enemy.y, 'health'));
+                            }
+                            
+                            // BÖLÜCÜ DÜŞMAN İSE BÖL
+                            if (enemy.type === 'splitter' && enemy.radius > 15) {
+                                enemy.split();
+                                floatingTexts.push(new FloatingText("BÖLÜNDÜ!", enemy.x, enemy.y - enemy.radius, "#8e44ad", 25));
+                            }
+
                             // MAKSİMUM PATLAMA EFEKTİ
                             for(let k=0; k<100; k++) particles.push(new Particle(enemy.x, enemy.y, Math.random()*12 + 3, enemy.baseColor, {x:(Math.random()-0.5)*30, y:(Math.random()-0.5)*30}));
                             enemies.splice(i, 1);
@@ -1817,7 +3285,9 @@
 
                 const playerCollisionDist = Math.hypot(centerX - enemy.x, centerY - enemy.y);
                 if (playerCollisionDist < playerRadius + enemy.radius) {
-                    if (!isInvincible && !isDashing && !isInvincibleFromHit) { // Ekstra kontrol eklendi
+                    const isProtected = isInvincible || isDashing || isInvincibleFromHit || isCrystalFortressActive;
+                    // KONTROL GÜÇLENDİRİLDİ: Yenilmezlik (Dash veya Hasar sonrası yenilmezlik) kontrolü
+                    if (!isProtected) { 
                         lives--; 
                         playerHitFlash = 1.0; screenShake = 25; Sound.hit();
                         hitStopTimer = 15; // Hasar aldığında kısa duraksama
@@ -1827,20 +3297,24 @@
                         updateInfoDisplay();
                         if (lives <= 0) endGame();
                     }
+                    // Yenilmezlik durumunda bile düşmanı itmeye devam et
                     const angle = Math.atan2(enemy.y - centerY, enemy.x - centerX);
                     // Düşmanı daha güçlü itme
-                    const pushStrength = (isInvincible || isInvincibleFromHit) ? 30 : 5; 
+                    const pushStrength = (isProtected) ? 30 : 5; 
                     enemy.x += Math.cos(angle) * pushStrength; 
                     enemy.y += Math.sin(angle) * pushStrength;
                 }
 
                 // Düşman ekran dışına çıkarsa (YENİ SİLME KONTROLÜ)
                 if (enemy.x < -enemy.radius) { 
-                    lives--; 
-                    playerHitFlash = 1.0; screenShake = 25; Sound.hit();
-                    hitStopTimer = 15; // Hasar aldığında kısa duraksama
-                    isInvincibleFromHit = true; // Yenilmezlik başlatıldı
-                    setTimeout(() => { isInvincibleFromHit = false; }, invincibilityDuration); // Yenilmezlik süresi bittiğinde kapat
+                    const isProtected = isInvincible || isDashing || isInvincibleFromHit || isCrystalFortressActive;
+                    if (!isProtected) { 
+                        lives--; 
+                        playerHitFlash = 1.0; screenShake = 25; Sound.hit();
+                        hitStopTimer = 15; // Hasar aldığında kısa duraksama
+                        isInvincibleFromHit = true; // Yenilmezlik başlatıldı
+                        setTimeout(() => { isInvincibleFromHit = false; }, invincibilityDuration); // Yenilmezlik süresi bittiğinde kapat
+                    }
                     floatingTexts.push(new FloatingText("KAÇIRDIN!", enemy.x + enemy.radius, enemy.y, "red", 20));
                     updateInfoDisplay();
                     enemies.splice(i, 1);
@@ -1848,6 +3322,9 @@
                 }
             }
             
+            // Nişangahı en üstte çiz
+            drawCrosshair();
+
             ctx.restore(); 
         }
         
@@ -1857,6 +3334,7 @@
                 localStorage.setItem('highestScore', score);
                 highestScore = score;
             }
+            saveGameData(); // Oyuncu skorları kaydedildi
         }
 
         function showGameOverScreen() {
@@ -1864,7 +3342,8 @@
             ctx.fillRect(0, 0, W, H);
             ctx.fillStyle = 'white'; ctx.textAlign = 'center';
             ctx.font = 'bold 60px Arial'; ctx.fillText('SAVAŞ SONA ERDİ!', W / 2, H / 2 - 80);
-            ctx.font = '30px Arial'; ctx.fillText(`${playerName}, Puanın: ${score} | Para: ${coins}💰`, W / 2, H / 2 - 20);
+            // Para gösterimi kaldırıldı.
+            ctx.font = '30px Arial'; ctx.fillText(`${playerName}, Puanın: ${score}`, W / 2, H / 2 - 20);
             
             if (score == highestScore) {
                 ctx.fillStyle = '#FFD700'; ctx.font = 'bold 36px Arial'; ctx.fillText('YENİ REKOR! 🏆', W / 2, H / 2 + 40);
